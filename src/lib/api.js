@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+// Remove trailing slash from API_URL to prevent double slashes in URLs
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || ''
 
 // Get auth token from Supabase
 async function getAuthToken() {
@@ -12,7 +13,11 @@ async function getAuthToken() {
 async function apiCall(endpoint, options = {}) {
   const token = await getAuthToken()
   
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  // Ensure endpoint starts with / for proper URL construction
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  const url = `${API_URL}${normalizedEndpoint}`
+  
+  const response = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
