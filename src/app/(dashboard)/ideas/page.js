@@ -1,0 +1,188 @@
+'use client'
+
+import { useState } from 'react'
+import { generateIdeas } from '@/lib/api'
+import { Lightbulb, Sparkles, Loader2, Instagram, Youtube, Twitter, Video, AlertCircle, TrendingUp } from 'lucide-react'
+
+export default function IdeasPage() {
+  const [ideas, setIdeas] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [selectedPlatform, setSelectedPlatform] = useState('instagram')
+
+  const platforms = [
+    { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'bg-pink-600' },
+    { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'bg-red-600' },
+    { id: 'tiktok', name: 'TikTok', icon: Video, color: 'bg-gray-900' },
+    { id: 'twitter', name: 'Twitter', icon: Twitter, color: 'bg-blue-500' },
+  ]
+
+  async function handleGenerate() {
+    try {
+      setLoading(true)
+      setError(null)
+      setIdeas(null)
+      
+      const data = await generateIdeas(selectedPlatform, 10)
+      setIdeas(data)
+    } catch (err) {
+      console.error('Error generating ideas:', err)
+      setError(err.message || 'Failed to generate ideas')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const currentPlatform = platforms.find(p => p.id === selectedPlatform)
+  const PlatformIcon = currentPlatform?.icon
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <Lightbulb className="w-8 h-8 text-primary-600" />
+          Content Ideas Generator
+        </h1>
+        <p className="text-gray-600 mt-2">
+          AI-generated viral content ideas tailored to each platform
+        </p>
+      </div>
+
+      {/* Platform Selector */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 mb-3">Select Platform:</p>
+        <div className="flex flex-wrap gap-3">
+          {platforms.map((platform) => {
+            const Icon = platform.icon
+            return (
+              <button
+                key={platform.id}
+                onClick={() => setSelectedPlatform(platform.id)}
+                disabled={loading}
+                className={`
+                  flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all
+                  ${selectedPlatform === platform.id
+                    ? `${platform.color} text-white shadow-lg scale-105`
+                    : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-300 hover:shadow-md'
+                  }
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
+              >
+                <Icon className="w-6 h-6" />
+                <span className="text-lg">{platform.name}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Generate Button */}
+      <div className="card bg-gradient-to-r from-primary-600 to-purple-600 text-white">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-xl ${currentPlatform?.color} bg-white/20 flex items-center justify-center`}>
+              <PlatformIcon className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-1">Generate {currentPlatform?.name} Ideas</h3>
+              <p className="text-primary-100">
+                Get 10 AI-powered content ideas for {currentPlatform?.name}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            className="bg-white text-primary-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors flex items-center gap-3 disabled:opacity-50 whitespace-nowrap shadow-lg"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-6 h-6 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-6 h-6" />
+                Generate Ideas
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="card bg-red-50 border-red-200">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-red-600 font-medium">Error generating ideas</p>
+              <p className="text-red-500 text-sm mt-1">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading */}
+      {loading && (
+        <div className="card text-center py-12">
+          <Loader2 className="w-16 h-16 text-primary-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">AI is analyzing your {currentPlatform?.name} content...</p>
+        </div>
+      )}
+
+      {/* Ideas Display */}
+      {ideas && !loading && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+              <PlatformIcon className={`w-8 h-8 text-${currentPlatform?.color.replace('bg-', '')}`} />
+              {currentPlatform?.name} Content Ideas
+            </h2>
+            {ideas.contextUsed && (
+              <div className="text-sm text-gray-600">
+                <Sparkles className="w-4 h-4 inline mr-1 text-primary-600" />
+                {ideas.contextUsed.conversations} conversations analyzed
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <div className="prose max-w-none">
+              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                {ideas.ideas || ideas.response || 'No ideas generated'}
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-primary-50 border-primary-200">
+            <div className="flex items-start gap-3">
+              <TrendingUp className="w-5 h-5 text-primary-600 flex-shrink-0 mt-1" />
+              <div>
+                <p className="font-medium text-primary-900">These ideas are personalized</p>
+                <p className="text-primary-700 text-sm mt-1">
+                  Based on your {currentPlatform?.name} performance, audience behavior, and current trends in your niche.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!ideas && !loading && !error && (
+        <div className="card text-center py-16">
+          <Lightbulb className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+          <h3 className="text-2xl font-semibold text-gray-900 mb-3">Ready to Create?</h3>
+          <p className="text-gray-600 mb-2">
+            Select a platform above and click "Generate Ideas"
+          </p>
+          <p className="text-sm text-gray-500">
+            AI will create personalized content ideas based on your analytics
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
