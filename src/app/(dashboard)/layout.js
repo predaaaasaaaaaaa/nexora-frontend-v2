@@ -12,7 +12,10 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  TrendingUp,
+  Heart,
+  Trophy
 } from 'lucide-react'
 import { getCurrentUser, signOut } from '@/lib/supabase'
 import ProactiveAssistant from '@/components/shared/ProactiveAssistant'
