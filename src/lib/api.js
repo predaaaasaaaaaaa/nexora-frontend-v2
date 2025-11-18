@@ -61,8 +61,12 @@ export async function getAllSchedules() {
 }
 
 // Ideas API
-export async function generateIdeas(platform, count = 10) {
-  return apiCall(`/ideas/${platform}?count=${count}`)
+export async function generateIdeas(platform, count = 10, niche = null) {
+  let url = `/ideas/${platform}?count=${count}`
+  if (niche) {
+    url += `&niche=${encodeURIComponent(niche)}`
+  }
+  return apiCall(url)
 }
 
 export async function generateAllIdeas(count = 5) {

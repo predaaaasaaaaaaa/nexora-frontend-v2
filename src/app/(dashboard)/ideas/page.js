@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { generateIdeas } from '@/lib/api'
-import { Lightbulb, Sparkles, Loader2, Instagram, Youtube, Twitter, Video, AlertCircle, TrendingUp } from 'lucide-react'
+import { Lightbulb, Sparkles, Loader2, Instagram, Youtube, Twitter, Video, AlertCircle, TrendingUp, Target } from 'lucide-react'
 
 export default function IdeasPage() {
   const [ideas, setIdeas] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [selectedPlatform, setSelectedPlatform] = useState('instagram')
+  const [selectedNiche, setSelectedNiche] = useState('My Niche (Fitness & Health)')
 
   const platforms = [
     { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'bg-pink-600' },
@@ -17,13 +18,36 @@ export default function IdeasPage() {
     { id: 'twitter', name: 'Twitter', icon: Twitter, color: 'bg-blue-500' },
   ]
 
+  const niches = [
+    'My Niche (Fitness & Health)',
+    'Fashion & Style',
+    'Food & Cooking',
+    'Travel & Adventure',
+    'Technology & Gadgets',
+    'Business & Entrepreneurship',
+    'Education & Learning',
+    'Gaming & Entertainment',
+    'Beauty & Skincare',
+    'Home & DIY',
+    'Parenting & Family',
+    'Finance & Investing',
+    'Photography & Art',
+    'Music & Dance',
+    'Sports & Athletics',
+  ]
+
   async function handleGenerate() {
     try {
       setLoading(true)
       setError(null)
       setIdeas(null)
       
-      const data = await generateIdeas(selectedPlatform, 10)
+      // Extract niche name without "My Niche" prefix for API
+      const nicheForAPI = selectedNiche === 'My Niche (Fitness & Health)' 
+        ? 'Fitness & Health' 
+        : selectedNiche
+      
+      const data = await generateIdeas(selectedPlatform, 10, nicheForAPI)
       setIdeas(data)
     } catch (err) {
       console.error('Error generating ideas:', err)
@@ -46,6 +70,29 @@ export default function IdeasPage() {
         </h1>
         <p className="text-gray-600 mt-2">
           AI-generated viral content ideas tailored to each platform
+        </p>
+      </div>
+
+      {/* Niche Selector */}
+      <div className="card">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+          <Target className="w-5 h-5 text-primary-600" />
+          Select Content Niche:
+        </label>
+        <select
+          value={selectedNiche}
+          onChange={(e) => setSelectedNiche(e.target.value)}
+          disabled={loading}
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-gray-900 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {niches.map((niche) => (
+            <option key={niche} value={niche}>
+              {niche}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-500 mt-2">
+          Choose your niche to get tailored content ideas. Select "My Niche" for personalized ideas based on your analytics.
         </p>
       </div>
 
@@ -87,7 +134,7 @@ export default function IdeasPage() {
             <div>
               <h3 className="text-xl font-bold mb-1">Generate {currentPlatform?.name} Ideas</h3>
               <p className="text-primary-100">
-                Get 10 AI-powered content ideas for {currentPlatform?.name}
+                Get 10 AI-powered content ideas for {currentPlatform?.name} in {selectedNiche.replace('My Niche (', '').replace(')', '')}
               </p>
             </div>
           </div>
@@ -162,7 +209,7 @@ export default function IdeasPage() {
               <div>
                 <p className="font-medium text-primary-900">These ideas are personalized</p>
                 <p className="text-primary-700 text-sm mt-1">
-                  Based on your {currentPlatform?.name} performance, audience behavior, and current trends in your niche.
+                  Based on your {currentPlatform?.name} performance, audience behavior, and current trends in {selectedNiche.replace('My Niche (', '').replace(')', '')}.
                 </p>
               </div>
             </div>

@@ -6,7 +6,7 @@ import { TrendingUp, Users, Eye, Heart, Share2, MessageCircle, ArrowUp, ArrowDow
 export default function AnalyticsPage() {
   const [selectedPlatform, setSelectedPlatform] = useState('TikTok')
 
-  const platforms = ['TikTok', 'YouTube', 'Instagram', 'Threads', 'X']
+  const platforms = ['TikTok', 'YouTube', 'Instagram', 'X']
 
   return (
     <div className="space-y-8">
