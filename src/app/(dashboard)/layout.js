@@ -74,10 +74,10 @@ export default function DashboardLayout({ children }) {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Analytics', href: '/analytics', icon: TrendingUp },
     { name: 'AI Coach', href: '/coach', icon: MessageSquare },
     { name: 'Scheduler', href: '/scheduler', icon: Calendar },
     { name: 'Content Ideas', href: '/ideas', icon: Lightbulb },
-    { name: 'Growth Score', href: '/coming-soon/growth-score', icon: TrendingUp, comingSoon: true },
     { name: 'Motivation', href: '/coming-soon/motivation', icon: Heart, comingSoon: true },
     { name: 'Ranking', href: '/coming-soon/ranking', icon: Trophy, comingSoon: true },
     { name: 'Settings', href: '/settings', icon: Settings },
