@@ -74,6 +74,9 @@ export default function DashboardLayout({ children }) {
     { name: 'AI Coach', href: '/coach', icon: MessageSquare },
     { name: 'Scheduler', href: '/scheduler', icon: Calendar },
     { name: 'Content Ideas', href: '/ideas', icon: Lightbulb },
+    { name: 'Growth Score', href: '/coming-soon/growth-score', icon: TrendingUp, comingSoon: true },
+    { name: 'Motivation', href: '/coming-soon/motivation', icon: Heart, comingSoon: true },
+    { name: 'Ranking', href: '/coming-soon/ranking', icon: Trophy, comingSoon: true },
     { name: 'Settings', href: '/settings', icon: Settings },
   ]
 
@@ -120,15 +123,24 @@ export default function DashboardLayout({ children }) {
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors
+                    flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-colors group
                     ${isActive 
                       ? 'bg-primary-50 text-primary-700' 
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : item.comingSoon
+                        ? 'text-gray-500 hover:bg-gray-50'
+                        : 'text-gray-700 hover:bg-gray-100'
                     }
                   `}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.name}</span>
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-5 h-5" />
+                    <span>{item.name}</span>
+                  </div>
+                  {item.comingSoon && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-primary-500 to-purple-500 text-white font-bold uppercase tracking-wide">
+                      Soon
+                    </span>
+                  )}
                 </Link>
               )
             })}
