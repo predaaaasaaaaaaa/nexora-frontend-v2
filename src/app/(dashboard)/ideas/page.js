@@ -9,7 +9,7 @@ export default function IdeasPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [selectedPlatform, setSelectedPlatform] = useState('instagram')
-  const [selectedNiche, setSelectedNiche] = useState('My Niche (Fitness & Health)')
+  const [selectedNiche, setSelectedNiche] = useState('user-niche')
 
   const platforms = [
     { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'bg-pink-600' },
@@ -18,23 +18,26 @@ export default function IdeasPage() {
     { id: 'twitter', name: 'Twitter', icon: Twitter, color: 'bg-blue-500' },
   ]
 
-  const niches = [
-    'My Niche (Fitness & Health)',
-    'Fashion & Style',
-    'Food & Cooking',
-    'Travel & Adventure',
-    'Technology & Gadgets',
-    'Business & Entrepreneurship',
-    'Education & Learning',
-    'Gaming & Entertainment',
-    'Beauty & Skincare',
-    'Home & DIY',
-    'Parenting & Family',
-    'Finance & Investing',
-    'Photography & Art',
-    'Music & Dance',
-    'Sports & Athletics',
-  ]
+  // Niche mapping: value -> display name
+  const nicheMapping = {
+    'user-niche': 'My Niche (Fitness & Health)',
+    'Fashion & Style': 'Fashion & Style',
+    'Food & Cooking': 'Food & Cooking',
+    'Travel & Adventure': 'Travel & Adventure',
+    'Technology & Gadgets': 'Technology & Gadgets',
+    'Business & Entrepreneurship': 'Business & Entrepreneurship',
+    'Education & Learning': 'Education & Learning',
+    'Gaming & Entertainment': 'Gaming & Entertainment',
+    'Beauty & Skincare': 'Beauty & Skincare',
+    'Home & DIY': 'Home & DIY',
+    'Parenting & Family': 'Parenting & Family',
+    'Finance & Investing': 'Finance & Investing',
+    'Photography & Art': 'Photography & Art',
+    'Music & Dance': 'Music & Dance',
+    'Sports & Athletics': 'Sports & Athletics',
+  }
+
+  const niches = Object.keys(nicheMapping)
 
   async function handleGenerate() {
     try {
@@ -42,12 +45,10 @@ export default function IdeasPage() {
       setError(null)
       setIdeas(null)
       
-      // Extract niche name without "My Niche" prefix for API
-      const nicheForAPI = selectedNiche === 'My Niche (Fitness & Health)' 
-        ? 'Fitness & Health' 
-        : selectedNiche
+      // Use the niche value directly (already simplified)
+      const nicheValue = selectedNiche || 'user-niche'
       
-      const data = await generateIdeas(selectedPlatform, 10, nicheForAPI)
+      const data = await generateIdeas(selectedPlatform, 10, nicheValue)
       setIdeas(data)
     } catch (err) {
       console.error('Error generating ideas:', err)
@@ -85,9 +86,9 @@ export default function IdeasPage() {
           disabled={loading}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-gray-900 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {niches.map((niche) => (
-            <option key={niche} value={niche}>
-              {niche}
+          {niches.map((nicheValue) => (
+            <option key={nicheValue} value={nicheValue}>
+              {nicheMapping[nicheValue]}
             </option>
           ))}
         </select>
@@ -134,7 +135,7 @@ export default function IdeasPage() {
             <div>
               <h3 className="text-xl font-bold mb-1">Generate {currentPlatform?.name} Ideas</h3>
               <p className="text-primary-100">
-                Get 10 AI-powered content ideas for {currentPlatform?.name} in {selectedNiche.replace('My Niche (', '').replace(')', '')}
+                Get 10 AI-powered content ideas for {currentPlatform?.name} in {nicheMapping[selectedNiche]?.replace('My Niche (', '').replace(')', '') || 'your niche'}
               </p>
             </div>
           </div>
@@ -209,7 +210,7 @@ export default function IdeasPage() {
               <div>
                 <p className="font-medium text-primary-900">These ideas are personalized</p>
                 <p className="text-primary-700 text-sm mt-1">
-                  Based on your {currentPlatform?.name} performance, audience behavior, and current trends in {selectedNiche.replace('My Niche (', '').replace(')', '')}.
+                  Based on your {currentPlatform?.name} performance, audience behavior, and current trends in {nicheMapping[selectedNiche]?.replace('My Niche (', '').replace(')', '') || 'your niche'}.
                 </p>
               </div>
             </div>
