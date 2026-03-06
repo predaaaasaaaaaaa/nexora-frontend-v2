@@ -2,20 +2,83 @@
 
 import { useState, useEffect } from 'react'
 import { getAnalytics } from '@/lib/api'
-import { TrendingUp, Users, Eye, Heart, MessageCircle, ArrowUp, Loader2, Youtube, AlertCircle, Play, Clock } from 'lucide-react'
+import { useTheme } from '@/components/shared/ThemeProvider'
+import ChannelAvatar from '@/components/shared/ChannelAvatar'
+import Link from 'next/link'
+
+// ── Theme colors ──
+const themes = {
+  dark: {
+    card: '#1A1A1A', cardHover: '#222',
+    text: '#F1F1F1', textSec: '#AAA', textDim: '#717171',
+    border: '#2A2A2A', borderLight: '#222',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.08)', redBorder: 'rgba(255,0,0,0.18)',
+    green: '#3EA651', greenBg: 'rgba(62,166,81,0.1)', greenBorder: 'rgba(62,166,81,0.2)',
+    orange: '#FF8C00', orangeBg: 'rgba(255,140,0,0.1)', orangeBorder: 'rgba(255,140,0,0.2)',
+    blue: '#4D9EFF', blueBg: 'rgba(77,158,255,0.1)', blueBorder: 'rgba(77,158,255,0.2)',
+    yellow: '#FFD600', yellowBg: 'rgba(255,214,0,0.1)', yellowBorder: 'rgba(255,214,0,0.2)',
+    chip: '#2A2A2A', chipActive: '#FF0000', chipActiveText: '#fff',
+  },
+  light: {
+    card: '#FFFFFF', cardHover: '#F5F5F5',
+    text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
+    border: '#E5E5E5', borderLight: '#F0F0F0',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.05)', redBorder: 'rgba(255,0,0,0.12)',
+    green: '#2BA640', greenBg: 'rgba(43,166,64,0.08)', greenBorder: 'rgba(43,166,64,0.15)',
+    orange: '#E67E00', orangeBg: 'rgba(230,126,0,0.08)', orangeBorder: 'rgba(230,126,0,0.15)',
+    blue: '#2979FF', blueBg: 'rgba(41,121,255,0.08)', blueBorder: 'rgba(41,121,255,0.15)',
+    yellow: '#F5C400', yellowBg: 'rgba(245,196,0,0.08)', yellowBorder: 'rgba(245,196,0,0.15)',
+    chip: '#F2F2F2', chipActive: '#FF0000', chipActiveText: '#fff',
+  },
+}
+
+// ── Icons ──
+const I = {
+  Users: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
+  Eye: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  Heart: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+  Play: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+  Sparkle: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>,
+  Arrow: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+}
+
+// ── Pattern colors mapping ──
+const patternStyles = [
+  { color: 'blue', icon: '📊', label: 'CONTENT MIX' },
+  { color: 'orange', icon: '🔥', label: 'VIRAL OUTLIERS' },
+  { color: 'yellow', icon: '📅', label: 'POSTING CONSISTENCY' },
+  { color: 'green', icon: '💎', label: 'HIDDEN GEMS' },
+  { color: 'red', icon: '🌍', label: 'TITLE LANGUAGE' },
+]
+
+function getPatternStyle(index, c) {
+  const p = patternStyles[index % patternStyles.length]
+  return {
+    color: c[p.color] || c.red,
+    bg: c[p.color + 'Bg'] || c.redBg,
+    border: c[p.color + 'Border'] || c.redBorder,
+    icon: p.icon,
+    label: p.label,
+  }
+}
 
 export default function AnalyticsPage() {
+  // ── Your existing data logic (unchanged) ──
   const [selectedPlatform, setSelectedPlatform] = useState('youtube')
   const [analyticsData, setAnalyticsData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [source, setSource] = useState(null)
+  const { dark } = useTheme()
+  const c = dark ? themes.dark : themes.light
 
   const platforms = [
-    { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'bg-red-600', available: true },
-    { id: 'instagram', name: 'Instagram', icon: null, label: 'IG', color: 'bg-pink-600', available: false },
-    { id: 'tiktok', name: 'TikTok', icon: null, label: 'TT', color: 'bg-gray-900', available: false },
-    { id: 'threads', name: 'Threads', icon: null, label: '@', color: 'bg-gray-800', available: false },
+    { id: 'youtube', name: 'YouTube', available: true },
+    { id: 'instagram', name: 'Instagram', available: false },
+    { id: 'tiktok', name: 'TikTok', available: false },
+    { id: 'threads', name: 'Threads', available: false },
   ]
 
   useEffect(() => {
@@ -53,247 +116,279 @@ export default function AnalyticsPage() {
     const days = Math.floor((now - date) / (1000 * 60 * 60 * 24))
     if (days === 0) return 'Today'
     if (days === 1) return 'Yesterday'
-    if (days < 30) return `${days} days ago`
-    if (days < 365) return `${Math.floor(days / 30)} months ago`
-    return `${Math.floor(days / 365)} years ago`
+    if (days < 30) return `${days}d ago`
+    if (days < 365) return `${Math.floor(days / 30)}mo ago`
+    return `${Math.floor(days / 365)}y ago`
   }
 
   const currentPlatform = platforms.find(p => p.id === selectedPlatform)
 
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <p className="text-gray-600 mt-2">Real-time insights from your connected platforms</p>
+  // ── Loading ──
+  if (loading && currentPlatform?.available) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48, height: 48, border: `3px solid ${c.border}`,
+            borderTopColor: c.red, borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
+          }}/>
+          <p style={{ color: c.textDim, fontSize: 14 }}>Loading analytics...</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
       </div>
+    )
+  }
 
-      {/* Platform Tabs */}
-      <div className="card">
-        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4 mb-4">
-          {platforms.map((platform) => (
-            <button
-              key={platform.id}
-              onClick={() => setSelectedPlatform(platform.id)}
-              disabled={!platform.available}
-              className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
-                ${selectedPlatform === platform.id
-                  ? `${platform.color} text-white`
-                  : platform.available
-                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    : 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                }
-              `}
-            >
-              {platform.icon ? (
-                <platform.icon className="w-4 h-4" />
-              ) : (
-                <span className="text-xs font-bold">{platform.label}</span>
-              )}
-              {platform.name}
-              {!platform.available && (
-                <span className="text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full ml-1">Soon</span>
-              )}
+  return (
+    <div>
+      <style>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeUp 0.45s ease forwards; opacity: 0; }
+        .fade-in:nth-child(1) { animation-delay: 0.04s; }
+        .fade-in:nth-child(2) { animation-delay: 0.08s; }
+        .fade-in:nth-child(3) { animation-delay: 0.12s; }
+        .fade-in:nth-child(4) { animation-delay: 0.16s; }
+        .row-hover { transition: background 0.12s ease; cursor: pointer; }
+        .row-hover:hover { background: ${c.cardHover} !important; }
+      `}</style>
+
+      {/* ── Platform Tabs ── */}
+      <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '16px 20px', marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {platforms.map((p) => (
+            <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '8px 18px', borderRadius: 8,
+                background: selectedPlatform === p.id && p.available ? c.chipActive : c.chip,
+                color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
+                border: 'none', cursor: p.available ? 'pointer' : 'default',
+                fontSize: 13, fontWeight: 600, fontFamily: 'inherit',
+                opacity: p.available ? 1 : 0.45,
+                transition: 'all 0.15s ease',
+              }}>
+              {p.id === 'youtube' && '▶ '}{p.name}
+              {!p.available && <span style={{ fontSize: 9, fontWeight: 700, background: dark ? '#333' : '#ddd', padding: '1px 6px', borderRadius: 3, marginLeft: 4, color: c.textDim }}>Soon</span>}
             </button>
           ))}
         </div>
         {source === 'live' && (
-          <p className="text-sm text-green-600 flex items-center gap-1">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            Live data from your YouTube channel
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: c.green }}/>
+            <span style={{ fontSize: 12, color: c.green, fontWeight: 500 }}>Live data from your YouTube channel</span>
+          </div>
         )}
         {source === 'mock' && (
-          <p className="text-sm text-yellow-600 flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" />
-            Sample data — connect your account in Settings for real analytics
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 12, color: c.orange || '#FF8C00', fontWeight: 500 }}>⚠ Sample data — connect your account in Settings</span>
+          </div>
         )}
       </div>
 
-      {/* Coming Soon for non-YouTube platforms */}
+      {/* ── Coming Soon for non-YouTube ── */}
       {!currentPlatform?.available && (
-        <div className="card text-center py-16">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-gray-400">{currentPlatform?.label}</span>
+        <div style={{
+          background: c.card, border: `1px solid ${c.border}`,
+          borderRadius: 14, padding: '60px 20px', textAlign: 'center',
+        }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: 16, background: c.chip,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 20px', color: c.textDim, fontSize: 24, fontWeight: 700,
+          }}>
+            {currentPlatform?.name?.[0]}
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">{currentPlatform?.name} Analytics Coming Soon</h3>
-          <p className="text-gray-600">We're working on integrating {currentPlatform?.name}. Stay tuned!</p>
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: c.text, marginBottom: 8 }}>
+            {currentPlatform?.name} Analytics Coming Soon
+          </h3>
+          <p style={{ fontSize: 14, color: c.textSec }}>
+            We're working on integrating {currentPlatform?.name}. Stay tuned!
+          </p>
         </div>
       )}
 
-      {/* Loading */}
-      {loading && currentPlatform?.available && (
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
-        </div>
-      )}
-
-      {/* Error */}
+      {/* ── Error ── */}
       {error && (
-        <div className="card bg-red-50 border-red-200">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-red-600 font-medium">Error loading analytics</p>
-              <p className="text-red-500 text-sm mt-1">{error}</p>
-            </div>
-          </div>
+        <div style={{
+          background: c.redBg, border: `1px solid ${c.redBorder}`,
+          borderRadius: 12, padding: '16px 20px', marginBottom: 20,
+        }}>
+          <p style={{ fontSize: 14, fontWeight: 600, color: c.red }}>Error loading analytics</p>
+          <p style={{ fontSize: 13, color: c.textSec, marginTop: 4 }}>{error}</p>
         </div>
       )}
 
-      {/* YouTube Analytics */}
+      {/* ── YouTube Analytics ── */}
       {analyticsData && !loading && selectedPlatform === 'youtube' && (
         <>
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-red-600" />
+          {/* Stats Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+            {[
+              { label: 'Subscribers', value: formatNumber(analyticsData.subscribers), icon: I.Users },
+              { label: 'Total Views', value: formatNumber(analyticsData.total_views), icon: I.Eye },
+              { label: 'Avg Engagement', value: `${analyticsData.insights?.avgEngagementRate || 0}%`, icon: I.Heart },
+              { label: 'Total Videos', value: analyticsData.total_videos || 0, icon: I.Play },
+            ].map((s, i) => {
+              const Icon = s.icon
+              return (
+                <div key={i} className="fade-in" style={{
+                  background: c.card, border: `1px solid ${c.border}`,
+                  borderRadius: 14, padding: '20px', position: 'relative', overflow: 'hidden',
+                }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg, ${c.red}, transparent)`, opacity: 0.5 }}/>
+                  <div style={{ width: 38, height: 38, borderRadius: 10, background: c.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.red, marginBottom: 14 }}><Icon /></div>
+                  <div style={{ fontSize: 12, color: c.textDim, fontWeight: 500, marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: -1.2, lineHeight: 1, color: c.text }}>{s.value}</div>
                 </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Subscribers</p>
-              <p className="text-3xl font-bold text-gray-900">{formatNumber(analyticsData.subscribers)}</p>
-            </div>
+              )
+            })}
+          </div>
 
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <Eye className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Total Views</p>
-              <p className="text-3xl font-bold text-gray-900">{formatNumber(analyticsData.total_views)}</p>
-            </div>
-
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-pink-600" />
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Avg Engagement</p>
-              <p className="text-3xl font-bold text-gray-900">{analyticsData.insights?.avgEngagementRate || 0}%</p>
-            </div>
-
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <Play className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Total Videos</p>
-              <p className="text-3xl font-bold text-gray-900">{analyticsData.total_videos || 0}</p>
+          {/* Channel Info */}
+          <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+            <ChannelAvatar src={analyticsData.channel_thumbnail || null} name={analyticsData.channel_name} size={52} />
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: c.text }}>{analyticsData.channel_name}</h3>
+              <span style={{ fontSize: 13, color: c.textSec }}>Avg {formatNumber(analyticsData.insights?.avgViews || 0)} views per video</span>
             </div>
           </div>
 
-          {/* Channel Overview */}
-          <div className="card">
-            <div className="flex items-center gap-4 mb-6">
-              {analyticsData.channel_thumbnail && (
-                <img src={analyticsData.channel_thumbnail} alt={analyticsData.channel_name} className="w-12 h-12 rounded-full" />
-              )}
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">{analyticsData.channel_name}</h2>
-                <p className="text-sm text-gray-600">Avg {formatNumber(analyticsData.insights?.avgViews || 0)} views per video</p>
+          {/* AI-Detected Patterns */}
+          {analyticsData.insights?.patterns && analyticsData.insights.patterns.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                <div style={{ color: c.red }}><I.Sparkle /></div>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: c.text }}>AI-Detected Patterns</h2>
+                <span style={{ fontSize: 9, fontWeight: 700, background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`, color: '#fff', padding: '3px 8px', borderRadius: 5, letterSpacing: 0.5 }}>AI</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {analyticsData.insights.patterns.map((pattern, i) => {
+                  const ps = getPatternStyle(i, c)
+                  return (
+                    <div key={i} style={{
+                      background: ps.bg, border: `1px solid ${ps.border}`,
+                      borderRadius: 12, padding: '16px 20px',
+                      display: 'flex', alignItems: 'flex-start', gap: 14,
+                      position: 'relative', overflow: 'hidden',
+                    }}>
+                      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ps.color, borderRadius: '3px 0 0 3px' }}/>
+                      <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}>{ps.icon}</span>
+                      <div>
+                        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: ps.color, display: 'block', marginBottom: 4 }}>{ps.label}</span>
+                        <p style={{ fontSize: 13, color: c.text, lineHeight: 1.5 }}>{pattern}</p>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
+          )}
 
-            {/* Detected Patterns */}
-            {analyticsData.insights?.patterns && analyticsData.insights.patterns.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-primary-600" />
-                  AI-Detected Patterns
-                </h3>
-                <div className="space-y-2">
-                  {analyticsData.insights.patterns.map((pattern, i) => (
-                    <div key={i} className="p-3 bg-primary-50 border border-primary-100 rounded-lg text-sm text-primary-900">
-                      {pattern}
-                    </div>
-                  ))}
-                </div>
+          {/* Viral Outliers */}
+          {analyticsData.insights?.outlierVideos && analyticsData.insights.outlierVideos.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🚀</span>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: c.text }}>Viral Outliers</h2>
               </div>
-            )}
-
-            {/* Outlier Videos */}
-            {analyticsData.insights?.outlierVideos && analyticsData.insights.outlierVideos.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <ArrowUp className="w-5 h-5 text-green-600" />
-                  Viral Outliers
-                </h3>
-                <div className="space-y-2">
-                  {analyticsData.insights.outlierVideos.map((video, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-green-50 border border-green-100 rounded-lg">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">{video.title}</p>
-                        <p className="text-sm text-gray-600">{video.multiplier}</p>
-                      </div>
-                      <span className="text-green-700 font-bold ml-4">{formatNumber(video.views)} views</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {analyticsData.insights.outlierVideos.map((video, i) => (
+                  <div key={i} style={{
+                    background: c.greenBg, border: `1px solid ${c.greenBorder}`,
+                    borderRadius: 12, padding: '16px 20px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                      <p style={{ fontSize: 12, color: c.green, fontWeight: 500, marginTop: 4 }}>{video.multiplier}</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Top Videos */}
-          {analyticsData.topVideos && analyticsData.topVideos.length > 0 && (
-            <div className="card">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Top Performing Videos</h2>
-              <div className="space-y-4">
-                {analyticsData.topVideos.map((video, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <span className="text-2xl font-bold text-gray-300 w-8">#{index + 1}</span>
-                      {video.thumbnail && (
-                        <img src={video.thumbnail} alt="" className="w-24 h-14 object-cover rounded-lg flex-shrink-0" />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-gray-900 truncate">{video.title}</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                          <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {formatNumber(video.views)}</span>
-                          <span className="flex items-center gap-1"><Heart className="w-3 h-3" /> {formatNumber(video.likes)}</span>
-                          <span className="flex items-center gap-1"><MessageCircle className="w-3 h-3" /> {formatNumber(video.comments)}</span>
-                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {timeAgo(video.published_at)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold ml-4 flex-shrink-0">
-                      {video.engagement_rate}% ER
-                    </div>
+                    <span style={{ fontSize: 22, fontWeight: 800, color: c.red, flexShrink: 0, marginLeft: 20, letterSpacing: -0.5 }}>{formatNumber(video.views)}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Recent Uploads */}
-          {analyticsData.videos && analyticsData.videos.length > 0 && (
-            <div className="card">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Uploads</h2>
-              <div className="space-y-3">
-                {analyticsData.videos.slice(0, 10).map((video, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {video.thumbnail && (
-                        <img src={video.thumbnail} alt="" className="w-20 h-12 object-cover rounded flex-shrink-0" />
-                      )}
-                      <div className="min-w-0">
-                        <p className="font-medium text-gray-900 text-sm truncate">{video.title}</p>
-                        <p className="text-xs text-gray-500">{timeAgo(video.published_at)}</p>
+          {/* Top Performing Videos */}
+          {analyticsData.topVideos && analyticsData.topVideos.length > 0 && (
+            <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden', marginBottom: 24 }}>
+              <div style={{ padding: '18px 22px', borderBottom: `1px solid ${c.borderLight}` }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>Top Performing Videos</h3>
+              </div>
+              {analyticsData.topVideos.map((video, i) => (
+                <div key={i} className="row-hover" style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '14px 22px',
+                  borderBottom: i < analyticsData.topVideos.length - 1 ? `1px solid ${c.borderLight}` : 'none',
+                }}>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: i < 3 ? c.red : c.textDim, width: 28, textAlign: 'center', flexShrink: 0 }}>#{i + 1}</span>
+                  <div style={{ width: 80, height: 46, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
+                    {video.thumbnail ? (
+                      <img src={video.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', background: dark ? 'linear-gradient(135deg, #1e1e1e, #2a2a2a)' : 'linear-gradient(135deg, #eee, #ddd)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ opacity: 0.4, color: c.textDim }}><I.Play /></div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 ml-4 flex-shrink-0">
-                      <span>{formatNumber(video.views)} views</span>
-                      <span className="text-primary-600 font-medium">{video.engagement_rate}%</span>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                    <div style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11, color: c.textDim }}>
+                      <span>👁 {formatNumber(video.views)}</span>
+                      <span>♡ {formatNumber(video.likes)}</span>
+                      <span>💬 {formatNumber(video.comments)}</span>
+                      <span>⏰ {timeAgo(video.published_at)}</span>
                     </div>
                   </div>
-                ))}
+                  <span style={{
+                    fontSize: 12, fontWeight: 700, padding: '5px 12px', borderRadius: 8,
+                    background: parseFloat(video.engagement_rate) > 10 ? c.greenBg : c.redBg,
+                    border: `1px solid ${parseFloat(video.engagement_rate) > 10 ? c.greenBorder : c.redBorder}`,
+                    color: parseFloat(video.engagement_rate) > 10 ? c.green : c.red,
+                    flexShrink: 0,
+                  }}>{video.engagement_rate}% ER</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Recent Uploads */}
+          {analyticsData.videos && analyticsData.videos.length > 0 && (
+            <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden' }}>
+              <div style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${c.borderLight}` }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>Recent Uploads</h3>
               </div>
+              {analyticsData.videos.slice(0, 10).map((video, i) => (
+                <div key={i} className="row-hover" style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '14px 22px',
+                  borderBottom: i < Math.min(analyticsData.videos.length, 10) - 1 ? `1px solid ${c.borderLight}` : 'none',
+                }}>
+                  <div style={{ width: 72, height: 42, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
+                    {video.thumbnail ? (
+                      <img src={video.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', background: dark ? 'linear-gradient(135deg, #1e1e1e, #2a2a2a)' : 'linear-gradient(135deg, #eee, #ddd)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ opacity: 0.4, color: c.textDim }}><I.Play /></div>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                    <p style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>{timeAgo(video.published_at)}</p>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+                    <span style={{ fontSize: 13, color: c.textSec }}>{formatNumber(video.views)} views</span>
+                    <span style={{
+                      fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 6,
+                      background: parseFloat(video.engagement_rate) > 10 ? c.greenBg : 'transparent',
+                      border: parseFloat(video.engagement_rate) > 10 ? `1px solid ${c.greenBorder}` : 'none',
+                      color: parseFloat(video.engagement_rate) > 10 ? c.green : c.textDim,
+                    }}>{video.engagement_rate}%</span>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </>
