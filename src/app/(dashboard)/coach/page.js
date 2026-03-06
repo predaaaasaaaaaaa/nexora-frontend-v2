@@ -2,9 +2,57 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation } from '@/lib/api'
-import { Send, Sparkles, Loader2, Youtube, TrendingUp, Target, Lightbulb, BarChart3, Users, Video, Plus, MessageSquare, Trash2, ChevronLeft, ChevronRight, Clock, Search } from 'lucide-react'
+import { useTheme } from '@/components/shared/ThemeProvider'
+
+// ── Theme colors ──
+const themes = {
+  dark: {
+    card: '#1A1A1A', cardHover: '#222', text: '#F1F1F1', textSec: '#AAA', textDim: '#717171',
+    border: '#2A2A2A', borderLight: '#222',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.08)', redBorder: 'rgba(255,0,0,0.18)', redGlow: 'rgba(255,0,0,0.12)',
+    green: '#3EA651', greenBg: 'rgba(62,166,81,0.1)', greenBorder: 'rgba(62,166,81,0.2)',
+    chip: '#2A2A2A', chipActive: '#FF0000', chipActiveText: '#fff',
+    glass: 'rgba(15,15,15,0.9)',
+    userBubble: '#FF0000', userBubbleText: '#fff',
+    aiBubble: '#1A1A1A', aiBubbleText: '#F1F1F1',
+    inputBg: '#1A1A1A', inputBorder: '#2A2A2A',
+    histBg: '#161616', histHover: '#1E1E1E', histActive: '#222',
+  },
+  light: {
+    card: '#FFFFFF', cardHover: '#F5F5F5', text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
+    border: '#E5E5E5', borderLight: '#F0F0F0',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.05)', redBorder: 'rgba(255,0,0,0.12)', redGlow: 'rgba(255,0,0,0.06)',
+    green: '#2BA640', greenBg: 'rgba(43,166,64,0.08)', greenBorder: 'rgba(43,166,64,0.15)',
+    chip: '#F2F2F2', chipActive: '#FF0000', chipActiveText: '#fff',
+    glass: 'rgba(255,255,255,0.92)',
+    userBubble: '#FF0000', userBubbleText: '#fff',
+    aiBubble: '#F2F2F2', aiBubbleText: '#0F0F0F',
+    inputBg: '#FFFFFF', inputBorder: '#E5E5E5',
+    histBg: '#FAFAFA', histHover: '#F2F2F2', histActive: '#EDEDED',
+  },
+}
+
+// ── Icons ──
+const I = {
+  Sparkle: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>,
+  Send: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>,
+  Plus: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  Chat: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,
+  Trash: () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>,
+  Clock: () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  BarChart: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  TrendUp: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+  Bulb: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>,
+  Eye: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  Target: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+  Users: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
+  Video: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="15" height="16" rx="2"/><polygon points="22 8 17 12 22 16 22 8"/></svg>,
+}
 
 export default function CoachPage() {
+  // ── All your existing state & logic (unchanged) ──
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,35 +63,24 @@ export default function CoachPage() {
   const [loadingHistory, setLoadingHistory] = useState(true)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const { dark } = useTheme()
+  const c = dark ? themes.dark : themes.light
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  // Load conversation list on mount
-  useEffect(() => {
-    loadConversations()
-  }, [])
-
-  // Focus input
-  useEffect(() => {
-    if (!loadingHistory) inputRef.current?.focus()
-  }, [loadingHistory, activeConversationId])
+  useEffect(() => { scrollToBottom() }, [messages])
+  useEffect(() => { loadConversations() }, [])
+  useEffect(() => { if (!loadingHistory) inputRef.current?.focus() }, [loadingHistory, activeConversationId])
 
   async function loadConversations() {
     try {
       setLoadingHistory(true)
       const data = await listCoachConversations()
       setConversations(data.conversations || [])
-    } catch (err) {
-      console.error('Error loading conversations:', err)
-    } finally {
-      setLoadingHistory(false)
-    }
+    } catch (err) { console.error('Error loading conversations:', err) }
+    finally { setLoadingHistory(false) }
   }
 
   async function loadMessages(conversationId) {
@@ -51,18 +88,13 @@ export default function CoachPage() {
       setLoading(true)
       const data = await getCoachMessages(conversationId)
       const formattedMessages = (data.messages || []).map(msg => ({
-        role: msg.role,
-        content: msg.content,
-        timestamp: new Date(msg.created_at),
-        contextUsed: msg.context_used,
+        role: msg.role, content: msg.content,
+        timestamp: new Date(msg.created_at), contextUsed: msg.context_used,
       }))
       setMessages(formattedMessages)
       setActiveConversationId(conversationId)
-    } catch (err) {
-      console.error('Error loading messages:', err)
-    } finally {
-      setLoading(false)
-    }
+    } catch (err) { console.error('Error loading messages:', err) }
+    finally { setLoading(false) }
   }
 
   function handleNewChat() {
@@ -74,59 +106,33 @@ export default function CoachPage() {
   async function handleDeleteConversation(e, conversationId) {
     e.stopPropagation()
     if (!confirm('Delete this conversation?')) return
-
     try {
       await deleteCoachConversation(conversationId)
       setConversations(prev => prev.filter(c => c.id !== conversationId))
-      if (activeConversationId === conversationId) {
-        handleNewChat()
-      }
-    } catch (err) {
-      console.error('Error deleting conversation:', err)
-    }
+      if (activeConversationId === conversationId) handleNewChat()
+    } catch (err) { console.error('Error deleting conversation:', err) }
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
     if (!input.trim() || loading) return
-
-    const userMessage = {
-      role: 'user',
-      content: input,
-      timestamp: new Date()
-    }
-
+    const userMessage = { role: 'user', content: input, timestamp: new Date() }
     setMessages(prev => [...prev, userMessage])
     const currentInput = input
     setInput('')
     setLoading(true)
-
     try {
       const response = await chatWithCoach(currentInput, selectedPlatform, activeConversationId)
-
-      const assistantMessage = {
-        role: 'assistant',
-        content: response.response,
-        timestamp: new Date(),
-        contextUsed: response.contextUsed
-      }
-
-      setMessages(prev => [...prev, assistantMessage])
-
-      // Update active conversation ID (important for new chats)
-      if (response.conversationId) {
-        setActiveConversationId(response.conversationId)
-      }
-
-      // Refresh conversation list
+      setMessages(prev => [...prev, {
+        role: 'assistant', content: response.response,
+        timestamp: new Date(), contextUsed: response.contextUsed,
+      }])
+      if (response.conversationId) setActiveConversationId(response.conversationId)
       await loadConversations()
-
     } catch (error) {
       setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: "Sorry, I'm having trouble connecting right now. Please try again.",
-        timestamp: new Date(),
-        error: true
+        role: 'assistant', content: "Sorry, I'm having trouble connecting right now. Please try again.",
+        timestamp: new Date(), error: true,
       }])
     } finally {
       setLoading(false)
@@ -155,373 +161,321 @@ export default function CoachPage() {
     return date.toLocaleDateString()
   }
 
-  // Group conversations by time
   function groupConversations(convs) {
-    const today = []
-    const week = []
-    const older = []
+    const today = [], week = [], older = []
     const now = new Date()
-
     convs.forEach(c => {
-      const date = new Date(c.updated_at)
-      const days = Math.floor((now - date) / (1000 * 60 * 60 * 24))
+      const days = Math.floor((now - new Date(c.updated_at)) / (1000 * 60 * 60 * 24))
       if (days < 1) today.push(c)
       else if (days < 7) week.push(c)
       else older.push(c)
     })
-
     return { today, week, older }
   }
 
-  // Format AI coach messages — render markdown-like syntax to styled HTML
   function formatCoachMessage(text) {
-    // Sanitize HTML characters first
-    let safe = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-
-    // Bold: **text** → <strong>
-    safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
-
-    // Italic: *text* → <em> (single asterisks, not inside bold)
+    let safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    safe = safe.replace(/\*\*(.+?)\*\*/g, `<strong style="font-weight:600;color:${c.text}">$1</strong>`)
     safe = safe.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
-
-    // Numbered lists — style the numbers
-    safe = safe.replace(/^(\d+)\.\s/gm, '<span class="font-semibold text-primary-600">$1.</span> ')
-
-    // Bullet points
-    safe = safe.replace(/^[-•]\s/gm, '<span class="text-primary-500 mr-1">•</span> ')
-
-    // Channel handles — highlight in purple
-    safe = safe.replace(/@([\w.-]+)/g, '<span class="font-semibold text-purple-600">@$1</span>')
-
+    safe = safe.replace(/^(\d+)\.\s/gm, `<span style="font-weight:600;color:${c.red}">$1.</span> `)
+    safe = safe.replace(/^[-•]\s/gm, `<span style="color:${c.red};margin-right:4px">•</span> `)
+    safe = safe.replace(/@([\w.-]+)/g, `<span style="font-weight:600;color:#9b6dff">@$1</span>`)
     return safe
   }
 
-  const smartPrompts = [
-    { icon: BarChart3, label: 'Channel Audit', prompt: 'Give me a quick audit of my channel — what am I doing well and what needs improvement?', color: 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100' },
-    { icon: TrendingUp, label: 'Growth Strategy', prompt: 'Based on my data, what is the #1 thing I should focus on to grow faster?', color: 'text-green-600 bg-green-50 border-green-200 hover:bg-green-100' },
-    { icon: Lightbulb, label: 'Next Video Idea', prompt: 'Give me 3 video ideas based on what performs best on my channel', color: 'text-yellow-600 bg-yellow-50 border-yellow-200 hover:bg-yellow-100' },
-    { icon: Search, label: 'Spy on Competitor', prompt: 'Find 5 competitors in my niche and analyze what makes their top videos successful', color: 'text-orange-600 bg-orange-50 border-orange-200 hover:bg-orange-100' },
-    { icon: Target, label: 'Compare Channels', prompt: 'Compare my channel with @MrBeast and tell me the biggest gaps and opportunities', color: 'text-purple-600 bg-purple-50 border-purple-200 hover:bg-purple-100' },
-    { icon: Users, label: 'Audience Insights', prompt: 'What does my engagement data tell you about my audience?', color: 'text-pink-600 bg-pink-50 border-pink-200 hover:bg-pink-100' },
-    { icon: Video, label: 'Video Review', prompt: 'Review my latest video — how did it perform and what can I improve?', color: 'text-red-600 bg-red-50 border-red-200 hover:bg-red-100' },
+  const platforms = [
+    { id: 'youtube', name: 'YouTube', available: true },
+    { id: 'instagram', name: 'Instagram', available: false },
+    { id: 'tiktok', name: 'TikTok', available: false },
+    { id: 'threads', name: 'Threads', available: false },
   ]
 
-  const platforms = [
-    { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'bg-red-600', available: true },
-    { id: 'instagram', name: 'Instagram', label: 'IG', color: 'bg-pink-600', available: false },
-    { id: 'tiktok', name: 'TikTok', label: 'TT', color: 'bg-gray-900', available: false },
-    { id: 'threads', name: 'Threads', label: '@', color: 'bg-gray-800', available: false },
+  const quickActions = [
+    { icon: I.BarChart, label: 'Channel Audit', prompt: 'Give me a quick audit of my channel — what am I doing well and what needs improvement?', color: c.red, bg: c.redBg, border: c.redBorder },
+    { icon: I.TrendUp, label: 'Growth Strategy', prompt: 'Based on my data, what is the #1 thing I should focus on to grow faster?', color: c.green, bg: c.greenBg, border: c.greenBorder },
+    { icon: I.Bulb, label: 'Next Video Idea', prompt: 'Give me 3 video ideas based on what performs best on my channel', color: '#FFD600', bg: 'rgba(255,214,0,0.1)', border: 'rgba(255,214,0,0.2)' },
+    { icon: I.Eye, label: 'Spy on Competitor', prompt: 'Find 5 competitors in my niche and analyze what makes their top videos successful', color: c.red, bg: c.redBg, border: c.redBorder },
+    { icon: I.Target, label: 'Compare Channels', prompt: 'Compare my channel with @MrBeast and tell me the biggest gaps and opportunities', color: c.green, bg: c.greenBg, border: c.greenBorder },
+    { icon: I.Users, label: 'Audience Insights', prompt: 'What does my engagement data tell you about my audience?', color: '#4D9EFF', bg: 'rgba(77,158,255,0.1)', border: 'rgba(77,158,255,0.2)' },
+    { icon: I.Video, label: 'Video Review', prompt: 'Review my latest video — how did it perform and what can I improve?', color: '#FF8C00', bg: 'rgba(255,140,0,0.1)', border: 'rgba(255,140,0,0.2)' },
   ]
 
   const grouped = groupConversations(conversations)
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex">
-      {/* Conversation Sidebar */}
-      <div className={`
-        ${sidebarOpen ? 'w-72' : 'w-0'} 
-        flex-shrink-0 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden rounded-l-xl
-      `}>
-        {/* Sidebar Header */}
-        <div className="p-3 border-b border-gray-100">
-          <button
-            onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium text-sm transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Chat
-          </button>
-        </div>
+    <div style={{ display: 'flex', height: 'calc(100vh - 140px)', marginTop: -24, marginLeft: -32, marginRight: -32, marginBottom: -40 }}>
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-in { animation: fadeIn 0.3s ease forwards; }
+        .hist-item { transition: background 0.12s ease; cursor: pointer; }
+        .hist-item:hover { background: ${c.histHover} !important; }
+        .qa-btn { transition: all 0.15s ease; cursor: pointer; border: none; }
+        .qa-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+      `}</style>
 
-        {/* Conversation List */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {loadingHistory ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-            </div>
-          ) : conversations.length === 0 ? (
-            <div className="text-center py-8 px-4">
-              <MessageSquare className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-              <p className="text-xs text-gray-400">No conversations yet</p>
-            </div>
-          ) : (
-            <>
-              {grouped.today.length > 0 && (
-                <>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-2 pt-2">Today</p>
-                  {grouped.today.map(conv => (
-                    <ConversationItem 
-                      key={conv.id} 
-                      conv={conv} 
-                      active={activeConversationId === conv.id}
-                      onSelect={() => loadMessages(conv.id)}
-                      onDelete={(e) => handleDeleteConversation(e, conv.id)}
-                      timeAgo={timeAgo}
-                    />
-                  ))}
-                </>
-              )}
-              {grouped.week.length > 0 && (
-                <>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-2 pt-3">This Week</p>
-                  {grouped.week.map(conv => (
-                    <ConversationItem 
-                      key={conv.id} 
-                      conv={conv} 
-                      active={activeConversationId === conv.id}
-                      onSelect={() => loadMessages(conv.id)}
-                      onDelete={(e) => handleDeleteConversation(e, conv.id)}
-                      timeAgo={timeAgo}
-                    />
-                  ))}
-                </>
-              )}
-              {grouped.older.length > 0 && (
-                <>
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-2 pt-3">Older</p>
-                  {grouped.older.map(conv => (
-                    <ConversationItem 
-                      key={conv.id} 
-                      conv={conv} 
-                      active={activeConversationId === conv.id}
-                      onSelect={() => loadMessages(conv.id)}
-                      onDelete={(e) => handleDeleteConversation(e, conv.id)}
-                      timeAgo={timeAgo}
-                    />
-                  ))}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Toggle Sidebar Button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="flex-shrink-0 w-6 bg-gray-50 hover:bg-gray-100 border-r border-gray-200 flex items-center justify-center transition-colors"
-      >
-        {sidebarOpen ? (
-          <ChevronLeft className="w-3.5 h-3.5 text-gray-400" />
-        ) : (
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-        )}
-      </button>
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white rounded-tr-xl">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-primary-500 to-purple-500 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h1 className="text-sm font-bold text-gray-900">AI Coach</h1>
-              <p className="text-[11px] text-gray-400">YouTube growth strategist</p>
-            </div>
+      {/* ── Chat History Panel ── */}
+      {sidebarOpen && (
+        <div style={{
+          width: 280, background: c.histBg,
+          borderRight: `1px solid ${c.border}`,
+          display: 'flex', flexDirection: 'column', flexShrink: 0,
+        }}>
+          <div style={{ padding: 16 }}>
+            <button onClick={handleNewChat} style={{
+              width: '100%', padding: '11px',
+              background: c.red, color: '#fff',
+              border: 'none', borderRadius: 10,
+              fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>
+              <I.Plus /> New Chat
+            </button>
           </div>
 
-          {/* Platform pills */}
-          <div className="flex gap-1">
-            {platforms.map((platform) => {
-              const Icon = platform.icon
-              return (
-                <button
-                  key={platform.id}
-                  onClick={() => platform.available && setSelectedPlatform(platform.id)}
-                  disabled={!platform.available}
-                  className={`
-                    flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all
-                    ${selectedPlatform === platform.id && platform.available
-                      ? `${platform.color} text-white`
-                      : platform.available
-                        ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        : 'bg-gray-50 text-gray-300 cursor-not-allowed'
-                    }
-                  `}
-                >
-                  {Icon ? <Icon className="w-3 h-3" /> : <span className="text-[10px] font-bold">{platform.label}</span>}
-                  <span className="hidden md:inline">{platform.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Chat Container */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-gray-50/30">
-          {/* Welcome State */}
-          {messages.length === 0 && !loading && (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-purple-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-                <Sparkles className="w-7 h-7 text-white" />
+          <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
+            {loadingHistory ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '32px 0' }}>
+                <div style={{ width: 20, height: 20, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
               </div>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">What can I help you with?</h2>
-              <p className="text-sm text-gray-500 mb-6 max-w-md">
-              I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy.
-              </p>
+            ) : conversations.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                <div style={{ color: c.textDim, marginBottom: 8 }}><I.Chat /></div>
+                <p style={{ fontSize: 12, color: c.textDim }}>No conversations yet</p>
+              </div>
+            ) : (
+              <>
+                {[
+                  { label: 'Today', items: grouped.today },
+                  { label: 'This Week', items: grouped.week },
+                  { label: 'Older', items: grouped.older },
+                ].map((group) => group.items.length > 0 && (
+                  <div key={group.label}>
+                    <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 1, color: c.textDim, textTransform: 'uppercase' }}>
+                      {group.label}
+                    </div>
+                    {group.items.map((conv) => (
+                      <div
+                        key={conv.id}
+                        className="hist-item"
+                        onClick={() => loadMessages(conv.id)}
+                        style={{
+                          padding: '10px 14px', borderRadius: 8, marginBottom: 2,
+                          background: activeConversationId === conv.id ? c.histActive : 'transparent',
+                          display: 'flex', alignItems: 'flex-start', gap: 8,
+                        }}
+                      >
+                        <div style={{ color: c.textDim, flexShrink: 0, marginTop: 2 }}><I.Chat /></div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ fontSize: 13, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.title}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, fontSize: 11, color: c.textDim }}>
+                            <I.Clock /> {timeAgo(conv.updated_at)}
+                          </div>
+                        </div>
+                        <button
+                          onClick={(e) => handleDeleteConversation(e, conv.id)}
+                          style={{
+                            background: 'transparent', border: 'none', cursor: 'pointer',
+                            padding: 4, borderRadius: 4, color: c.textDim,
+                            opacity: 0.4, transition: 'opacity 0.15s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                          onMouseLeave={e => e.currentTarget.style.opacity = 0.4}
+                        >
+                          <I.Trash />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 w-full max-w-xl">
-                {smartPrompts.map((prompt, index) => {
-                  const Icon = prompt.icon
+      {/* ── Main Chat Area ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+
+        {/* Chat Header */}
+        <header style={{
+          padding: '14px 24px', borderBottom: `1px solid ${c.borderLight}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: c.glass, backdropFilter: 'blur(16px)', flexShrink: 0,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 0 20px ${c.redGlow}`, color: '#fff',
+            }}><I.Sparkle /></div>
+            <div>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>AI Coach</h2>
+              <span style={{ fontSize: 12, color: c.textDim }}>YouTube growth strategist</span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {platforms.map((p) => (
+              <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
+                style={{
+                  padding: '6px 14px', borderRadius: 7, border: 'none', fontFamily: 'inherit',
+                  background: selectedPlatform === p.id && p.available ? c.chipActive : c.chip,
+                  color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
+                  cursor: p.available ? 'pointer' : 'default',
+                  fontSize: 12, fontWeight: 600, opacity: p.available ? 1 : 0.4,
+                  transition: 'all 0.15s ease',
+                }}>
+                {p.id === 'youtube' && '▶ '}{p.name}
+              </button>
+            ))}
+          </div>
+        </header>
+
+        {/* Messages / Welcome */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
+          {messages.length === 0 && !loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center' }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: 18,
+                background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 20, boxShadow: `0 0 40px ${c.redGlow}`, color: '#fff',
+              }}><svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg></div>
+              <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
+              <p style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
+                I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
+                {quickActions.slice(0, 4).map((qa, i) => {
+                  const QIcon = qa.icon
                   return (
-                    <button
-                      key={index}
-                      onClick={() => handleQuickPrompt(prompt.prompt)}
-                      className={`flex items-center gap-2 p-2.5 rounded-lg border text-left transition-all text-xs ${prompt.color}`}
-                    >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="font-medium">{prompt.label}</span>
+                    <button key={i} className="qa-btn" onClick={() => handleQuickPrompt(qa.prompt)}
+                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit' }}>
+                      <QIcon />{qa.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
+                {quickActions.slice(4).map((qa, i) => {
+                  const QIcon = qa.icon
+                  return (
+                    <button key={i} className="qa-btn" onClick={() => handleQuickPrompt(qa.prompt)}
+                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit' }}>
+                      <QIcon />{qa.label}
                     </button>
                   )
                 })}
               </div>
             </div>
-          )}
-
-          {/* Messages */}
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
-            >
-              <div className={`
-                w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5
-                ${message.role === 'user'
-                  ? 'bg-primary-600'
-                  : message.error
-                    ? 'bg-red-100'
-                    : 'bg-gradient-to-br from-primary-500 to-purple-500'
-                }
-              `}>
-                {message.role === 'user' ? (
-                  <span className="text-white font-semibold text-[10px]">You</span>
-                ) : (
-                  <Sparkles className="w-3.5 h-3.5 text-white" />
-                )}
-              </div>
-
-              <div className={`flex-1 ${message.role === 'user' ? 'text-right' : ''} max-w-[85%]`}>
-                <div className={`
-                  inline-block px-4 py-2.5 rounded-xl text-sm leading-relaxed
-                  ${message.role === 'user'
-                    ? 'bg-primary-600 text-white rounded-br-sm'
-                    : message.error
-                      ? 'bg-red-50 text-red-900 border border-red-200'
-                      : 'bg-white text-gray-900 border border-gray-100 rounded-bl-sm shadow-sm'
-                  }
-                `}>
-                  {message.role === 'user' ? (
-                    <p className="whitespace-pre-wrap">{message.content}</p>
-                  ) : (
-                    <div 
-                      className="whitespace-pre-wrap coach-response"
-                      dangerouslySetInnerHTML={{ __html: formatCoachMessage(message.content) }}
-                    />
-                  )}
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              {messages.map((msg, i) => (
+                <div key={i} className="msg-in" style={{ display: 'flex', gap: 12, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                    background: msg.role === 'user' ? `linear-gradient(135deg, ${c.red}, ${c.redDark})` : `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', fontSize: 13, fontWeight: 700,
+                  }}>
+                    {msg.role === 'user' ? 'Y' : <I.Sparkle />}
+                  </div>
+                  <div style={{
+                    maxWidth: '70%', padding: '14px 18px',
+                    borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                    background: msg.role === 'user' ? c.userBubble : c.aiBubble,
+                    color: msg.role === 'user' ? c.userBubbleText : c.aiBubbleText,
+                    border: msg.role === 'assistant' ? `1px solid ${c.border}` : 'none',
+                    fontSize: 14, lineHeight: 1.6,
+                  }}>
+                    {msg.role === 'user' ? (
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                    ) : (
+                      <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatCoachMessage(msg.content) }} />
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-[10px] text-gray-400">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                  {message.contextUsed && (
-                    <p className="text-[10px] text-gray-400">
-                      · {message.contextUsed.conversations} convos, {message.contextUsed.platforms?.length || 0} platforms
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+              ))}
 
-          {/* Typing indicator */}
-          {loading && (
-            <div className="flex gap-3">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-gray-100 text-xs text-gray-500 shadow-sm">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Analyzing your data...
-              </div>
+              {loading && (
+                <div className="msg-in" style={{ display: 'flex', gap: 12 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+                  }}><I.Sparkle /></div>
+                  <div style={{
+                    padding: '14px 18px', borderRadius: '14px 14px 14px 4px',
+                    background: c.aiBubble, border: `1px solid ${c.border}`,
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    fontSize: 13, color: c.textDim,
+                  }}>
+                    <div style={{ width: 16, height: 16, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
+                    Analyzing your data...
+                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
             </div>
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Quick follow-ups */}
         {messages.length > 0 && messages.length < 8 && !loading && (
-          <div className="px-4 py-2 bg-white border-t border-gray-50 flex gap-2 flex-wrap">
+          <div style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {['Go deeper', 'Give me action steps', 'Next video idea'].map((q, i) => (
-              <button
-                key={i}
-                onClick={() => handleQuickPrompt(q)}
-                className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-colors"
-              >
-                {q}
-              </button>
+              <button key={i} onClick={() => handleQuickPrompt(q)}
+                style={{
+                  fontSize: 12, padding: '6px 14px', borderRadius: 20,
+                  background: c.chip, border: 'none', color: c.textSec,
+                  cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = c.cardHover}
+                onMouseLeave={e => e.currentTarget.style.background = c.chip}
+              >{q}</button>
             ))}
           </div>
         )}
 
         {/* Input */}
-        <form id="coach-form" onSubmit={handleSubmit} className="p-3 border-t border-gray-100 bg-white rounded-br-xl">
-          <div className="flex gap-2">
+        <form id="coach-form" onSubmit={handleSubmit} style={{ padding: '16px 24px 20px', borderTop: `1px solid ${c.borderLight}`, flexShrink: 0 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            background: c.inputBg, border: `1.5px solid ${input ? c.red : c.inputBorder}`,
+            borderRadius: 14, padding: '4px 6px 4px 18px',
+            transition: 'border-color 0.2s ease',
+            boxShadow: input ? `0 0 0 3px ${c.redGlow}` : 'none',
+          }}>
             <input
               ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={e => setInput(e.target.value)}
               placeholder="Ask about your channel, competitors (@handle), or strategy..."
               disabled={loading}
-              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed bg-white"
+              style={{
+                flex: 1, border: 'none', outline: 'none',
+                background: 'transparent', color: c.text,
+                fontSize: 14, fontFamily: 'inherit', padding: '12px 0',
+              }}
             />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <Send className="w-4 h-4" />
+            <button type="submit" disabled={!input.trim() || loading}
+              style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: input.trim() ? c.red : c.chip,
+                border: 'none', cursor: input.trim() ? 'pointer' : 'default',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: input.trim() ? '#fff' : c.textDim,
+                transition: 'all 0.15s ease', flexShrink: 0,
+              }}>
+              <I.Send />
             </button>
           </div>
         </form>
       </div>
-    </div>
-  )
-}
-
-// Conversation list item component
-function ConversationItem({ conv, active, onSelect, onDelete, timeAgo }) {
-  return (
-    <div
-      onClick={onSelect}
-      className={`
-        group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all text-sm
-        ${active 
-          ? 'bg-primary-50 text-primary-700 border border-primary-200' 
-          : 'hover:bg-gray-50 text-gray-700'
-        }
-      `}
-    >
-      <MessageSquare className={`w-3.5 h-3.5 flex-shrink-0 ${active ? 'text-primary-500' : 'text-gray-400'}`} />
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium truncate">{conv.title}</p>
-        <p className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
-          <Clock className="w-2.5 h-2.5" />
-          {timeAgo(conv.updated_at)}
-        </p>
-      </div>
-      <button
-        onClick={onDelete}
-        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 transition-all"
-      >
-        <Trash2 className="w-3 h-3 text-gray-400 hover:text-red-500" />
-      </button>
     </div>
   )
 }
