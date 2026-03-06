@@ -18,7 +18,6 @@ import {
   Trophy
 } from 'lucide-react'
 import { getCurrentUser, signOut } from '@/lib/supabase'
-import ProactiveAssistant from '@/components/shared/ProactiveAssistant'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
 
 export default function DashboardLayout({ children }) {
@@ -33,7 +32,6 @@ export default function DashboardLayout({ children }) {
   }, [])
 
   useEffect(() => {
-    // Track visited sections
     const section = pathname.split('/').pop()
     if (section) {
       const visited = JSON.parse(localStorage.getItem('visitedSections') || '[]')
@@ -85,7 +83,6 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-gray-900/50 z-40 lg:hidden"
@@ -93,14 +90,12 @@ export default function DashboardLayout({ children }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
             <Link href="/dashboard" className="flex items-center gap-2">
               <Sparkles className="w-6 h-6 text-primary-600" />
@@ -115,7 +110,6 @@ export default function DashboardLayout({ children }) {
             </button>
           </div>
 
-          {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = pathname === item.href
@@ -149,7 +143,6 @@ export default function DashboardLayout({ children }) {
             })}
           </nav>
 
-          {/* User Profile & Sign Out */}
           <div className="p-4 border-t border-gray-200">
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-50">
               <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
@@ -175,9 +168,7 @@ export default function DashboardLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="lg:pl-64">
-        {/* Top Bar (Mobile) */}
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200 lg:hidden">
           <div className="flex items-center justify-between h-16 px-4">
             <button
@@ -192,22 +183,16 @@ export default function DashboardLayout({ children }) {
               <span className="text-lg font-bold text-gray-900">NEXORA</span>
             </div>
             
-            <div className="w-6" /> {/* Spacer */}
+            <div className="w-6" />
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="p-4 sm:p-6 lg:p-8">
           {children}
         </main>
-        
-        {/* Proactive AI Assistant */}
-        <ProactiveAssistant />
       </div>
       
-      {/* Feedback Popup */}
       <FeedbackPopup />
     </div>
   )
 }
-
