@@ -3,30 +3,67 @@
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Sparkles, 
-  LayoutDashboard, 
-  MessageSquare, 
-  Calendar, 
-  Lightbulb, 
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  TrendingUp,
-  Heart,
-  Trophy
-} from 'lucide-react'
+import { Sun, Moon, LogOut, Menu, X } from 'lucide-react'
 import { getCurrentUser, signOut } from '@/lib/supabase'
+import { useTheme } from '@/components/shared/ThemeProvider'
+import NexoraLogo from '@/components/shared/NexoraLogo'
+import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
+
+// ── Theme color system ──
+const themes = {
+  dark: {
+    bg: '#0F0F0F', card: '#1A1A1A', cardHover: '#222', sidebar: '#0F0F0F',
+    text: '#F1F1F1', textSec: '#AAA', textDim: '#717171',
+    border: '#2A2A2A', borderLight: '#222',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.08)', redBorder: 'rgba(255,0,0,0.18)',
+    green: '#3EA651', greenBg: 'rgba(62,166,81,0.1)', greenBorder: 'rgba(62,166,81,0.2)',
+    chip: '#2A2A2A', glass: 'rgba(15,15,15,0.9)',
+  },
+  light: {
+    bg: '#FFFFFF', card: '#FFFFFF', cardHover: '#F5F5F5', sidebar: '#FFFFFF',
+    text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
+    border: '#E5E5E5', borderLight: '#F0F0F0',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.05)', redBorder: 'rgba(255,0,0,0.12)',
+    green: '#2BA640', greenBg: 'rgba(43,166,64,0.08)', greenBorder: 'rgba(43,166,64,0.15)',
+    chip: '#F2F2F2', glass: 'rgba(255,255,255,0.92)',
+  },
+}
+
+// ── Inline SVG Icons (matching the design system) ──
+const Icons = {
+  Grid: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+  Bar: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  Bolt: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  Cal: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  Bulb: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>,
+  Gear: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
+}
+
+// ── Page titles map ──
+const pageTitles = {
+  '/dashboard': { title: 'Dashboard', sub: 'Your channel overview at a glance' },
+  '/analytics': { title: 'Analytics Dashboard', sub: 'Real-time insights from your connected platforms' },
+  '/coach': { title: 'AI Coach', sub: 'Your personal YouTube growth strategist' },
+  '/scheduler': { title: 'Content Scheduler', sub: 'Plan your content and never miss a post' },
+  '/ideas': { title: 'Content Ideas Generator', sub: 'AI-generated viral content ideas' },
+  '/settings': { title: 'Settings', sub: 'Manage your account and preferences' },
+}
 
 export default function DashboardLayout({ children }) {
   const router = useRouter()
   const pathname = usePathname()
+  const { dark, toggle } = useTheme()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [hoverNav, setHoverNav] = useState(null)
 
+  const c = dark ? themes.dark : themes.light
+
+  // ── Auth (unchanged from your original) ──
   useEffect(() => {
     checkAuth()
   }, [])
@@ -44,12 +81,10 @@ export default function DashboardLayout({ children }) {
 
   async function checkAuth() {
     const { user, error } = await getCurrentUser()
-    
     if (!user || error) {
       router.push('/login')
       return
     }
-    
     setUser(user)
     setLoading(false)
   }
@@ -59,139 +94,258 @@ export default function DashboardLayout({ children }) {
     router.push('/')
   }
 
+  // ── Loading state ──
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="w-12 h-12 text-primary-600 animate-pulse mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
+      <div style={{
+        minHeight: '100vh', background: c.bg,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background-color 0.35s ease',
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ animation: 'pulseGlow 2s ease-in-out infinite' }}>
+            <NexoraLogo size={48} color={c.red} />
+          </div>
+          <p style={{ color: c.textDim, marginTop: 16, fontSize: 14 }}>Loading...</p>
         </div>
       </div>
     )
   }
 
+  // ── Navigation items ──
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Analytics', href: '/analytics', icon: TrendingUp },
-    { name: 'AI Coach', href: '/coach', icon: MessageSquare },
-    { name: 'Scheduler', href: '/scheduler', icon: Calendar },
-    { name: 'Content Ideas', href: '/ideas', icon: Lightbulb },
-    { name: 'Motivation', href: '/coming-soon/motivation', icon: Heart, comingSoon: true },
-    { name: 'Ranking', href: '/coming-soon/ranking', icon: Trophy, comingSoon: true },
-    { name: 'Settings', href: '/settings', icon: Settings },
+    { href: '/dashboard', label: 'Dashboard', icon: Icons.Grid },
+    { href: '/analytics', label: 'Analytics', icon: Icons.Bar },
+    { href: '/coach', label: 'AI Coach', icon: Icons.Bolt, badge: 'AI' },
+    { href: '/scheduler', label: 'Scheduler', icon: Icons.Cal },
+    { href: '/ideas', label: 'Content Ideas', icon: Icons.Bulb },
+    { href: '/settings', label: 'Settings', icon: Icons.Gear },
   ]
 
+  const pageInfo = pageTitles[pathname] || { title: 'NEXORA', sub: '' }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{
+      fontFamily: "'Outfit', 'Geist', -apple-system, sans-serif",
+      background: c.bg,
+      color: c.text,
+      minHeight: '100vh',
+      display: 'flex',
+      transition: 'background-color 0.35s ease, color 0.25s ease',
+    }}>
+      <style>{`
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+      `}</style>
+
+      {/* ══ MOBILE BACKDROP ══ */}
       {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-gray-900/50 z-40 lg:hidden"
+        <div
           onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            zIndex: 45, display: 'none',
+          }}
+          className="lg-show"
         />
       )}
 
-      <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0
-      `}>
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary-600" />
-              <span className="text-xl font-bold text-gray-900">NEXORA</span>
-              <span className="text-xs bg-primary-600 text-white px-2 py-0.5 rounded-full font-semibold">BETA</span>
-            </Link>
-            <button 
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-6 h-6" />
-            </button>
+      {/* ══════════════════════════════════════════ */}
+      {/* SIDEBAR                                    */}
+      {/* ══════════════════════════════════════════ */}
+      <aside style={{
+        width: 232,
+        background: c.sidebar,
+        borderRight: `1px solid ${c.border}`,
+        position: 'fixed',
+        top: 0, left: 0, bottom: 0,
+        zIndex: 50,
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'background-color 0.35s ease, border-color 0.35s ease',
+      }}>
+        {/* Logo */}
+        <div style={{
+          padding: '22px 20px 18px',
+          display: 'flex', alignItems: 'center', gap: 10,
+          borderBottom: `1px solid ${c.borderLight}`,
+        }}>
+          <div style={{ position: 'relative' }}>
+            <NexoraLogo size={36} color={c.red} />
+            <div style={{
+              position: 'absolute', inset: -3, borderRadius: 12,
+              border: `1.5px solid ${c.redBorder}`,
+              animation: 'pulseGlow 4s ease-in-out infinite',
+              pointerEvents: 'none',
+            }}/>
           </div>
+          <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: -0.3, color: c.text }}>
+            NEXORA
+          </span>
+          <span style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: 0.8,
+            background: c.red, color: '#fff',
+            padding: '2px 7px', borderRadius: 4, marginLeft: -2,
+          }}>BETA</span>
+        </div>
 
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href
-              const Icon = item.icon
-              
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`
-                    flex items-center justify-between px-4 py-3 rounded-lg font-medium transition-colors group
-                    ${isActive 
-                      ? 'bg-primary-50 text-primary-700' 
-                      : item.comingSoon
-                        ? 'text-gray-500 hover:bg-gray-50'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }
-                  `}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className="w-5 h-5" />
-                    <span>{item.name}</span>
-                  </div>
-                  {item.comingSoon && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-primary-500 to-purple-500 text-white font-bold uppercase tracking-wide">
-                      Soon
-                    </span>
-                  )}
-                </Link>
-              )
-            })}
-          </nav>
+        {/* Navigation */}
+        <nav style={{ flex: 1, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {navigation.map((item) => {
+            const active = pathname === item.href
+            const hovering = hoverNav === item.href
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onMouseEnter={() => setHoverNav(item.href)}
+                onMouseLeave={() => setHoverNav(null)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 11,
+                  padding: '10px 14px', borderRadius: 10,
+                  background: active ? c.redBg : hovering ? c.cardHover : 'transparent',
+                  color: active ? c.red : c.textSec,
+                  fontSize: 14, fontWeight: active ? 600 : 400,
+                  textDecoration: 'none',
+                  transition: 'all 0.15s ease',
+                  position: 'relative',
+                }}
+              >
+                {active && (
+                  <div style={{
+                    position: 'absolute', left: 0, top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: 3, height: 22, borderRadius: 2,
+                    background: c.red,
+                    animation: 'slideRight 0.2s ease',
+                  }}/>
+                )}
+                <Icon />
+                {item.label}
+                {item.badge && (
+                  <span style={{
+                    marginLeft: 'auto',
+                    fontSize: 9, fontWeight: 700, letterSpacing: 0.5,
+                    background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+                    color: '#fff',
+                    padding: '2px 7px', borderRadius: 4,
+                  }}>{item.badge}</span>
+                )}
+              </Link>
+            )
+          })}
+        </nav>
 
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-50">
-              <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-primary-700 font-semibold text-sm">
-                  {user?.email?.charAt(0).toUpperCase()}
-                </span>
+        {/* Sidebar Bottom */}
+        <div style={{
+          padding: '14px 16px',
+          borderTop: `1px solid ${c.borderLight}`,
+          display: 'flex', flexDirection: 'column', gap: 14,
+        }}>
+          {/* Theme Toggle */}
+          <button
+            onClick={toggle}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '9px', borderRadius: 8,
+              background: c.chip,
+              border: 'none', cursor: 'pointer',
+              color: c.textSec,
+              fontSize: 13, fontWeight: 500,
+              fontFamily: 'inherit',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+
+          {/* User Info */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <ChannelAvatar
+              src={null}
+              name={user?.email || 'U'}
+              size={34}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontSize: 13, fontWeight: 600, color: c.text,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {user?.email}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.email}
-                </p>
-              </div>
+              <div style={{ fontSize: 11, color: c.textDim }}>Free Beta</div>
             </div>
-            
-            <button
-              onClick={handleSignOut}
-              className="w-full mt-2 flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-medium transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Sign Out</span>
-            </button>
           </div>
+
+          {/* Sign Out */}
+          <button
+            onClick={handleSignOut}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '8px 12px', borderRadius: 8,
+              background: 'transparent',
+              border: `1px solid ${c.border}`,
+              cursor: 'pointer',
+              color: c.textSec,
+              fontSize: 13, fontWeight: 500,
+              fontFamily: 'inherit',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <LogOut size={15} />
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
 
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 bg-white border-b border-gray-200 lg:hidden">
-          <div className="flex items-center justify-between h-16 px-4">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-            
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary-600" />
-              <span className="text-lg font-bold text-gray-900">NEXORA</span>
-            </div>
-            
-            <div className="w-6" />
+      {/* ══════════════════════════════════════════ */}
+      {/* MAIN CONTENT                               */}
+      {/* ══════════════════════════════════════════ */}
+      <main style={{ marginLeft: 232, flex: 1, minHeight: '100vh' }}>
+        {/* Sticky Header */}
+        <header style={{
+          padding: '18px 32px',
+          borderBottom: `1px solid ${c.borderLight}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: c.glass,
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          position: 'sticky', top: 0, zIndex: 40,
+          transition: 'all 0.35s ease',
+        }}>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>
+              {pageInfo.title}
+            </h1>
+            <p style={{ fontSize: 13, color: c.textDim, marginTop: 2, fontWeight: 400 }}>
+              {pageInfo.sub}
+            </p>
+          </div>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '7px 16px', borderRadius: 20,
+            background: c.greenBg,
+            border: `1px solid ${c.greenBorder}`,
+          }}>
+            <div style={{
+              width: 7, height: 7, borderRadius: '50%',
+              background: c.green,
+              boxShadow: `0 0 6px ${c.green}`,
+            }}/>
+            <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>
+              Live data connected
+            </span>
           </div>
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        {/* Page Content */}
+        <div style={{ padding: '24px 32px 40px' }}>
           {children}
-        </main>
-      </div>
-      
+        </div>
+      </main>
+
       <FeedbackPopup />
     </div>
   )
