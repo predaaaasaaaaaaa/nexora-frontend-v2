@@ -1,381 +1,383 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles, TrendingUp, Calendar, Lightbulb, Star } from 'lucide-react'
+
+// ── NEXORA Logo ──
+const NexoraLogo = ({ size = 32 }) => (
+  <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
+    <defs><linearGradient id="nLG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FF0000"/><stop offset="100%" stopColor="#CC0000"/></linearGradient></defs>
+    <path d="M25 95V25L55 65V25L95 95H70L55 65V95H25Z" fill="url(#nLG)"/>
+  </svg>
+)
+
+// ── Scroll-triggered section ──
+function Section({ children, delay = 0, style = {} }) {
+  const ref = useRef(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el) } }, { threshold: 0.12 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+  return (
+    <div ref={ref} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(50px)', transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`, ...style }}>
+      {children}
+    </div>
+  )
+}
 
 export default function LandingPage() {
+  const [scrollY, setScrollY] = useState(0)
+  const [openFaq, setOpenFaq] = useState(0)
+
+  useEffect(() => {
+    const h = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', h, { passive: true })
+    return () => window.removeEventListener('scroll', h)
+  }, [])
+
+  const features = [
+    {
+      tag: 'AI-POWERED', title: 'Your personal YouTube growth coach',
+      desc: 'Ask anything about your channel, competitors, or strategy. The AI Coach has full access to your YouTube analytics and delivers actionable insights — not generic advice.',
+      bullets: ['Channel audits with real data', 'Competitor analysis (@handle)', 'Growth strategies tailored to your niche', 'Video idea generation from your analytics'],
+      mockTitle: 'AI Coach',
+      mockChat: [
+        { role: 'user', text: 'Analyze my channel and find growth opportunities' },
+        { role: 'ai', text: 'Based on your analytics: Arabic titles perform 6x better (683 vs 109 avg views). Your challenge/collab format hit 17K views — 28x above average. I recommend doubling down on Arabic-titled challenge content posted Fridays at 19:00.' },
+      ],
+    },
+    {
+      tag: 'REAL-TIME DATA', title: 'Analytics that actually tell you what to do',
+      desc: 'Not just numbers — AI-detected patterns that reveal what\'s working, what\'s not, and exactly what to change.',
+      bullets: ['AI-detected content patterns', 'Viral outlier detection', 'Title language performance', 'Hidden gems identification'],
+      mockTitle: 'AI-Detected Patterns',
+      mockPatterns: [
+        { color: '#4D9EFF', label: 'CONTENT MIX', text: 'Long videos avg 608 views vs Shorts at 190' },
+        { color: '#FF8C00', label: 'VIRAL OUTLIERS', text: '2 videos performed 7x above average' },
+        { color: '#3EA651', label: 'HIDDEN GEMS', text: '2 videos have high engagement but low reach' },
+      ],
+    },
+    {
+      tag: 'SMART SCHEDULING', title: 'Post at the perfect time, every time',
+      desc: 'AI-recommended posting times based on your actual channel performance data. Calendar view, email reminders, and full management.',
+      bullets: ['Data-driven posting time recommendations', 'Visual calendar with scheduled posts', 'Email reminders before publish time', 'Edit, reschedule, or delete anytime'],
+      mockTitle: 'AI Schedule Tips',
+      mockTips: ['📈 Post Fridays at 19:00 — avg 5,751 views, 17.23% ER', '🕐 Try 2:00 AM — avg 361 views, 20.52% ER', '🎯 Post at 12:00 — avg 271 views, 23.08% ER'],
+    },
+    {
+      tag: 'CONTENT ENGINE', title: 'Never run out of video ideas',
+      desc: 'AI-generated content ideas tailored to your niche, channel performance, and what\'s working for similar creators.',
+      bullets: ['Niche-specific idea generation', 'Difficulty & duration estimates', 'Viral potential scoring', 'Hashtag suggestions included'],
+      mockTitle: 'Generated Ideas',
+      mockIdeas: [
+        { title: 'I Built an AI Agent That Runs My Startup for 24h 🤖', diff: 'Medium', potential: 'Very High' },
+        { title: '5 Dev Tools That Replaced My Entire Team ⚡', diff: 'Easy', potential: 'High' },
+      ],
+    },
+  ]
+
+  const faqs = [
+    { q: 'What is NEXORA?', a: 'NEXORA is an AI-powered YouTube strategy platform that connects to your channel, analyzes your real data, and gives you personalized coaching, content ideas, and scheduling — all from one dashboard.' },
+    { q: 'Is NEXORA free?', a: 'Yes — NEXORA is currently in free beta. All features including AI Coach, Analytics, Scheduler, and Content Ideas are available at no cost.' },
+    { q: 'How does it connect to my YouTube channel?', a: 'You sign in with Google, authorize YouTube read access, and NEXORA pulls your channel analytics automatically. Your data stays secure with Supabase row-level security.' },
+    { q: 'What platforms are supported?', a: 'Currently YouTube is fully supported with live data. Instagram, TikTok, and Threads are on the roadmap.' },
+    { q: 'How is NEXORA different from TubeBuddy or VidIQ?', a: 'NEXORA uses AI coaching that understands your specific channel data and gives personalized strategy advice — not just keyword tools. Think of it as having a YouTube growth strategist who knows your exact analytics.' },
+    { q: 'Is my data safe?', a: 'Yes. NEXORA uses Supabase with row-level security, three-layer prompt injection protection, and never shares your data.' },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-purple-50">
-      {/* Navigation */}
-      <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-md fixed w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-8 h-8 text-primary-600" />
-              <span className="text-2xl font-bold text-gray-900">NEXORA</span>
-              <span className="text-xs bg-primary-600 text-white px-2 py-1 rounded-full font-semibold">BETA</span>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <Link href="/login" className="text-gray-600 hover:text-gray-900 font-medium">
-                Login
-              </Link>
-              <Link href="/signup" className="btn-primary">
-                Get Started
-              </Link>
-            </div>
-          </div>
+    <div style={{ fontFamily: "'Outfit', -apple-system, sans-serif", background: '#0A0A0A', color: '#F1F1F1', minHeight: '100vh', overflowX: 'hidden' }}>
+      <style>{`
+        @keyframes heroGlow { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,0,0,0.3); } 50% { box-shadow: 0 0 0 12px rgba(255,0,0,0); } }
+        .hero-text { animation: fadeUp 0.8s ease 0.2s both; }
+        .hero-sub { animation: fadeUp 0.8s ease 0.4s both; }
+        .hero-cta { animation: fadeUp 0.8s ease 0.6s both; }
+        .hero-badge { animation: fadeUp 0.8s ease 0.1s both; }
+        .nav-link { transition: color 0.15s ease; }
+        .nav-link:hover { color: #FF0000 !important; }
+        .cta-primary { transition: all 0.2s ease; cursor: pointer; }
+        .cta-primary:hover { transform: scale(1.04); box-shadow: 0 8px 30px rgba(255,0,0,0.35); }
+        .cta-secondary { transition: all 0.2s ease; cursor: pointer; }
+        .cta-secondary:hover { background: rgba(255,255,255,0.1) !important; }
+        .faq-item { transition: all 0.3s ease; cursor: pointer; }
+        .faq-item:hover { border-color: rgba(255,0,0,0.25) !important; }
+        .feature-mock { transition: all 0.3s ease; }
+        .feature-mock:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(255,0,0,0.08); }
+        html { scroll-behavior: smooth; }
+      `}</style>
+
+      {/* ═══ NAV ═══ */}
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '14px 40px',
+        background: scrollY > 60 ? 'rgba(10,10,10,0.92)' : 'transparent',
+        backdropFilter: scrollY > 60 ? 'blur(20px)' : 'none',
+        borderBottom: scrollY > 60 ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+        transition: 'all 0.35s ease', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <NexoraLogo size={32} />
+          <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>NEXORA</span>
+          <span style={{ fontSize: 9, fontWeight: 700, background: '#FF0000', color: '#fff', padding: '2px 7px', borderRadius: 4, letterSpacing: 0.8 }}>BETA</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          {['Features', 'How it works', 'FAQ'].map((item, i) => (
+            <a key={i} className="nav-link" href={`#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
+          ))}
+          <Link href="/login" className="nav-link" style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>Login</Link>
+          <Link href="/signup" className="cta-primary" style={{
+            padding: '10px 24px', borderRadius: 10, background: 'linear-gradient(135deg, #FF0000, #CC0000)',
+            border: 'none', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none',
+          }}>Get Started Free</Link>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium mb-8">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Social Media Intelligence</span>
+      {/* ═══ HERO ═══ */}
+      <section style={{
+        minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', position: 'relative', padding: '120px 24px 80px', overflow: 'hidden',
+      }}>
+        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: `translate(-50%, -50%) translateY(${scrollY * 0.15}px)`, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.12) 0%, transparent 70%)', animation: 'heroGlow 6s ease-in-out infinite', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', top: '10%', right: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.06) 0%, transparent 70%)', animation: 'heroGlow 8s ease-in-out infinite 2s', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none', opacity: 0.5 }}/>
+
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 800 }}>
+          <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 50, background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.2)', marginBottom: 28 }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3EA651', animation: 'pulse 2s infinite' }}/>
+            <span style={{ fontSize: 13, fontWeight: 500, color: '#FF6666' }}>Free Beta — All features unlocked</span>
           </div>
-          
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Your AI Coach for
-            <span className="text-primary-600"> Social Media Success</span>
+
+          <h1 className="hero-text" style={{ fontSize: 68, fontWeight: 900, lineHeight: 1.05, letterSpacing: -3, marginBottom: 24 }}>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>Your AI-powered</span><br/>
+            <span style={{ color: '#FFFFFF' }}>YouTube growth</span><br/>
+            <span style={{ background: 'linear-gradient(135deg, #FF0000, #FF4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>strategist.</span>
           </h1>
-          
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            NEXORA is an AI-tool that helps Creators/Managers to grow faster & smarter 
-            while focusing on productivity and without burning out!
+
+          <p className="hero-sub" style={{ fontSize: 19, color: '#888', lineHeight: 1.6, maxWidth: 560, margin: '0 auto 36px', fontWeight: 400 }}>
+            Connect your YouTube channel. Get AI coaching, analytics insights, content ideas, and smart scheduling — all powered by your real data.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/signup" className="btn-primary text-lg px-8 py-4 flex items-center gap-2">
-              Try Beta Now
-              <ArrowRight className="w-5 h-5" />
+
+          <div className="hero-cta" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
+            <Link href="/signup" className="cta-primary" style={{
+              padding: '16px 36px', borderRadius: 12, background: 'linear-gradient(135deg, #FF0000, #CC0000)',
+              border: 'none', color: '#fff', fontSize: 16, fontWeight: 700, textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+              Start Growing — It's Free
             </Link>
-            <Link href="#features" className="btn-secondary text-lg px-8 py-4">
-              See How It Works
+            <a href="#features" className="cta-secondary" style={{
+              padding: '16px 28px', borderRadius: 12, background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)', color: '#ccc', fontSize: 16, fontWeight: 500, textDecoration: 'none',
+            }}>See how it works ↓</a>
+          </div>
+        </div>
+
+        <div style={{ position: 'absolute', bottom: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: scrollY > 100 ? 0 : 0.5, transition: 'opacity 0.3s ease' }}>
+          <span style={{ fontSize: 12, color: '#666', letterSpacing: 2, fontWeight: 500 }}>SCROLL</span>
+          <div style={{ width: 1, height: 30, background: 'linear-gradient(to bottom, #666, transparent)' }}/>
+        </div>
+      </section>
+
+      {/* ═══ STATS ═══ */}
+      <Section>
+        <section style={{ padding: '50px 40px', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+            {[
+              { value: '5', unit: '', label: 'Core AI features', color: '#FF0000' },
+              { value: '100', unit: '%', label: 'Free during beta', color: '#3EA651' },
+              { value: '0', unit: '', label: 'Cloud cost for your data', color: '#4D9EFF' },
+              { value: '24/7', unit: '', label: 'AI Coach available', color: '#FF8C00' },
+            ].map((s, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 48, fontWeight: 900, color: s.color, letterSpacing: -2, lineHeight: 1 }}>{s.value}<span style={{ fontSize: 28, fontWeight: 700 }}>{s.unit}</span></div>
+                <div style={{ fontSize: 14, color: '#888', marginTop: 6 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </Section>
+
+      {/* ═══ FEATURES ═══ */}
+      <section id="features" style={{ padding: '80px 40px' }}>
+        <Section>
+          <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 60px' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: '#FF0000', display: 'block', marginBottom: 12 }}>FEATURES</span>
+            <h2 style={{ fontSize: 42, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 16 }}>Everything you need to<br/><span style={{ color: '#FF0000' }}>grow on YouTube</span></h2>
+            <p style={{ fontSize: 16, color: '#888', lineHeight: 1.6 }}>No fluff. No generic tips. Real AI coaching powered by your actual channel data.</p>
+          </div>
+        </Section>
+
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          {features.map((f, i) => (
+            <Section key={i} delay={0.1}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center', marginBottom: 80, direction: i % 2 === 1 ? 'rtl' : 'ltr' }}>
+                <div style={{ direction: 'ltr' }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#FF0000', display: 'inline-block', padding: '4px 12px', borderRadius: 5, background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.15)', marginBottom: 16 }}>{f.tag}</span>
+                  <h3 style={{ fontSize: 32, fontWeight: 800, letterSpacing: -1, lineHeight: 1.15, marginBottom: 14 }}>{f.title}</h3>
+                  <p style={{ fontSize: 15, color: '#999', lineHeight: 1.7, marginBottom: 20 }}>{f.desc}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {f.bullets.map((b, bi) => (
+                      <div key={bi} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF0000" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span style={{ fontSize: 14, color: '#ccc' }}>{b}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ direction: 'ltr' }}>
+                  <div className="feature-mock" style={{ background: '#141414', border: '1px solid #222', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}>
+                    <div style={{ padding: '14px 18px', borderBottom: '1px solid #222', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FF5F57' }}/><div style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFBD2E' }}/><div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28C840' }}/>
+                      <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: '#888' }}>{f.mockTitle}</span>
+                    </div>
+                    <div style={{ padding: 20 }}>
+                      {f.mockChat?.map((msg, mi) => (
+                        <div key={mi} style={{ display: 'flex', gap: 10, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row', marginBottom: 14 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: 8, background: msg.role === 'user' ? '#FF0000' : 'linear-gradient(135deg, #FF0000, #CC0000)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{msg.role === 'user' ? 'Y' : '✦'}</div>
+                          <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: 10, background: msg.role === 'user' ? '#FF0000' : '#1E1E1E', color: '#fff', fontSize: 12, lineHeight: 1.5 }}>{msg.text}</div>
+                        </div>
+                      ))}
+                      {f.mockPatterns?.map((p, pi) => (
+                        <div key={pi} style={{ padding: '12px 16px', marginBottom: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid #222', borderRadius: 10, borderLeft: `3px solid ${p.color}` }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: p.color, display: 'block', marginBottom: 3 }}>{p.label}</span>
+                          <span style={{ fontSize: 12, color: '#ccc' }}>{p.text}</span>
+                        </div>
+                      ))}
+                      {f.mockTips?.map((t, ti) => (
+                        <div key={ti} style={{ padding: '12px 16px', marginBottom: 8, background: 'rgba(255,0,0,0.04)', border: '1px solid rgba(255,0,0,0.12)', borderRadius: 10, fontSize: 13, color: '#ddd' }}>{t}</div>
+                      ))}
+                      {f.mockIdeas?.map((idea, ii) => (
+                        <div key={ii} style={{ padding: '14px 16px', marginBottom: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid #222', borderRadius: 10 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: '#F1F1F1', marginBottom: 6 }}>{idea.title}</div>
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 4, background: idea.diff === 'Easy' ? 'rgba(62,166,81,0.1)' : 'rgba(255,140,0,0.1)', border: `1px solid ${idea.diff === 'Easy' ? 'rgba(62,166,81,0.2)' : 'rgba(255,140,0,0.2)'}`, color: idea.diff === 'Easy' ? '#3EA651' : '#FF8C00', fontWeight: 600 }}>{idea.diff}</span>
+                            <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 4, background: 'rgba(62,166,81,0.1)', border: '1px solid rgba(62,166,81,0.2)', color: '#3EA651', fontWeight: 600 }}>⚡ {idea.potential}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Section>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ HOW IT WORKS ═══ */}
+      <section id="how-it-works" style={{ padding: '80px 40px', background: 'linear-gradient(180deg, rgba(255,0,0,0.02) 0%, transparent 100%)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <Section>
+          <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 50px' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: '#FF0000', display: 'block', marginBottom: 12 }}>HOW IT WORKS</span>
+            <h2 style={{ fontSize: 42, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1 }}>Three steps to<br/><span style={{ color: '#FF0000' }}>smarter growth</span></h2>
+          </div>
+        </Section>
+        <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+          {[
+            { step: '01', title: 'Connect YouTube', desc: 'Sign in with Google and authorize read access. NEXORA pulls your analytics automatically.', icon: '🔗' },
+            { step: '02', title: 'Get AI Insights', desc: 'Your AI Coach analyzes patterns, detects viral content, and finds hidden growth opportunities.', icon: '⚡' },
+            { step: '03', title: 'Grow Smarter', desc: 'Use data-driven scheduling, tailored content ideas, and competitor intelligence to grow faster.', icon: '🚀' },
+          ].map((s, i) => (
+            <Section key={i} delay={i * 0.15}>
+              <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 16, padding: '32px 28px', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #FF0000, transparent)', opacity: 0.5 }}/>
+                <div style={{ fontSize: 36, marginBottom: 14 }}>{s.icon}</div>
+                <span style={{ fontSize: 12, fontWeight: 800, color: '#FF0000', letterSpacing: 2, display: 'block', marginBottom: 8 }}>STEP {s.step}</span>
+                <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}>{s.title}</h3>
+                <p style={{ fontSize: 14, color: '#888', lineHeight: 1.6 }}>{s.desc}</p>
+              </div>
+            </Section>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ COMPARISON ═══ */}
+      <Section>
+        <section style={{ padding: '80px 40px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 40px' }}>
+            <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1, marginBottom: 12 }}>Why creators choose <span style={{ color: '#FF0000' }}>NEXORA</span></h2>
+            <p style={{ fontSize: 15, color: '#888' }}>AI-first approach vs traditional keyword tools</p>
+          </div>
+          <div style={{ maxWidth: 700, margin: '0 auto' }}>
+            <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 16, overflow: 'hidden' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px', padding: '16px 24px', borderBottom: '1px solid #222' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#888' }}>Feature</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#FF0000', textAlign: 'center' }}>NEXORA</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#888', textAlign: 'center' }}>Others</span>
+              </div>
+              {['AI Coach with your data', 'Personalized content ideas', 'Smart scheduling with AI tips', 'Viral outlier detection', 'Competitor @handle analysis', 'Free during beta'].map((f, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px', padding: '14px 24px', borderBottom: i < 5 ? '1px solid #1A1A1A' : 'none' }}>
+                  <span style={{ fontSize: 14, color: '#ccc' }}>{f}</span>
+                  <div style={{ textAlign: 'center' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3EA651" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div style={{ textAlign: 'center' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Section>
+
+      {/* ═══ FAQ ═══ */}
+      <section id="faq" style={{ padding: '80px 40px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <Section>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: '#FF0000', display: 'block', marginBottom: 12 }}>FAQ</span>
+            <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1 }}>Frequently Asked Questions</h2>
+          </div>
+        </Section>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
+          {faqs.map((faq, i) => (
+            <Section key={i} delay={i * 0.05}>
+              <div className="faq-item" onClick={() => setOpenFaq(openFaq === i ? -1 : i)} style={{ background: '#141414', border: `1px solid ${openFaq === i ? 'rgba(255,0,0,0.2)' : '#222'}`, borderRadius: 12, marginBottom: 10, overflow: 'hidden' }}>
+                <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 16, fontWeight: 600 }}>{faq.q}</span>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: openFaq === i ? 'rgba(255,0,0,0.15)' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: openFaq === i ? '#FF0000' : '#888', fontSize: 14, fontWeight: 700, transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'all 0.3s ease', flexShrink: 0 }}>▾</div>
+                </div>
+                <div style={{ maxHeight: openFaq === i ? 200 : 0, overflow: 'hidden', transition: 'max-height 0.35s ease' }}>
+                  <p style={{ padding: '0 24px 18px', fontSize: 14, color: '#999', lineHeight: 1.7 }}>{faq.a}</p>
+                </div>
+              </div>
+            </Section>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ FINAL CTA ═══ */}
+      <Section>
+        <section style={{ padding: '100px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 70%)', pointerEvents: 'none' }}/>
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <h2 style={{ fontSize: 48, fontWeight: 900, letterSpacing: -2, marginBottom: 16 }}>Ready to grow <span style={{ color: '#FF0000' }}>smarter</span>?</h2>
+            <p style={{ fontSize: 17, color: '#888', maxWidth: 480, margin: '0 auto 32px', lineHeight: 1.6 }}>Join the beta. Connect your YouTube channel. Let AI do the strategy.</p>
+            <Link href="/signup" className="cta-primary" style={{
+              padding: '18px 40px', borderRadius: 14, background: 'linear-gradient(135deg, #FF0000, #CC0000)',
+              border: 'none', color: '#fff', fontSize: 18, fontWeight: 700, textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+              Get Started — Free Beta
             </Link>
+            <p style={{ fontSize: 13, color: '#555', marginTop: 14 }}>No credit card required · YouTube read-only access</p>
           </div>
+        </section>
+      </Section>
 
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div>
-              <div className="text-4xl font-bold text-primary-600">4</div>
-              <div className="text-sm text-gray-600 mt-1">Platforms Supported</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary-600">AI</div>
-              <div className="text-sm text-gray-600 mt-1">Powered Intelligence</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary-600">24/7</div>
-              <div className="text-sm text-gray-600 mt-1">Smart Coaching</div>
-            </div>
-          </div>
+      {/* ═══ FOOTER ═══ */}
+      <footer style={{ padding: '30px 40px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <NexoraLogo size={22} />
+          <span style={{ fontSize: 14, fontWeight: 700 }}>NEXORA</span>
+          <span style={{ fontSize: 13, color: '#555', marginLeft: 8 }}>© 2026</span>
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need to Dominate Social Media
-            </h2>
-            <p className="text-xl text-gray-600">
-              One intelligent AI that powers all your social media decisions
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Feature 1 */}
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Unified Analytics
-              </h3>
-              <p className="text-gray-600">
-                See all your metrics from Instagram, YouTube, TikTok, and Twitter in one dashboard.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                AI Coach
-              </h3>
-              <p className="text-gray-600">
-                Get personalized advice that learns from your content and adapts to your goals.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                <Calendar className="w-6 h-6 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Smart Scheduler
-              </h3>
-              <p className="text-gray-600">
-                AI predicts the optimal times to post based on your audience behavior.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="card hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                <Lightbulb className="w-6 h-6 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Content Ideas
-              </h3>
-              <p className="text-gray-600">
-                Generate viral content ideas based on what works for your audience.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-white via-primary-50/30 to-white">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-primary-600 text-white px-4 py-1.5 rounded-full text-xs font-bold mb-6 uppercase tracking-wide">
-              Beta Program
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              What Early Users Are Saying
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Real feedback from creators who are already using NEXORA in beta
-            </p>
-          </div>
-
-          {/* Testimonials Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Testimonial 1 - Sarah Martinez */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=Sarah+Martinez&background=7c3aed&color=fff&size=64&rounded=true"
-                  alt="Sarah Martinez"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "The AI coach is a game-changer!"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                I've been struggling with what to post on Instagram for weeks. NEXORA's AI coach literally feels like having a social media expert in my pocket. Yeah, it's still in beta and some features are coming soon, but the coach alone has saved me hours of brainstorming. Can't wait to see the analytics when they connect the APIs!
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">Sarah Martinez</p>
-                <p className="text-sm text-gray-600">Freelance Photographer</p>
-              </div>
-            </div>
-
-            {/* Testimonial 2 - James Chen */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=James+Chen&background=8b5cf6&color=fff&size=64&rounded=true"
-                  alt="James Chen"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "Finally, no more creative block"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                As a small business owner, I don't have time to think about content 24/7. The idea generator gives me platform-specific suggestions in seconds. Some are okay, some are brilliant—but it gets my creative juices flowing. Super excited for the full release!
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">James Chen</p>
-                <p className="text-sm text-gray-600">Coffee Shop Owner</p>
-              </div>
-            </div>
-
-            {/* Testimonial 3 - Aisha Patel */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=Aisha+Patel&background=a78bfa&color=fff&size=64&rounded=true"
-                  alt="Aisha Patel"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                    <Star className="w-4 h-4 text-gray-300" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "Planning content has never been easier"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                I love that I can schedule posts across different platforms in one place. Sure, it's in beta and I'm still waiting for the real-time analytics, but honestly? The scheduling feature alone makes it worth using. The team is clearly building something special here.
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">Aisha Patel</p>
-                <p className="text-sm text-gray-600">Lifestyle Blogger</p>
-              </div>
-            </div>
-
-            {/* Testimonial 4 - Marcus Johnson */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=Marcus+Johnson&background=6d28d9&color=fff&size=64&rounded=true"
-                  alt="Marcus Johnson"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "Best content tool I've tried this year"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                I signed up for the beta not expecting much, but wow. The AI coach understands my niche, the idea generator actually gives useful suggestions, and I can plan my whole week in like 20 minutes. Analytics dashboard is coming soon but I'm not worried—everything else works great. 10/10 would recommend trying the beta!
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">Marcus Johnson</p>
-                <p className="text-sm text-gray-600">Fitness Coach</p>
-              </div>
-            </div>
-
-            {/* Testimonial 5 - Elena Rodriguez */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=Elena+Rodriguez&background=c4b5fd&color=000&size=64&rounded=true"
-                  alt="Elena Rodriguez"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                    <Star className="w-4 h-4 text-gray-300" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "Rough around the edges, but SO promising"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                Let me be real: it's a beta, so not everything is live yet. BUT the features that work? They're fantastic. The AI coach has helped me craft better captions, and the content ideas are surprisingly good. I'm genuinely excited to see what this becomes when they add the analytics. Early adopter vibes! 🚀
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">Elena Rodriguez</p>
-                <p className="text-sm text-gray-600">Digital Nomad & Content Creator</p>
-              </div>
-            </div>
-
-            {/* Testimonial 6 - Tom Williams */}
-            <div className="card hover:shadow-xl transition-all duration-300 group">
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src="https://ui-avatars.com/api/?name=Tom+Williams&background=5b21b6&color=fff&size=64&rounded=true"
-                  alt="Tom Williams"
-                  className="w-16 h-16 rounded-full flex-shrink-0"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                    "Saved me 3 hours last week"
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                Used the idea generator before a big campaign and got 15 solid concepts in minutes. That alone paid for... wait, it's free in beta? 😂 Seriously though, great tool even in early stages.
-              </p>
-              <div className="pt-4 border-t border-gray-100">
-                <p className="font-semibold text-gray-900">Tom Williams</p>
-                <p className="text-sm text-gray-600">Marketing Consultant</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Trust Badge */}
-          <div className="mt-12 text-center">
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold text-gray-900">Join 500+ early adopters</span> shaping the future of AI-powered social media management
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary-600 to-purple-600">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">
-            Ready to Transform Your Social Media?
-          </h2>
-          <p className="text-xl mb-8 text-primary-100">
-            Join creators who are already using AI to grow smarter, not harder.
-          </p>
-          <Link href="/signup" className="inline-flex items-center gap-2 bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors">
-            Try Beta Now
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex flex-col items-center md:items-start">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-6 h-6 text-primary-400" />
-                <span className="text-xl font-bold text-white">NEXORA</span>
-              </div>
-              <p className="text-sm">
-                © 2025 NEXORA. All rights reserved.
-              </p>
-            </div>
-            <div className="flex gap-6">
-              <Link href="/terms" className="text-sm hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-              <Link href="/privacy" className="text-sm hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-            </div>
-          </div>
+        <div style={{ display: 'flex', gap: 24 }}>
+          <Link href="/privacy" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>Privacy</Link>
+          <Link href="/terms" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>Terms</Link>
         </div>
       </footer>
     </div>
