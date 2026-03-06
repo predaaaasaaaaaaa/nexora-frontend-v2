@@ -2,26 +2,54 @@
 
 import { useEffect, useState } from 'react'
 import { getYouTubeAnalytics, getYouTubeStatus } from '@/lib/api'
-import { 
-  TrendingUp, 
-  Users, 
-  Eye,
-  Play,
-  Heart,
-  Youtube,
-  Video,
-  Loader2,
-  ArrowRight,
-  Sparkles,
-  Zap,
-  Trophy,
-  AlertCircle
-} from 'lucide-react'
+import { useTheme } from '@/components/shared/ThemeProvider'
+import ChannelAvatar from '@/components/shared/ChannelAvatar'
+import Link from 'next/link'
+
+// ── Theme colors ──
+const themes = {
+  dark: {
+    bg: '#0F0F0F', card: '#1A1A1A', cardHover: '#222',
+    text: '#F1F1F1', textSec: '#AAA', textDim: '#717171',
+    border: '#2A2A2A', borderLight: '#222',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.08)', redBorder: 'rgba(255,0,0,0.18)',
+    redGlow: 'rgba(255,0,0,0.12)',
+    green: '#3EA651', greenBg: 'rgba(62,166,81,0.1)', greenBorder: 'rgba(62,166,81,0.2)',
+    chip: '#2A2A2A',
+    bannerGrad: 'linear-gradient(135deg, #1a0000 0%, #0F0F0F 100%)',
+  },
+  light: {
+    bg: '#FFFFFF', card: '#FFFFFF', cardHover: '#F5F5F5',
+    text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
+    border: '#E5E5E5', borderLight: '#F0F0F0',
+    red: '#FF0000', redDark: '#CC0000',
+    redBg: 'rgba(255,0,0,0.05)', redBorder: 'rgba(255,0,0,0.12)',
+    redGlow: 'rgba(255,0,0,0.06)',
+    green: '#2BA640', greenBg: 'rgba(43,166,64,0.08)', greenBorder: 'rgba(43,166,64,0.15)',
+    chip: '#F2F2F2',
+    bannerGrad: 'linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%)',
+  },
+}
+
+// ── Inline SVG Icons ──
+const I = {
+  Users: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
+  Eye: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  Play: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+  Heart: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+  Sparkle: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>,
+  Up: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+  Arrow: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+}
 
 export default function DashboardPage() {
+  // ── Your existing data logic (unchanged) ──
   const [ytData, setYtData] = useState(null)
   const [ytConnected, setYtConnected] = useState(false)
   const [loading, setLoading] = useState(true)
+  const { dark } = useTheme()
+  const c = dark ? themes.dark : themes.light
 
   useEffect(() => {
     loadDashboard()
@@ -53,207 +81,342 @@ export default function DashboardPage() {
     return num.toLocaleString()
   }
 
+  // ── Loading state ──
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading your dashboard...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48, height: 48, border: `3px solid ${c.border}`,
+            borderTopColor: c.red, borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
+          }}/>
+          <p style={{ color: c.textDim, fontSize: 14 }}>Loading your dashboard...</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     )
   }
 
+  // ── YouTube not connected state ──
+  if (!ytConnected || !ytData) {
+    return (
+      <div style={{
+        background: c.card, border: `1px solid ${c.border}`,
+        borderRadius: 14, padding: '60px 20px', textAlign: 'center',
+      }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: 16,
+          background: c.redBg, margin: '0 auto 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: c.red, fontSize: 28,
+        }}>▶</div>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: c.text, marginBottom: 8 }}>
+          Connect Your YouTube Channel
+        </h3>
+        <p style={{ fontSize: 14, color: c.textSec, marginBottom: 24, maxWidth: 400, margin: '0 auto 24px' }}>
+          Link your YouTube account to see real analytics and get personalized AI coaching.
+        </p>
+        <Link href="/settings" style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          padding: '12px 24px', borderRadius: 10,
+          background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+          color: '#fff', fontSize: 14, fontWeight: 600,
+          textDecoration: 'none',
+        }}>
+          Go to Settings <I.Arrow />
+        </Link>
+      </div>
+    )
+  }
+
+  // ── Stats data ──
+  const stats = [
+    { label: 'Subscribers', value: formatNumber(ytData.subscribers), icon: I.Users },
+    { label: 'Total Views', value: formatNumber(ytData.total_views), icon: I.Eye },
+    { label: 'Videos', value: ytData.total_videos, icon: I.Play },
+    { label: 'Engagement', value: `${ytData.insights?.avgEngagementRate || 0}%`, icon: I.Heart },
+  ]
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Your channel overview at a glance</p>
+    <div>
+      <style>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-card { animation: fadeUp 0.45s ease forwards; opacity: 0; }
+        .fade-card:nth-child(1) { animation-delay: 0.04s; }
+        .fade-card:nth-child(2) { animation-delay: 0.08s; }
+        .fade-card:nth-child(3) { animation-delay: 0.12s; }
+        .fade-card:nth-child(4) { animation-delay: 0.16s; }
+        .upload-row { transition: background 0.12s ease; cursor: pointer; }
+        .upload-row:hover { background: ${c.cardHover} !important; }
+      `}</style>
+
+      {/* ── Channel Banner ── */}
+      <div style={{
+        background: c.bannerGrad,
+        border: `1px solid ${c.redBorder}`,
+        borderRadius: 14, padding: '20px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: 24, position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', right: -60, top: -60,
+          width: 200, height: 200, borderRadius: '50%',
+          background: `radial-gradient(circle, ${c.redGlow}, transparent 70%)`,
+          pointerEvents: 'none',
+        }}/>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative' }}>
+          <ChannelAvatar
+            src={ytData.channel_thumbnail || null}
+            name={ytData.channel_name}
+            size={48}
+          />
+          <div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: c.text, letterSpacing: -0.3 }}>
+              {ytData.channel_name}
+            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: c.green }}/>
+              <span style={{ fontSize: 12, color: c.green, fontWeight: 500 }}>YouTube connected</span>
+            </div>
+          </div>
+        </div>
+        <Link href="/analytics" style={{
+          padding: '9px 18px', borderRadius: 8,
+          background: 'transparent', border: `1px solid ${c.border}`,
+          color: c.text, fontSize: 13, fontWeight: 500,
+          textDecoration: 'none',
+          display: 'flex', alignItems: 'center', gap: 6,
+        }}>
+          View full analytics <I.Arrow />
+        </Link>
       </div>
 
-      {/* YouTube Connected — Main Stats */}
-      {ytConnected && ytData ? (
-        <>
-          {/* Channel Header */}
-          <div className="card bg-gradient-to-r from-red-50 to-red-100 border-red-200">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center">
-                <Youtube className="w-7 h-7 text-white" />
+      {/* ── Stats Grid ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+        {stats.map((stat, i) => {
+          const Icon = stat.icon
+          return (
+            <div key={i} className="fade-card" style={{
+              background: c.card, border: `1px solid ${c.border}`,
+              borderRadius: 14, padding: '20px',
+              position: 'relative', overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: 2.5,
+                background: `linear-gradient(90deg, ${c.red}, transparent)`, opacity: 0.5,
+              }}/>
+              <div style={{
+                width: 38, height: 38, borderRadius: 10,
+                background: c.redBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: c.red, marginBottom: 14,
+              }}>
+                <Icon />
               </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-900">{ytData.channel_name}</h2>
-                <p className="text-sm text-red-700 flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Live data connected
-                </p>
+              <div style={{ fontSize: 30, fontWeight: 800, color: c.text, letterSpacing: -1.2, lineHeight: 1 }}>
+                {stat.value}
               </div>
-              <a href="/analytics" className="flex items-center gap-2 text-sm font-medium text-red-700 hover:text-red-800">
-                View full analytics <ArrowRight className="w-4 h-4" />
-              </a>
+              <div style={{ fontSize: 12, color: c.textDim, marginTop: 6, fontWeight: 500 }}>
+                {stat.label}
+              </div>
             </div>
+          )
+        })}
+      </div>
+
+      {/* ── Two Column: Video + Insights ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 18, marginBottom: 20 }}>
+        {/* Best Performing Video */}
+        <div style={{
+          background: c.card, border: `1px solid ${c.border}`,
+          borderRadius: 14, padding: '22px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <span style={{ fontSize: 20 }}>🏆</span>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: c.text }}>Best Performing Video</h3>
           </div>
-
-          {/* Key Metrics — 4 cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="card text-center">
-              <Users className="w-6 h-6 text-red-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{formatNumber(ytData.subscribers)}</p>
-              <p className="text-xs text-gray-500 mt-1">Subscribers</p>
-            </div>
-            <div className="card text-center">
-              <Eye className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{formatNumber(ytData.total_views)}</p>
-              <p className="text-xs text-gray-500 mt-1">Total Views</p>
-            </div>
-            <div className="card text-center">
-              <Play className="w-6 h-6 text-purple-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{ytData.total_videos}</p>
-              <p className="text-xs text-gray-500 mt-1">Videos</p>
-            </div>
-            <div className="card text-center">
-              <Heart className="w-6 h-6 text-pink-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-900">{ytData.insights?.avgEngagementRate}%</p>
-              <p className="text-xs text-gray-500 mt-1">Avg Engagement</p>
-            </div>
-          </div>
-
-          {/* Two Column — Top Video + Quick Insights */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Top Performing Video */}
-            <div className="card">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                Best Performing Video
-              </h3>
-              {ytData.topVideos?.[0] && (
-                <div>
-                  {ytData.topVideos[0].thumbnail && (
-                    <img 
-                      src={ytData.topVideos[0].thumbnail} 
-                      alt="" 
-                      className="w-full h-40 object-cover rounded-lg mb-3" 
-                    />
-                  )}
-                  <p className="font-medium text-gray-900 text-sm mb-2">{ytData.topVideos[0].title}</p>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {formatNumber(ytData.topVideos[0].views)}</span>
-                    <span className="flex items-center gap-1"><Heart className="w-3 h-3" /> {formatNumber(ytData.topVideos[0].likes)}</span>
-                    <span className="text-primary-600 font-medium">{ytData.topVideos[0].engagement_rate}% ER</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Quick Insights */}
-            <div className="card">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary-600" />
-                Quick Insights
-              </h3>
-              <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Avg views per video</p>
-                  <p className="text-lg font-bold text-gray-900">{formatNumber(ytData.insights?.avgViews || 0)}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Recent likes</p>
-                  <p className="text-lg font-bold text-gray-900">{formatNumber(ytData.insights?.totalRecentLikes || 0)}</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Recent comments</p>
-                  <p className="text-lg font-bold text-gray-900">{formatNumber(ytData.insights?.totalRecentComments || 0)}</p>
-                </div>
-                {ytData.insights?.outlierVideos?.length > 0 && (
-                  <div className="p-3 bg-green-50 border border-green-100 rounded-lg">
-                    <p className="text-sm text-green-700 font-medium">
-                      🔥 {ytData.insights.outlierVideos.length} viral outlier{ytData.insights.outlierVideos.length > 1 ? 's' : ''} detected
-                    </p>
+          {ytData.topVideos?.[0] && (
+            <>
+              <div style={{
+                width: '100%', aspectRatio: '16/9',
+                borderRadius: 10, overflow: 'hidden', marginBottom: 14,
+                position: 'relative', cursor: 'pointer',
+              }}>
+                {ytData.topVideos[0].thumbnail ? (
+                  <img
+                    src={ytData.topVideos[0].thumbnail}
+                    alt=""
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '100%', height: '100%',
+                    background: dark ? 'linear-gradient(135deg, #1a1a1a, #252525)' : 'linear-gradient(135deg, #f0f0f0, #e8e8e8)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <div style={{
+                      width: 56, height: 56, borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.75)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <div style={{ color: '#fff', marginLeft: 3 }}><I.Play /></div>
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
+              <p style={{ fontSize: 14, fontWeight: 600, color: c.text, lineHeight: 1.4, marginBottom: 8 }}>
+                {ytData.topVideos[0].title}
+              </p>
+              <div style={{ display: 'flex', gap: 14, fontSize: 12, color: c.textSec }}>
+                <span>{formatNumber(ytData.topVideos[0].views)} views</span>
+                <span>{formatNumber(ytData.topVideos[0].likes)} likes</span>
+                <span style={{ color: c.green, fontWeight: 600 }}>{ytData.topVideos[0].engagement_rate}% ER</span>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Quick Insights */}
+        <div style={{
+          background: c.card, border: `1px solid ${c.border}`,
+          borderRadius: 14, padding: '22px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
+            <div style={{ color: c.red }}><I.Sparkle /></div>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: c.text }}>Quick Insights</h3>
+            <span style={{
+              marginLeft: 'auto', fontSize: 9, fontWeight: 700,
+              background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+              color: '#fff', padding: '3px 8px', borderRadius: 5, letterSpacing: 0.5,
+            }}>AI</span>
           </div>
 
-          {/* Recent Uploads — compact list */}
-          {ytData.videos && ytData.videos.length > 0 && (
-            <div className="card">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Uploads</h3>
-                <a href="/analytics" className="text-sm text-primary-600 hover:text-primary-700 flex items-center gap-1">
-                  See all <ArrowRight className="w-3 h-3" />
-                </a>
+          <div style={{ flex: 1 }}>
+            {[
+              { label: 'Avg views/video', val: formatNumber(ytData.insights?.avgViews || 0) },
+              { label: 'Recent likes', val: formatNumber(ytData.insights?.totalRecentLikes || 0) },
+              { label: 'Recent comments', val: formatNumber(ytData.insights?.totalRecentComments || 0) },
+            ].map((item, i) => (
+              <div key={i} style={{
+                padding: '15px 0',
+                borderBottom: i < 2 ? `1px solid ${c.borderLight}` : 'none',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              }}>
+                <span style={{ fontSize: 13, color: c.textSec }}>{item.label}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: -0.5 }}>{item.val}</span>
               </div>
-              <div className="space-y-2">
-                {ytData.videos.slice(0, 5).map((video, i) => (
-                  <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {video.thumbnail && (
-                        <img src={video.thumbnail} alt="" className="w-16 h-10 object-cover rounded flex-shrink-0" />
-                      )}
-                      <p className="text-sm font-medium text-gray-900 truncate">{video.title}</p>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-500 ml-3 flex-shrink-0">
-                      <span>{formatNumber(video.views)}</span>
-                      <span className="text-primary-600 font-medium">{video.engagement_rate}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            ))}
+          </div>
+
+          {ytData.insights?.outlierVideos?.length > 0 && (
+            <div style={{
+              marginTop: 14, padding: '12px 16px', borderRadius: 10,
+              background: c.greenBg, border: `1px solid ${c.greenBorder}`,
+              display: 'flex', alignItems: 'center', gap: 8,
+              fontSize: 13, fontWeight: 500, color: c.green,
+            }}>
+              🔥 {ytData.insights.outlierVideos.length} viral outlier{ytData.insights.outlierVideos.length > 1 ? 's' : ''} detected
             </div>
           )}
-        </>
-      ) : (
-        /* YouTube Not Connected */
-        <div className="card text-center py-12">
-          <Youtube className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Connect Your YouTube Channel</h3>
-          <p className="text-gray-600 mb-6">Link your YouTube account to see real analytics and get personalized AI coaching.</p>
-          <a href="/settings" className="btn-primary inline-flex items-center gap-2">
-            Go to Settings <ArrowRight className="w-4 h-4" />
-          </a>
-        </div>
-      )}
-
-      {/* Other Platforms — Coming Soon */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">More Platforms</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { name: 'Instagram', label: 'IG', bg: 'bg-pink-100', text: 'text-pink-600' },
-            { name: 'TikTok', label: 'TT', bg: 'bg-gray-100', text: 'text-gray-700' },
-            { name: 'Threads', label: '@', bg: 'bg-gray-100', text: 'text-gray-800' },
-          ].map((platform) => (
-            <div key={platform.name} className="card flex items-center gap-4 opacity-60">
-              <div className={`w-10 h-10 ${platform.bg} rounded-lg flex items-center justify-center`}>
-                <span className={`font-bold text-sm ${platform.text}`}>{platform.label}</span>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">{platform.name}</p>
-                <p className="text-xs text-gray-500">Coming soon</p>
-              </div>
-              <span className="px-3 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">Soon</span>
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="card bg-gradient-to-r from-primary-600 to-purple-600 text-white">
-        <h3 className="text-xl font-bold mb-2">Ready to grow your channel?</h3>
-        <p className="text-primary-100 mb-6">
-          Get AI-powered coaching and content ideas based on your real YouTube data
-        </p>
-        <div className="flex flex-wrap gap-4">
-          <a href="/coach" className="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            Talk to AI Coach
-          </a>
-          <a href="/ideas" className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors border border-white/20 flex items-center gap-2">
-            <Zap className="w-5 h-5" />
-            Generate Content Ideas
-          </a>
+      {/* ── Recent Uploads ── */}
+      {ytData.videos && ytData.videos.length > 0 && (
+        <div style={{
+          background: c.card, border: `1px solid ${c.border}`,
+          borderRadius: 14, overflow: 'hidden', marginBottom: 20,
+        }}>
+          <div style={{
+            padding: '18px 22px', display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between', borderBottom: `1px solid ${c.borderLight}`,
+          }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: c.text }}>Recent Uploads</h3>
+            <Link href="/analytics" style={{
+              background: 'transparent', border: 'none', color: c.red,
+              fontSize: 13, fontWeight: 500, textDecoration: 'none',
+              display: 'flex', alignItems: 'center', gap: 4,
+            }}>
+              See all <I.Arrow />
+            </Link>
+          </div>
+          {ytData.videos.slice(0, 5).map((video, i) => (
+            <div key={i} className="upload-row" style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '14px 22px',
+              borderBottom: i < Math.min(ytData.videos.length, 5) - 1 ? `1px solid ${c.borderLight}` : 'none',
+            }}>
+              <div style={{
+                width: 72, height: 42, borderRadius: 7, flexShrink: 0, overflow: 'hidden',
+              }}>
+                {video.thumbnail ? (
+                  <img src={video.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{
+                    width: '100%', height: '100%',
+                    background: dark ? 'linear-gradient(135deg, #1e1e1e, #2a2a2a)' : 'linear-gradient(135deg, #eee, #ddd)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <div style={{ opacity: 0.4, color: c.textDim }}><I.Play /></div>
+                  </div>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{
+                  fontSize: 13, fontWeight: 500, color: c.text,
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>{video.title}</p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+                <span style={{ fontSize: 13, color: c.textSec }}>{formatNumber(video.views)} views</span>
+                <span style={{
+                  fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 6,
+                  background: parseFloat(video.engagement_rate) > 10 ? c.greenBg : 'transparent',
+                  border: parseFloat(video.engagement_rate) > 10 ? `1px solid ${c.greenBorder}` : 'none',
+                  color: parseFloat(video.engagement_rate) > 10 ? c.green : c.textDim,
+                }}>{video.engagement_rate}%</span>
+              </div>
+            </div>
+          ))}
         </div>
+      )}
+
+      {/* ── Platform Status ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+        {[
+          { name: 'YouTube', status: 'Connected', ok: true, icon: '▶' },
+          { name: 'Instagram', status: 'Coming soon', ok: false, icon: '◎' },
+          { name: 'TikTok', status: 'Coming soon', ok: false, icon: '♪' },
+          { name: 'Threads', status: 'Coming soon', ok: false, icon: '@' },
+        ].map((p, i) => (
+          <div key={i} style={{
+            background: c.card,
+            border: `1px solid ${p.ok ? c.greenBorder : c.border}`,
+            borderRadius: 10, padding: '14px 16px',
+            display: 'flex', alignItems: 'center', gap: 12,
+            opacity: p.ok ? 1 : 0.45,
+          }}>
+            <div style={{
+              width: 34, height: 34, borderRadius: 8,
+              background: p.ok ? c.redBg : c.chip,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: p.ok ? c.red : c.textDim, fontSize: 15,
+            }}>{p.icon}</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: c.text }}>{p.name}</div>
+              <div style={{ fontSize: 10, fontWeight: 500, color: p.ok ? c.green : c.textDim }}>{p.status}</div>
+            </div>
+            {!p.ok && (
+              <span style={{
+                marginLeft: 'auto', fontSize: 9, fontWeight: 600,
+                color: c.textDim, background: c.chip,
+                padding: '2px 8px', borderRadius: 4, letterSpacing: 0.5,
+              }}>SOON</span>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )
