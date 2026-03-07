@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation } from '@/lib/api'
+import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation, getYouTubeStatus } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 
 // ── Theme colors ──
@@ -18,6 +18,7 @@ const themes = {
     aiBubble: '#1A1A1A', aiBubbleText: '#F1F1F1',
     inputBg: '#1A1A1A', inputBorder: '#2A2A2A',
     histBg: '#161616', histHover: '#1E1E1E', histActive: '#222',
+    warnBg: 'rgba(255,140,0,0.08)', warnBorder: 'rgba(255,140,0,0.25)', warnText: '#FF8C00',
   },
   light: {
     card: '#FFFFFF', cardHover: '#F5F5F5', text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
@@ -31,6 +32,7 @@ const themes = {
     aiBubble: '#F2F2F2', aiBubbleText: '#0F0F0F',
     inputBg: '#FFFFFF', inputBorder: '#E5E5E5',
     histBg: '#FAFAFA', histHover: '#F2F2F2', histActive: '#EDEDED',
+    warnBg: 'rgba(255,140,0,0.06)', warnBorder: 'rgba(255,140,0,0.2)', warnText: '#E67E00',
   },
 }
 
@@ -49,10 +51,25 @@ const I = {
   Target: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
   Users: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
   Video: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="15" height="16" rx="2"/><polygon points="22 8 17 12 22 16 22 8"/></svg>,
+  YouTube: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.7A11.87 11.87 0 0012 3.5a11.87 11.87 0 00-3.82.49 4.83 4.83 0 01-3.77 2.7A4.78 4.78 0 002 11.5v1a4.78 4.78 0 002.41 4.31 4.83 4.83 0 013.77 2.7 11.87 11.87 0 003.82.49 11.87 11.87 0 003.82-.49 4.83 4.83 0 013.77-2.7A4.78 4.78 0 0022 12.5v-1a4.78 4.78 0 00-2.41-4.81zM10 15.5v-7l6 3.5z"/></svg>,
+  Warning: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+}
+
+// ── Prompts that require YouTube data ──
+const DATA_DEPENDENT_PROMPTS = [
+  'channel audit', 'my channel', 'my data', 'my video', 'my analytics',
+  'my subscribers', 'my views', 'my engagement', 'my performance',
+  'give me action steps', 'go deeper', 'next video idea',
+  'channel audit', 'growth strategy', 'audience insights', 'video review',
+  'how am i doing', 'my latest', 'my stats', 'my top',
+]
+
+function requiresYouTubeData(message) {
+  const lower = message.toLowerCase()
+  return DATA_DEPENDENT_PROMPTS.some(p => lower.includes(p))
 }
 
 export default function CoachPage() {
-  // ── All your existing state & logic (unchanged) ──
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,6 +78,7 @@ export default function CoachPage() {
   const [activeConversationId, setActiveConversationId] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [loadingHistory, setLoadingHistory] = useState(true)
+  const [ytConnected, setYtConnected] = useState(null) // null = loading, true/false = status
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const { dark } = useTheme()
@@ -71,8 +89,17 @@ export default function CoachPage() {
   }
 
   useEffect(() => { scrollToBottom() }, [messages])
-  useEffect(() => { loadConversations() }, [])
+  useEffect(() => { loadConversations(); checkYouTubeStatus() }, [])
   useEffect(() => { if (!loadingHistory) inputRef.current?.focus() }, [loadingHistory, activeConversationId])
+
+  async function checkYouTubeStatus() {
+    try {
+      const data = await getYouTubeStatus()
+      setYtConnected(data.connected === true)
+    } catch {
+      setYtConnected(false)
+    }
+  }
 
   async function loadConversations() {
     try {
@@ -116,6 +143,22 @@ export default function CoachPage() {
   async function handleSubmit(e) {
     e.preventDefault()
     if (!input.trim() || loading) return
+
+    // ── YouTube connection guard ──
+    // If message requires personal data and YouTube is NOT connected, 
+    // show a helpful message instead of letting AI hallucinate
+    if (!ytConnected && requiresYouTubeData(input)) {
+      const guardMessage = {
+        role: 'assistant',
+        content: "To give you personalized insights about your channel, I need access to your YouTube data first.\n\nGo to **Settings → Connected Platforms → YouTube → Connect** to link your account.\n\nOnce connected, I'll have access to your real analytics, videos, and audience data to give you accurate, tailored advice. 🎯",
+        timestamp: new Date(),
+        isGuard: true,
+      }
+      setMessages(prev => [...prev, { role: 'user', content: input, timestamp: new Date() }, guardMessage])
+      setInput('')
+      return
+    }
+
     const userMessage = { role: 'user', content: input, timestamp: new Date() }
     setMessages(prev => [...prev, userMessage])
     const currentInput = input
@@ -191,13 +234,13 @@ export default function CoachPage() {
   ]
 
   const quickActions = [
-    { icon: I.BarChart, label: 'Channel Audit', prompt: 'Give me a quick audit of my channel — what am I doing well and what needs improvement?', color: c.red, bg: c.redBg, border: c.redBorder },
-    { icon: I.TrendUp, label: 'Growth Strategy', prompt: 'Based on my data, what is the #1 thing I should focus on to grow faster?', color: c.green, bg: c.greenBg, border: c.greenBorder },
-    { icon: I.Bulb, label: 'Next Video Idea', prompt: 'Give me 3 video ideas based on what performs best on my channel', color: '#FFD600', bg: 'rgba(255,214,0,0.1)', border: 'rgba(255,214,0,0.2)' },
-    { icon: I.Eye, label: 'Spy on Competitor', prompt: 'Find 5 competitors in my niche and analyze what makes their top videos successful', color: c.red, bg: c.redBg, border: c.redBorder },
-    { icon: I.Target, label: 'Compare Channels', prompt: 'Compare my channel with @MrBeast and tell me the biggest gaps and opportunities', color: c.green, bg: c.greenBg, border: c.greenBorder },
-    { icon: I.Users, label: 'Audience Insights', prompt: 'What does my engagement data tell you about my audience?', color: '#4D9EFF', bg: 'rgba(77,158,255,0.1)', border: 'rgba(77,158,255,0.2)' },
-    { icon: I.Video, label: 'Video Review', prompt: 'Review my latest video — how did it perform and what can I improve?', color: '#FF8C00', bg: 'rgba(255,140,0,0.1)', border: 'rgba(255,140,0,0.2)' },
+    { icon: I.BarChart, label: 'Channel Audit', prompt: 'Give me a quick audit of my channel — what am I doing well and what needs improvement?', color: c.red, bg: c.redBg, border: c.redBorder, needsYT: true },
+    { icon: I.TrendUp, label: 'Growth Strategy', prompt: 'Based on my data, what is the #1 thing I should focus on to grow faster?', color: c.green, bg: c.greenBg, border: c.greenBorder, needsYT: true },
+    { icon: I.Bulb, label: 'Next Video Idea', prompt: 'Give me 3 video ideas based on what performs best on my channel', color: '#FFD600', bg: 'rgba(255,214,0,0.1)', border: 'rgba(255,214,0,0.2)', needsYT: true },
+    { icon: I.Eye, label: 'Spy on Competitor', prompt: 'Find 5 competitors in my niche and analyze what makes their top videos successful', color: c.red, bg: c.redBg, border: c.redBorder, needsYT: false },
+    { icon: I.Target, label: 'Compare Channels', prompt: 'Compare my channel with @MrBeast and tell me the biggest gaps and opportunities', color: c.green, bg: c.greenBg, border: c.greenBorder, needsYT: false },
+    { icon: I.Users, label: 'Audience Insights', prompt: 'What does my engagement data tell you about my audience?', color: '#4D9EFF', bg: 'rgba(77,158,255,0.1)', border: 'rgba(77,158,255,0.2)', needsYT: true },
+    { icon: I.Video, label: 'Video Review', prompt: 'Review my latest video — how did it perform and what can I improve?', color: '#FF8C00', bg: 'rgba(255,140,0,0.1)', border: 'rgba(255,140,0,0.2)', needsYT: true },
   ]
 
   const grouped = groupConversations(conversations)
@@ -210,7 +253,8 @@ export default function CoachPage() {
         .hist-item { transition: background 0.12s ease; cursor: pointer; }
         .hist-item:hover { background: ${c.histHover} !important; }
         .qa-btn { transition: all 0.15s ease; cursor: pointer; border: none; }
-        .qa-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .qa-btn:hover:not(.qa-locked) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .qa-locked { opacity: 0.4; cursor: not-allowed !important; }
       `}</style>
 
       {/* ── Chat History Panel ── */}
@@ -315,22 +359,77 @@ export default function CoachPage() {
               <span style={{ fontSize: 12, color: c.textDim }}>YouTube growth strategist</span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {platforms.map((p) => (
-              <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
-                style={{
-                  padding: '6px 14px', borderRadius: 7, border: 'none', fontFamily: 'inherit',
-                  background: selectedPlatform === p.id && p.available ? c.chipActive : c.chip,
-                  color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
-                  cursor: p.available ? 'pointer' : 'default',
-                  fontSize: 12, fontWeight: 600, opacity: p.available ? 1 : 0.4,
-                  transition: 'all 0.15s ease',
-                }}>
-                {p.id === 'youtube' && '▶ '}{p.name}
-              </button>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {/* YouTube connection status badge */}
+            {ytConnected !== null && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '5px 10px', borderRadius: 8,
+                background: ytConnected ? c.greenBg : c.warnBg,
+                border: `1px solid ${ytConnected ? c.greenBorder : c.warnBorder}`,
+                fontSize: 12, fontWeight: 600,
+                color: ytConnected ? c.green : c.warnText,
+              }}>
+                <div style={{
+                  width: 6, height: 6, borderRadius: '50%',
+                  background: ytConnected ? c.green : c.warnText,
+                }}/>
+                {ytConnected ? 'YouTube connected' : 'YouTube not connected'}
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: 6 }}>
+              {platforms.map((p) => (
+                <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
+                  style={{
+                    padding: '6px 14px', borderRadius: 7, border: 'none', fontFamily: 'inherit',
+                    background: selectedPlatform === p.id && p.available ? c.chipActive : c.chip,
+                    color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
+                    cursor: p.available ? 'pointer' : 'default',
+                    fontSize: 12, fontWeight: 600, opacity: p.available ? 1 : 0.4,
+                    transition: 'all 0.15s ease',
+                  }}>
+                  {p.id === 'youtube' && '▶ '}{p.name}
+                </button>
+              ))}
+            </div>
           </div>
         </header>
+
+        {/* ── YouTube not connected banner ── */}
+        {ytConnected === false && (
+          <div style={{
+            margin: '12px 24px 0',
+            padding: '12px 16px',
+            background: c.warnBg,
+            border: `1px solid ${c.warnBorder}`,
+            borderRadius: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+            flexShrink: 0,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ color: c.warnText, flexShrink: 0 }}><I.Warning /></div>
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: c.warnText, marginBottom: 1 }}>
+                  YouTube not connected
+                </p>
+                <p style={{ fontSize: 12, color: c.textDim }}>
+                  Connect your channel to unlock personalized analytics, coaching, and insights.
+                </p>
+              </div>
+            </div>
+            <a href="/settings" style={{
+              padding: '7px 14px', borderRadius: 8, flexShrink: 0,
+              background: c.warnText, color: '#fff',
+              fontSize: 12, fontWeight: 700, textDecoration: 'none',
+              transition: 'opacity 0.15s',
+            }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              Connect
+            </a>
+          </div>
+        )}
 
         {/* Messages / Welcome */}
         <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
@@ -344,15 +443,22 @@ export default function CoachPage() {
               }}><svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg></div>
               <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
               <p style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
-                I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy.
+                {ytConnected
+                  ? "I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy."
+                  : "You can ask me general questions or competitor research. Connect YouTube in Settings to unlock personalized coaching."}
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
                 {quickActions.slice(0, 4).map((qa, i) => {
                   const QIcon = qa.icon
+                  const locked = qa.needsYT && !ytConnected
                   return (
-                    <button key={i} className="qa-btn" onClick={() => handleQuickPrompt(qa.prompt)}
-                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit' }}>
+                    <button key={i}
+                      className={`qa-btn${locked ? ' qa-locked' : ''}`}
+                      onClick={() => !locked && handleQuickPrompt(qa.prompt)}
+                      title={locked ? 'Connect YouTube to use this' : ''}
+                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
                       <QIcon />{qa.label}
+                      {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
                     </button>
                   )
                 })}
@@ -360,10 +466,15 @@ export default function CoachPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
                 {quickActions.slice(4).map((qa, i) => {
                   const QIcon = qa.icon
+                  const locked = qa.needsYT && !ytConnected
                   return (
-                    <button key={i} className="qa-btn" onClick={() => handleQuickPrompt(qa.prompt)}
-                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit' }}>
+                    <button key={i}
+                      className={`qa-btn${locked ? ' qa-locked' : ''}`}
+                      onClick={() => !locked && handleQuickPrompt(qa.prompt)}
+                      title={locked ? 'Connect YouTube to use this' : ''}
+                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
                       <QIcon />{qa.label}
+                      {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
                     </button>
                   )
                 })}
@@ -375,7 +486,7 @@ export default function CoachPage() {
                 <div key={i} className="msg-in" style={{ display: 'flex', gap: 12, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: msg.role === 'user' ? `linear-gradient(135deg, ${c.red}, ${c.redDark})` : `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+                    background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#fff', fontSize: 13, fontWeight: 700,
                   }}>
@@ -384,15 +495,26 @@ export default function CoachPage() {
                   <div style={{
                     maxWidth: '70%', padding: '14px 18px',
                     borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                    background: msg.role === 'user' ? c.userBubble : c.aiBubble,
+                    background: msg.role === 'user' ? c.userBubble : msg.isGuard ? c.warnBg : c.aiBubble,
                     color: msg.role === 'user' ? c.userBubbleText : c.aiBubbleText,
-                    border: msg.role === 'assistant' ? `1px solid ${c.border}` : 'none',
+                    border: msg.role === 'assistant' ? `1px solid ${msg.isGuard ? c.warnBorder : c.border}` : 'none',
                     fontSize: 14, lineHeight: 1.6,
                   }}>
                     {msg.role === 'user' ? (
                       <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                     ) : (
                       <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatCoachMessage(msg.content) }} />
+                    )}
+                    {/* Connect CTA inside guard message */}
+                    {msg.isGuard && (
+                      <a href="/settings" style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                        marginTop: 12, padding: '8px 14px', borderRadius: 8,
+                        background: c.warnText, color: '#fff',
+                        fontSize: 12, fontWeight: 700, textDecoration: 'none',
+                      }}>
+                        <I.YouTube /> Go to Settings → Connect YouTube
+                      </a>
                     )}
                   </div>
                 </div>
@@ -454,7 +576,7 @@ export default function CoachPage() {
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask about your channel, competitors (@handle), or strategy..."
+              placeholder={ytConnected ? "Ask about your channel, competitors (@handle), or strategy..." : "Ask a general question or connect YouTube for personalized coaching..."}
               disabled={loading}
               style={{
                 flex: 1, border: 'none', outline: 'none',
