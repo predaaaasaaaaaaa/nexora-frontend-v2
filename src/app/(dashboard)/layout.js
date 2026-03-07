@@ -9,6 +9,7 @@ import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
+import { getYouTubeStatus } from '@/lib/api'
 
 // ── Theme color system ──
 const themes = {
@@ -20,6 +21,7 @@ const themes = {
     redBg: 'rgba(255,0,0,0.08)', redBorder: 'rgba(255,0,0,0.18)',
     green: '#3EA651', greenBg: 'rgba(62,166,81,0.1)', greenBorder: 'rgba(62,166,81,0.2)',
     chip: '#2A2A2A', glass: 'rgba(15,15,15,0.9)',
+    warnBg: 'rgba(255,140,0,0.08)', warnBorder: 'rgba(255,140,0,0.2)', warnText: '#FF8C00',
   },
   light: {
     bg: '#FFFFFF', card: '#FFFFFF', cardHover: '#F5F5F5', sidebar: '#FFFFFF',
@@ -29,10 +31,10 @@ const themes = {
     redBg: 'rgba(255,0,0,0.05)', redBorder: 'rgba(255,0,0,0.12)',
     green: '#2BA640', greenBg: 'rgba(43,166,64,0.08)', greenBorder: 'rgba(43,166,64,0.15)',
     chip: '#F2F2F2', glass: 'rgba(255,255,255,0.92)',
+    warnBg: 'rgba(255,140,0,0.06)', warnBorder: 'rgba(255,140,0,0.2)', warnText: '#E67E00',
   },
 }
 
-// ── Inline SVG Icons (matching the design system) ──
 const Icons = {
   Grid: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
   Bar: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
@@ -42,7 +44,6 @@ const Icons = {
   Gear: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
 }
 
-// ── Page titles map ──
 const pageTitles = {
   '/dashboard': { title: 'Dashboard', sub: 'Your channel overview at a glance' },
   '/analytics': { title: 'Analytics Dashboard', sub: 'Real-time insights from your connected platforms' },
@@ -60,13 +61,19 @@ export default function DashboardLayout({ children }) {
   const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [hoverNav, setHoverNav] = useState(null)
+  const [ytConnected, setYtConnected] = useState(false)
 
   const c = dark ? themes.dark : themes.light
 
-  // ── Auth (unchanged from your original) ──
   useEffect(() => {
     checkAuth()
   }, [])
+
+  // Re-check YouTube status whenever pathname changes
+  // (so badge updates immediately after connecting in Settings)
+  useEffect(() => {
+    checkYouTubeStatus()
+  }, [pathname])
 
   useEffect(() => {
     const section = pathname.split('/').pop()
@@ -89,12 +96,20 @@ export default function DashboardLayout({ children }) {
     setLoading(false)
   }
 
+  async function checkYouTubeStatus() {
+    try {
+      const data = await getYouTubeStatus()
+      setYtConnected(data?.connected === true)
+    } catch {
+      setYtConnected(false)
+    }
+  }
+
   async function handleSignOut() {
     await signOut()
     router.push('/')
   }
 
-  // ── Loading state ──
   if (loading) {
     return (
       <div style={{
@@ -112,7 +127,6 @@ export default function DashboardLayout({ children }) {
     )
   }
 
-  // ── Navigation items ──
   const navigation = [
     { href: '/dashboard', label: 'Dashboard', icon: Icons.Grid },
     { href: '/analytics', label: 'Analytics', icon: Icons.Bar },
@@ -138,7 +152,6 @@ export default function DashboardLayout({ children }) {
         @keyframes slideRight { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
       `}</style>
 
-      {/* ══ MOBILE BACKDROP ══ */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -150,9 +163,7 @@ export default function DashboardLayout({ children }) {
         />
       )}
 
-      {/* ══════════════════════════════════════════ */}
-      {/* SIDEBAR                                    */}
-      {/* ══════════════════════════════════════════ */}
+      {/* ══ SIDEBAR ══ */}
       <aside style={{
         width: 232,
         background: c.sidebar,
@@ -164,7 +175,6 @@ export default function DashboardLayout({ children }) {
         flexDirection: 'column',
         transition: 'background-color 0.35s ease, border-color 0.35s ease',
       }}>
-        {/* Logo */}
         <div style={{
           padding: '22px 20px 18px',
           display: 'flex', alignItems: 'center', gap: 10,
@@ -189,7 +199,6 @@ export default function DashboardLayout({ children }) {
           }}>BETA</span>
         </div>
 
-        {/* Navigation */}
         <nav style={{ flex: 1, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
           {navigation.map((item) => {
             const active = pathname === item.href
@@ -237,13 +246,11 @@ export default function DashboardLayout({ children }) {
           })}
         </nav>
 
-        {/* Sidebar Bottom */}
         <div style={{
           padding: '14px 16px',
           borderTop: `1px solid ${c.borderLight}`,
           display: 'flex', flexDirection: 'column', gap: 14,
         }}>
-          {/* Theme Toggle */}
           <button
             onClick={toggle}
             style={{
@@ -261,13 +268,8 @@ export default function DashboardLayout({ children }) {
             <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
 
-          {/* User Info */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <ChannelAvatar
-              src={null}
-              name={user?.email || 'U'}
-              size={34}
-            />
+            <ChannelAvatar src={null} name={user?.email || 'U'} size={34} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 fontSize: 13, fontWeight: 600, color: c.text,
@@ -279,7 +281,6 @@ export default function DashboardLayout({ children }) {
             </div>
           </div>
 
-          {/* Sign Out */}
           <button
             onClick={handleSignOut}
             style={{
@@ -300,11 +301,8 @@ export default function DashboardLayout({ children }) {
         </div>
       </aside>
 
-      {/* ══════════════════════════════════════════ */}
-      {/* MAIN CONTENT                               */}
-      {/* ══════════════════════════════════════════ */}
+      {/* ══ MAIN CONTENT ══ */}
       <main style={{ marginLeft: 232, flex: 1, minHeight: '100vh' }}>
-        {/* Sticky Header */}
         <header style={{
           padding: '18px 32px',
           borderBottom: `1px solid ${c.borderLight}`,
@@ -323,24 +321,43 @@ export default function DashboardLayout({ children }) {
               {pageInfo.sub}
             </p>
           </div>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '7px 16px', borderRadius: 20,
-            background: c.greenBg,
-            border: `1px solid ${c.greenBorder}`,
-          }}>
+
+          {/* ── Dynamic status badge ── */}
+          {ytConnected ? (
             <div style={{
-              width: 7, height: 7, borderRadius: '50%',
-              background: c.green,
-              boxShadow: `0 0 6px ${c.green}`,
-            }}/>
-            <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>
-              Live data connected
-            </span>
-          </div>
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '7px 16px', borderRadius: 20,
+              background: c.greenBg,
+              border: `1px solid ${c.greenBorder}`,
+            }}>
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: c.green,
+                boxShadow: `0 0 6px ${c.green}`,
+              }}/>
+              <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>
+                Live data connected
+              </span>
+            </div>
+          ) : (
+            <Link href="/settings" style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '7px 16px', borderRadius: 20,
+              background: c.warnBg,
+              border: `1px solid ${c.warnBorder}`,
+              textDecoration: 'none',
+            }}>
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: c.warnText,
+              }}/>
+              <span style={{ fontSize: 12, fontWeight: 500, color: c.warnText }}>
+                Connect YouTube
+              </span>
+            </Link>
+          )}
         </header>
 
-        {/* Page Content */}
         <div style={{ padding: '24px 32px 40px' }}>
           {children}
         </div>
