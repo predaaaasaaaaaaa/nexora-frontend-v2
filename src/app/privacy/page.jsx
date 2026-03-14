@@ -73,19 +73,31 @@ export default function PrivacyPolicyPage() {
     },
     {
       title: '3. How We Use Your Information',
-      content: 'We use your information to:',
-      list: [
-        'Provide, operate, and maintain the Platform and its features.',
-        'Authenticate your identity and manage your account.',
-        'Display your YouTube analytics and generate AI-powered insights.',
-        'Provide personalized AI coaching based on your channel data.',
-        'Generate tailored content ideas based on your niche and performance data.',
-        'Send scheduled content reminders via email (only if you opt in).',
-        'Improve and develop new features for the Platform.',
-        'Detect, prevent, and address security issues and abuse.',
-        'Communicate with you about service updates or changes.',
+      subsections: [
+        {
+          subtitle: '3.1 YouTube Data (received via Google APIs)',
+          content: 'Data received through Google APIs (YouTube Data API v3 and YouTube Analytics API v2) is used exclusively to:',
+          list: [
+            'Display your YouTube channel statistics and video performance metrics in the Analytics Dashboard.',
+            'Provide personalized AI coaching recommendations based on your channel data through the AI Coach feature.',
+            'Compare your channel performance against public competitor data you request.',
+          ],
+          after: 'YouTube data is not used for any other purpose. It is not used for advertising, analytics unrelated to your account, product development beyond your user-facing features, or any purpose other than providing and improving the features you directly interact with. This is in compliance with Google API Services User Data Policy, including the Limited Use requirements.',
+        },
+        {
+          subtitle: '3.2 Non-Google Data',
+          content: 'For data not received through Google APIs (such as your account information, AI Coach conversations, scheduled content, and usage data), we use this information to:',
+          list: [
+            'Authenticate your identity and manage your account.',
+            'Store and display your scheduled content and send email reminders (only if you opt in).',
+            'Generate content ideas based on your selected niche.',
+            'Detect, prevent, and address security issues and abuse.',
+            'Improve and develop new features for the Platform.',
+            'Communicate with you about service updates or changes.',
+          ],
+          after: 'We do not use your personal data for advertising purposes. We do not sell, rent, or trade your personal information to third parties.',
+        },
       ],
-      after: 'We do not use your personal data for advertising purposes. We do not sell, rent, or trade your personal information to third parties.',
     },
     {
       title: '4. Data Storage and Security',
