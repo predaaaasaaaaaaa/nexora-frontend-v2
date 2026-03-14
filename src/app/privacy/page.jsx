@@ -215,7 +215,7 @@ export default function PrivacyPolicyPage() {
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#FF0000' }}>LEGAL</span>
           </div>
           <h1 style={{ fontSize: 42, fontWeight: 900, letterSpacing: -1.5, marginBottom: 12 }}>Privacy Policy</h1>
-          <p style={{ fontSize: 15, color: '#888' }}>Last updated: March 6, 2026</p>
+          <p style={{ fontSize: 15, color: '#888' }}>Last updated: March 14, 2026</p>
           <p style={{ fontSize: 14, color: '#666', marginTop: 8 }}>
             Website: <a href="https://nexora-ai.org" className="legal-link">nexora-ai.org</a>
           </p>
