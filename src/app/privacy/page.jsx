@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
             'Provide personalized AI coaching recommendations based on your channel data through the AI Coach feature.',
             'Compare your channel performance against public competitor data you request.',
           ],
-          after: 'YouTube data is not used for any other purpose. It is not used for advertising, analytics unrelated to your account, product development beyond your user-facing features, or any purpose other than providing and improving the features you directly interact with. This is in compliance with Google API Services User Data Policy, including the Limited Use requirements.',
+          after: 'YouTube data is not used for any other purpose. It is not used for advertising, analytics unrelated to your account, product development beyond your user-facing features, or any purpose other than providing and improving the features you directly interact with. This is in compliance with Google API Services User Data Policy, including the Limited Use requirements. Google Workspace API data is not used to develop, improve, or train generalized or non-personalized AI and/or ML models. When you use the AI Coach feature, your YouTube channel data (such as video titles, view counts, engagement metrics, and audience demographics) is sent to Groq, a third-party AI inference provider, solely to generate personalized coaching responses for you in real time. This data is not used by Groq or NEXORA to train, improve, or build any generalized or non-personalized AI/ML models. No Google user data is transferred to any third-party AI tool for purposes other than providing the user-facing AI Coach feature described above.',
         },
         {
           subtitle: '3.2 Non-Google Data',
@@ -215,7 +215,7 @@ export default function PrivacyPolicyPage() {
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#FF0000' }}>LEGAL</span>
           </div>
           <h1 style={{ fontSize: 42, fontWeight: 900, letterSpacing: -1.5, marginBottom: 12 }}>Privacy Policy</h1>
-          <p style={{ fontSize: 15, color: '#888' }}>Last updated: March 14, 2026</p>
+          <p style={{ fontSize: 15, color: '#888' }}>Last updated: March 15, 2026</p>
           <p style={{ fontSize: 14, color: '#666', marginTop: 8 }}>
             Website: <a href="https://nexora-ai.org" className="legal-link">nexora-ai.org</a>
           </p>
