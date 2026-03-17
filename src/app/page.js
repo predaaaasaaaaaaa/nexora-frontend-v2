@@ -376,7 +376,7 @@ export default function LandingPage() {
           <span style={{ fontSize: 13, color: '#555', marginLeft: 8 }}>© 2026</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: '#555' }}>
-          <span>AI powered by Groq</span>
+          <Link href="/ai-transparency" style={{ color: '#555', textDecoration: 'none' }}>AI Transparency</Link>
           <span>·</span>
           <Link href="/privacy" style={{ color: '#555', textDecoration: 'none' }}>Privacy Policy</Link>
           <span>·</span>
