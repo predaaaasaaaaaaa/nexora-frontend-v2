@@ -375,9 +375,12 @@ export default function LandingPage() {
           <span style={{ fontSize: 14, fontWeight: 700 }}>NEXORA</span>
           <span style={{ fontSize: 13, color: '#555', marginLeft: 8 }}>© 2026</span>
         </div>
-        <div style={{ display: 'flex', gap: 24 }}>
-          <Link href="/privacy" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>Privacy</Link>
-          <Link href="/terms" style={{ fontSize: 13, color: '#555', textDecoration: 'none' }}>Terms</Link>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: '#555' }}>
+          <span>AI powered by Groq</span>
+          <span>·</span>
+          <Link href="/privacy" style={{ color: '#555', textDecoration: 'none' }}>Privacy Policy</Link>
+          <span>·</span>
+          <Link href="/terms" style={{ color: '#555', textDecoration: 'none' }}>Terms of Service</Link>
         </div>
       </footer>
     </div>
