@@ -11,6 +11,9 @@ const outfit = Outfit({
 export const metadata = {
   title: 'NEXORA - AI-Powered Social Media Coach',
   description: 'Grow your Instagram, YouTube, TikTok, and Twitter with AI-powered insights and coaching',
+  alternates: {
+    canonical: 'https://nexora-ai.org',
+  },
 }
 
 export default function RootLayout({ children }) {
