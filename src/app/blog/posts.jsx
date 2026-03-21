@@ -1,5 +1,8 @@
 import Post1Content from './content/post1'
 import Post2Content from './content/post2'
+import Post3Content from './content/post3'
+import Post4Content from './content/post4'
+import Post5Content from './content/post5'
 
 export const posts = [
   {
@@ -19,5 +22,32 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['tubebuddy', 'vidiq', 'comparison'],
     content: <Post2Content />,
+  },
+  {
+    slug: 'best-time-to-post-on-youtube',
+    title: 'How to Find the Best Time to Post on YouTube in 2026 (Using AI)',
+    description: 'Stop guessing when to upload. Learn how to find your optimal YouTube posting time using analytics, testing, and AI-powered scheduling tools.',
+    date: '2026-03-22',
+    author: 'NEXORA Team',
+    tags: ['youtube scheduling', 'posting time', 'AI tools'],
+    content: <Post3Content />,
+  },
+  {
+    slug: 'how-to-analyze-youtube-channel-performance',
+    title: 'How to Analyze Your YouTube Channel Performance (Step-by-Step)',
+    description: 'A complete guide to YouTube channel analysis. Learn which metrics matter, how to find growth patterns, and how AI can automate the process.',
+    date: '2026-03-23',
+    author: 'NEXORA Team',
+    tags: ['youtube analytics', 'channel audit', 'growth strategy'],
+    content: <Post4Content />,
+  },
+  {
+    slug: 'youtube-content-ideas-generator-ai',
+    title: 'YouTube Content Ideas: How AI Can Plan Your Next Viral Video',
+    description: 'Never run out of video ideas again. Learn how to use your analytics, competitor research, and AI tools to generate content ideas that actually perform.',
+    date: '2026-03-24',
+    author: 'NEXORA Team',
+    tags: ['content ideas', 'AI tools', 'youtube strategy'],
+    content: <Post5Content />,
   },
 ]
