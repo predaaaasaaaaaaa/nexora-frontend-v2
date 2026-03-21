@@ -126,8 +126,8 @@ export default function LandingPage() {
           <span style={{ fontSize: 9, fontWeight: 700, background: '#FF0000', color: '#fff', padding: '2px 7px', borderRadius: 4, letterSpacing: 0.8 }}>BETA</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {['Features', 'How it works', 'FAQ'].map((item, i) => (
-            <a key={i} className="nav-link" href={`#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
+          {['Features', 'How it works', 'FAQ', 'Blog'].map((item, i) => (
+            <a key={i} className="nav-link" href={item === 'Blog' ? '/blog' : `#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
           ))}
           <Link href="/login" className="nav-link" style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>Login</Link>
           <Link href="/signup" className="cta-primary" style={{
@@ -381,6 +381,8 @@ export default function LandingPage() {
           <Link href="/privacy" style={{ color: '#555', textDecoration: 'none' }}>Privacy Policy</Link>
           <span>·</span>
           <Link href="/terms" style={{ color: '#555', textDecoration: 'none' }}>Terms of Service</Link>
+          <span>·</span>
+          <Link href="/blog" style={{ color: '#555', textDecoration: 'none' }}>Blog</Link>
         </div>
       </footer>
     </div>
