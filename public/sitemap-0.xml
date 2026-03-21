@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://nexora-ai.org/login</loc><lastmod>2026-03-21T07:39:51.920Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/signup</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/analytics</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/coach</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/dashboard</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/ideas</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/scheduler</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/settings</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/ai-transparency</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/privacy</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://nexora-ai.org/terms</loc><lastmod>2026-03-21T07:39:51.921Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>
