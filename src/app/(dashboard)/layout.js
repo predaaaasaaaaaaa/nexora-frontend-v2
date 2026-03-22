@@ -9,7 +9,8 @@ import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
-import { getYouTubeStatus } from '@/lib/api'
+import { getYouTubeStatus, getCurrentPlan } from '@/lib/api'
+import PlanBadge from '@/components/shared/PlanBadge'
 
 // ── Theme color system ──
 const themes = {
@@ -42,6 +43,7 @@ const Icons = {
   Cal: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
   Bulb: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>,
   Gear: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
+  Upgrade: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
 }
 
 const pageTitles = {
@@ -62,18 +64,12 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [hoverNav, setHoverNav] = useState(null)
   const [ytConnected, setYtConnected] = useState(false)
+  const [userPlan, setUserPlan] = useState('free')
 
   const c = dark ? themes.dark : themes.light
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  // Re-check YouTube status whenever pathname changes
-  // (so badge updates immediately after connecting in Settings)
-  useEffect(() => {
-    checkYouTubeStatus()
-  }, [pathname])
+  useEffect(() => { checkAuth() }, [])
+  useEffect(() => { checkYouTubeStatus(); loadUserPlan() }, [pathname])
 
   useEffect(() => {
     const section = pathname.split('/').pop()
@@ -88,10 +84,7 @@ export default function DashboardLayout({ children }) {
 
   async function checkAuth() {
     const { user, error } = await getCurrentUser()
-    if (!user || error) {
-      router.push('/login')
-      return
-    }
+    if (!user || error) { router.push('/login'); return }
     setUser(user)
     setLoading(false)
   }
@@ -100,9 +93,14 @@ export default function DashboardLayout({ children }) {
     try {
       const data = await getYouTubeStatus()
       setYtConnected(data?.connected === true)
-    } catch {
-      setYtConnected(false)
-    }
+    } catch { setYtConnected(false) }
+  }
+
+  async function loadUserPlan() {
+    try {
+      const res = await getCurrentPlan()
+      if (res.success) setUserPlan(res.subscription?.plan || 'free')
+    } catch {}
   }
 
   async function handleSignOut() {
@@ -137,14 +135,12 @@ export default function DashboardLayout({ children }) {
   ]
 
   const pageInfo = pageTitles[pathname] || { title: 'NEXORA', sub: '' }
+  const showUpgrade = userPlan === 'free'
 
   return (
     <div style={{
       fontFamily: "'Outfit', 'Geist', -apple-system, sans-serif",
-      background: c.bg,
-      color: c.text,
-      minHeight: '100vh',
-      display: 'flex',
+      background: c.bg, color: c.text, minHeight: '100vh', display: 'flex',
       transition: 'background-color 0.35s ease, color 0.25s ease',
     }}>
       <style>{`
@@ -153,26 +149,17 @@ export default function DashboardLayout({ children }) {
       `}</style>
 
       {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-            zIndex: 45, display: 'none',
-          }}
-          className="lg-show"
-        />
+        <div onClick={() => setSidebarOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 45, display: 'none' }}
+          className="lg-show" />
       )}
 
       {/* ══ SIDEBAR ══ */}
       <aside style={{
-        width: 232,
-        background: c.sidebar,
+        width: 232, background: c.sidebar,
         borderRight: `1px solid ${c.border}`,
-        position: 'fixed',
-        top: 0, left: 0, bottom: 0,
-        zIndex: 50,
-        display: 'flex',
-        flexDirection: 'column',
+        position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50,
+        display: 'flex', flexDirection: 'column',
         transition: 'background-color 0.35s ease, border-color 0.35s ease',
       }}>
         <div style={{
@@ -189,9 +176,7 @@ export default function DashboardLayout({ children }) {
               pointerEvents: 'none',
             }}/>
           </div>
-          <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: -0.3, color: c.text }}>
-            NEXORA
-          </span>
+          <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: -0.3, color: c.text }}>NEXORA</span>
           <span style={{
             fontSize: 9, fontWeight: 700, letterSpacing: 0.8,
             background: c.red, color: '#fff',
@@ -205,9 +190,7 @@ export default function DashboardLayout({ children }) {
             const hovering = hoverNav === item.href
             const Icon = item.icon
             return (
-              <Link
-                key={item.href}
-                href={item.href}
+              <Link key={item.href} href={item.href}
                 onMouseEnter={() => setHoverNav(item.href)}
                 onMouseLeave={() => setHoverNav(null)}
                 style={{
@@ -216,17 +199,12 @@ export default function DashboardLayout({ children }) {
                   background: active ? c.redBg : hovering ? c.cardHover : 'transparent',
                   color: active ? c.red : c.textSec,
                   fontSize: 14, fontWeight: active ? 600 : 400,
-                  textDecoration: 'none',
-                  transition: 'all 0.15s ease',
-                  position: 'relative',
-                }}
-              >
+                  textDecoration: 'none', transition: 'all 0.15s ease', position: 'relative',
+                }}>
                 {active && (
                   <div style={{
-                    position: 'absolute', left: 0, top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: 3, height: 22, borderRadius: 2,
-                    background: c.red,
+                    position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+                    width: 3, height: 22, borderRadius: 2, background: c.red,
                     animation: 'slideRight 0.2s ease',
                   }}/>
                 )}
@@ -234,36 +212,47 @@ export default function DashboardLayout({ children }) {
                 {item.label}
                 {item.badge && (
                   <span style={{
-                    marginLeft: 'auto',
-                    fontSize: 9, fontWeight: 700, letterSpacing: 0.5,
+                    marginLeft: 'auto', fontSize: 9, fontWeight: 700, letterSpacing: 0.5,
                     background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
-                    color: '#fff',
-                    padding: '2px 7px', borderRadius: 4,
+                    color: '#fff', padding: '2px 7px', borderRadius: 4,
                   }}>{item.badge}</span>
                 )}
               </Link>
             )
           })}
+
+          {/* ── Upgrade CTA (only for free users) ── */}
+          {showUpgrade && (
+            <Link href="/pricing"
+              onMouseEnter={() => setHoverNav('upgrade')}
+              onMouseLeave={() => setHoverNav(null)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 11,
+                padding: '10px 14px', borderRadius: 10, marginTop: 8,
+                background: hoverNav === 'upgrade'
+                  ? `linear-gradient(135deg, ${c.red}, ${c.redDark})`
+                  : c.redBg,
+                color: hoverNav === 'upgrade' ? '#fff' : c.red,
+                fontSize: 14, fontWeight: 600, textDecoration: 'none',
+                transition: 'all 0.2s ease',
+                border: `1px solid ${c.redBorder}`,
+              }}>
+              <Icons.Upgrade />
+              Upgrade Plan
+            </Link>
+          )}
         </nav>
 
         <div style={{
-          padding: '14px 16px',
-          borderTop: `1px solid ${c.borderLight}`,
+          padding: '14px 16px', borderTop: `1px solid ${c.borderLight}`,
           display: 'flex', flexDirection: 'column', gap: 14,
         }}>
-          <button
-            onClick={toggle}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              padding: '9px', borderRadius: 8,
-              background: c.chip,
-              border: 'none', cursor: 'pointer',
-              color: c.textSec,
-              fontSize: 13, fontWeight: 500,
-              fontFamily: 'inherit',
-              transition: 'all 0.2s ease',
-            }}
-          >
+          <button onClick={toggle} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '9px', borderRadius: 8, background: c.chip,
+            border: 'none', cursor: 'pointer', color: c.textSec,
+            fontSize: 13, fontWeight: 500, fontFamily: 'inherit', transition: 'all 0.2s ease',
+          }}>
             {dark ? <Sun size={16} /> : <Moon size={16} />}
             <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
@@ -274,27 +263,18 @@ export default function DashboardLayout({ children }) {
               <div style={{
                 fontSize: 13, fontWeight: 600, color: c.text,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {user?.email}
-              </div>
-              <div style={{ fontSize: 11, color: c.textDim }}>Free Beta</div>
+              }}>{user?.email}</div>
+              <PlanBadge />
             </div>
           </div>
 
-          <button
-            onClick={handleSignOut}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '8px 12px', borderRadius: 8,
-              background: 'transparent',
-              border: `1px solid ${c.border}`,
-              cursor: 'pointer',
-              color: c.textSec,
-              fontSize: 13, fontWeight: 500,
-              fontFamily: 'inherit',
-              transition: 'all 0.15s ease',
-            }}
-          >
+          <button onClick={handleSignOut} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '8px 12px', borderRadius: 8, background: 'transparent',
+            border: `1px solid ${c.border}`, cursor: 'pointer',
+            color: c.textSec, fontSize: 13, fontWeight: 500, fontFamily: 'inherit',
+            transition: 'all 0.15s ease',
+          }}>
             <LogOut size={15} />
             <span>Sign Out</span>
           </button>
@@ -304,63 +284,36 @@ export default function DashboardLayout({ children }) {
       {/* ══ MAIN CONTENT ══ */}
       <main style={{ marginLeft: 232, flex: 1, minHeight: '100vh' }}>
         <header style={{
-          padding: '18px 32px',
-          borderBottom: `1px solid ${c.borderLight}`,
+          padding: '18px 32px', borderBottom: `1px solid ${c.borderLight}`,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: c.glass,
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          position: 'sticky', top: 0, zIndex: 40,
-          transition: 'all 0.35s ease',
+          background: c.glass, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+          position: 'sticky', top: 0, zIndex: 40, transition: 'all 0.35s ease',
         }}>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>
-              {pageInfo.title}
-            </h1>
-            <p style={{ fontSize: 13, color: c.textDim, marginTop: 2, fontWeight: 400 }}>
-              {pageInfo.sub}
-            </p>
+            <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>{pageInfo.title}</h1>
+            <p style={{ fontSize: 13, color: c.textDim, marginTop: 2, fontWeight: 400 }}>{pageInfo.sub}</p>
           </div>
-
-          {/* ── Dynamic status badge ── */}
           {ytConnected ? (
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '7px 16px', borderRadius: 20,
-              background: c.greenBg,
-              border: `1px solid ${c.greenBorder}`,
+              background: c.greenBg, border: `1px solid ${c.greenBorder}`,
             }}>
-              <div style={{
-                width: 7, height: 7, borderRadius: '50%',
-                background: c.green,
-                boxShadow: `0 0 6px ${c.green}`,
-              }}/>
-              <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>
-                Live data connected
-              </span>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.green, boxShadow: `0 0 6px ${c.green}` }}/>
+              <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>Live data connected</span>
             </div>
           ) : (
             <Link href="/settings" style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '7px 16px', borderRadius: 20,
-              background: c.warnBg,
-              border: `1px solid ${c.warnBorder}`,
-              textDecoration: 'none',
+              background: c.warnBg, border: `1px solid ${c.warnBorder}`, textDecoration: 'none',
             }}>
-              <div style={{
-                width: 7, height: 7, borderRadius: '50%',
-                background: c.warnText,
-              }}/>
-              <span style={{ fontSize: 12, fontWeight: 500, color: c.warnText }}>
-                Connect YouTube
-              </span>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.warnText }}/>
+              <span style={{ fontSize: 12, fontWeight: 500, color: c.warnText }}>Connect YouTube</span>
             </Link>
           )}
         </header>
-
-        <div style={{ padding: '24px 32px 40px' }}>
-          {children}
-        </div>
+        <div style={{ padding: '24px 32px 40px' }}>{children}</div>
       </main>
 
       <FeedbackPopup />
