@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { generateIdeas, getYouTubeStatus } from '@/lib/api'
+import { generateIdeas, getYouTubeStatus, getCurrentPlan } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 // ── Theme colors ──
 const themes = {
@@ -37,7 +38,6 @@ const I = {
 }
 
 export default function IdeasPage() {
-  // ── Your existing data logic (unchanged) ──
   const [ideas, setIdeas] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -45,6 +45,8 @@ export default function IdeasPage() {
   const [selectedNiche, setSelectedNiche] = useState('user-niche')
   const [userNiche, setUserNiche] = useState(null)
   const [nicheLoading, setNicheLoading] = useState(true)
+  const [upgradePrompt, setUpgradePrompt] = useState(null)
+  const [userPlan, setUserPlan] = useState(null)
   const { dark } = useTheme()
   const c = dark ? themes.dark : themes.light
 
@@ -76,7 +78,14 @@ export default function IdeasPage() {
 
   const niches = Object.keys(nicheMapping)
 
-  useEffect(() => { detectUserNiche() }, [])
+  useEffect(() => { detectUserNiche(); loadPlanInfo() }, [])
+
+  async function loadPlanInfo() {
+    try {
+      const res = await getCurrentPlan()
+      if (res.success) setUserPlan(res)
+    } catch {}
+  }
 
   async function detectUserNiche() {
     try {
@@ -94,9 +103,24 @@ export default function IdeasPage() {
       setLoading(true)
       setError(null)
       setIdeas(null)
+      setUpgradePrompt(null)
       const nicheValue = selectedNiche || 'user-niche'
       const data = await generateIdeas(selectedPlatform, 10, nicheValue)
+
+      // Check for plan limit
+      if (data.limitReached) {
+        setUpgradePrompt({
+          message: data.message,
+          currentPlan: data.currentPlan,
+          upgradeTo: data.upgradeTo,
+          usage: data.usage,
+        })
+        return
+      }
+
       setIdeas(data)
+      // Refresh plan info to update remaining count
+      await loadPlanInfo()
     } catch (err) {
       console.error('Error generating ideas:', err)
       setError(err.message || 'Failed to generate ideas')
@@ -115,6 +139,22 @@ export default function IdeasPage() {
 
       {/* ── Controls Card ── */}
       <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '22px', marginBottom: 24 }}>
+
+        {/* Usage counter */}
+        {userPlan?.usage?.contentIdeas && userPlan.usage.contentIdeas.limit !== 'unlimited' && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 14px', marginBottom: 16, borderRadius: 10,
+            background: c.redBg, border: `1px solid ${c.redBorder}`,
+          }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: c.red }}>
+              {userPlan.usage.contentIdeas.remaining}/{userPlan.usage.contentIdeas.limit} ideas remaining this week
+            </span>
+            {userPlan.subscription?.plan === 'free' && (
+              <a href="/pricing" style={{ fontSize: 11, fontWeight: 700, color: c.red, textDecoration: 'underline' }}>Upgrade</a>
+            )}
+          </div>
+        )}
 
         {/* Niche Selector */}
         <div style={{ marginBottom: 18 }}>
@@ -206,6 +246,19 @@ export default function IdeasPage() {
         )}
       </div>
 
+      {/* ── Upgrade Prompt (when limit hit) ── */}
+      {upgradePrompt && (
+        <div style={{ marginBottom: 24 }}>
+          <UpgradePrompt
+            message={upgradePrompt.message}
+            currentPlan={upgradePrompt.currentPlan}
+            upgradeTo={upgradePrompt.upgradeTo}
+            usage={upgradePrompt.usage}
+            onDismiss={() => setUpgradePrompt(null)}
+          />
+        </div>
+      )}
+
       {/* ── Coming Soon ── */}
       {!currentPlatform?.available && (
         <div style={{
@@ -266,7 +319,6 @@ export default function IdeasPage() {
             </div>
           </div>
 
-          {/* Ideas content card */}
           <div style={{
             background: c.card, border: `1px solid ${c.border}`,
             borderRadius: 14, padding: '24px', marginBottom: 16,
@@ -278,7 +330,6 @@ export default function IdeasPage() {
             </div>
           </div>
 
-          {/* Personalized note */}
           <div style={{
             background: c.greenBg, border: `1px solid ${c.greenBorder}`,
             borderRadius: 12, padding: '14px 18px',
@@ -296,7 +347,7 @@ export default function IdeasPage() {
       )}
 
       {/* ── Empty State ── */}
-      {!ideas && !loading && !error && currentPlatform?.available && (
+      {!ideas && !loading && !error && !upgradePrompt && currentPlatform?.available && (
         <div style={{
           background: c.emptyBg, border: `1px solid ${c.border}`,
           borderRadius: 14, padding: '60px 20px',
