@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation, getYouTubeStatus } from '@/lib/api'
+import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation, getYouTubeStatus, getCurrentPlan } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 // ── Theme colors ──
 const themes = {
@@ -53,6 +54,7 @@ const I = {
   Video: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="15" height="16" rx="2"/><polygon points="22 8 17 12 22 16 22 8"/></svg>,
   YouTube: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.7A11.87 11.87 0 0012 3.5a11.87 11.87 0 00-3.82.49 4.83 4.83 0 01-3.77 2.7A4.78 4.78 0 002 11.5v1a4.78 4.78 0 002.41 4.31 4.83 4.83 0 013.77 2.7 11.87 11.87 0 003.82.49 11.87 11.87 0 003.82-.49 4.83 4.83 0 013.77-2.7A4.78 4.78 0 0022 12.5v-1a4.78 4.78 0 00-2.41-4.81zM10 15.5v-7l6 3.5z"/></svg>,
   Warning: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+  Lock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
 }
 
 // ── Prompts that require YouTube data ──
@@ -78,7 +80,9 @@ export default function CoachPage() {
   const [activeConversationId, setActiveConversationId] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [loadingHistory, setLoadingHistory] = useState(true)
-  const [ytConnected, setYtConnected] = useState(null) // null = loading, true/false = status
+  const [ytConnected, setYtConnected] = useState(null)
+  const [userPlan, setUserPlan] = useState(null) // { plan, usage, limits }
+  const [upgradePrompt, setUpgradePrompt] = useState(null) // shown when limit hit
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const { dark } = useTheme()
@@ -89,8 +93,15 @@ export default function CoachPage() {
   }
 
   useEffect(() => { scrollToBottom() }, [messages])
-  useEffect(() => { loadConversations(); checkYouTubeStatus() }, [])
+  useEffect(() => { loadConversations(); checkYouTubeStatus(); loadPlanInfo() }, [])
   useEffect(() => { if (!loadingHistory) inputRef.current?.focus() }, [loadingHistory, activeConversationId])
+
+  async function loadPlanInfo() {
+    try {
+      const res = await getCurrentPlan()
+      if (res.success) setUserPlan(res)
+    } catch {}
+  }
 
   async function checkYouTubeStatus() {
     try {
@@ -105,6 +116,11 @@ export default function CoachPage() {
     try {
       setLoadingHistory(true)
       const data = await listCoachConversations()
+      // Handle limit error — free users can't access conversation history
+      if (data.limitReached) {
+        setConversations([])
+        return
+      }
       setConversations(data.conversations || [])
     } catch (err) { console.error('Error loading conversations:', err) }
     finally { setLoadingHistory(false) }
@@ -114,6 +130,10 @@ export default function CoachPage() {
     try {
       setLoading(true)
       const data = await getCoachMessages(conversationId)
+      if (data.limitReached) {
+        // Free user trying to access history
+        return
+      }
       const formattedMessages = (data.messages || []).map(msg => ({
         role: msg.role, content: msg.content,
         timestamp: new Date(msg.created_at), contextUsed: msg.context_used,
@@ -127,6 +147,7 @@ export default function CoachPage() {
   function handleNewChat() {
     setMessages([])
     setActiveConversationId(null)
+    setUpgradePrompt(null)
     inputRef.current?.focus()
   }
 
@@ -145,8 +166,6 @@ export default function CoachPage() {
     if (!input.trim() || loading) return
 
     // ── YouTube connection guard ──
-    // If message requires personal data and YouTube is NOT connected, 
-    // show a helpful message instead of letting AI hallucinate
     if (!ytConnected && requiresYouTubeData(input)) {
       const guardMessage = {
         role: 'assistant',
@@ -166,12 +185,29 @@ export default function CoachPage() {
     setLoading(true)
     try {
       const response = await chatWithCoach(currentInput, selectedPlatform, activeConversationId)
+
+      // ── Plan limit check ──
+      if (response.limitReached) {
+        setUpgradePrompt({
+          message: response.message,
+          currentPlan: response.currentPlan,
+          upgradeTo: response.upgradeTo,
+          usage: response.usage,
+        })
+        // Remove the user message we just added since it wasn't processed
+        setMessages(prev => prev.slice(0, -1))
+        setLoading(false)
+        return
+      }
+
       setMessages(prev => [...prev, {
         role: 'assistant', content: response.response,
         timestamp: new Date(), contextUsed: response.contextUsed,
       }])
       if (response.conversationId) setActiveConversationId(response.conversationId)
       await loadConversations()
+      // Refresh plan info to update remaining count
+      await loadPlanInfo()
     } catch (error) {
       setMessages(prev => [...prev, {
         role: 'assistant', content: "Sorry, I'm having trouble connecting right now. Please try again.",
@@ -226,6 +262,8 @@ export default function CoachPage() {
     return safe
   }
 
+  const isFreePlan = !userPlan || userPlan?.subscription?.plan === 'free'
+
   const platforms = [
     { id: 'youtube', name: 'YouTube', available: true },
     { id: 'instagram', name: 'Instagram', available: false },
@@ -277,7 +315,21 @@ export default function CoachPage() {
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
-            {loadingHistory ? (
+            {/* Free plan — conversation history locked */}
+            {isFreePlan ? (
+              <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                <div style={{ color: c.textDim, marginBottom: 8, display: 'flex', justifyContent: 'center' }}><I.Lock /></div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: c.text, marginBottom: 4 }}>Conversation History</p>
+                <p style={{ fontSize: 12, color: c.textDim, marginBottom: 12 }}>Upgrade to save and revisit your coaching sessions.</p>
+                <a href="/pricing" style={{
+                  display: 'inline-block', fontSize: 12, fontWeight: 600,
+                  padding: '8px 16px', borderRadius: 8,
+                  background: c.red, color: '#fff', textDecoration: 'none',
+                }}>
+                  Upgrade to Pro
+                </a>
+              </div>
+            ) : loadingHistory ? (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '32px 0' }}>
                 <div style={{ width: 20, height: 20, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -360,6 +412,15 @@ export default function CoachPage() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {/* Usage counter for non-unlimited plans */}
+            {userPlan?.usage?.coachMessages && userPlan.usage.coachMessages.limit !== 'unlimited' && (
+              <div style={{
+                fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 8,
+                background: c.redBg, border: `1px solid ${c.redBorder}`, color: c.red,
+              }}>
+                {userPlan.usage.coachMessages.remaining}/{userPlan.usage.coachMessages.limit} messages left today
+              </div>
+            )}
             {/* YouTube connection status badge */}
             {ytConnected !== null && (
               <div style={{
@@ -505,7 +566,6 @@ export default function CoachPage() {
                     ) : (
                       <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatCoachMessage(msg.content) }} />
                     )}
-                    {/* Connect CTA inside guard message */}
                     {msg.isGuard && (
                       <a href="/settings" style={{
                         display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -519,6 +579,19 @@ export default function CoachPage() {
                   </div>
                 </div>
               ))}
+
+              {/* Upgrade prompt shown inline when limit is hit */}
+              {upgradePrompt && (
+                <div style={{ maxWidth: '70%' }}>
+                  <UpgradePrompt
+                    message={upgradePrompt.message}
+                    currentPlan={upgradePrompt.currentPlan}
+                    upgradeTo={upgradePrompt.upgradeTo}
+                    usage={upgradePrompt.usage}
+                    onDismiss={() => setUpgradePrompt(null)}
+                  />
+                </div>
+              )}
 
               {loading && (
                 <div className="msg-in" style={{ display: 'flex', gap: 12 }}>
@@ -546,7 +619,7 @@ export default function CoachPage() {
         </div>
 
         {/* Quick follow-ups */}
-        {messages.length > 0 && messages.length < 8 && !loading && (
+        {messages.length > 0 && messages.length < 8 && !loading && !upgradePrompt && (
           <div style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {['Go deeper', 'Give me action steps', 'Next video idea'].map((q, i) => (
               <button key={i} onClick={() => handleQuickPrompt(q)}
