@@ -1,19 +1,16 @@
 import { supabase } from './supabase'
 
-// Remove trailing slash from API_URL to prevent double slashes in URLs
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || ''
 
-// Get auth token from Supabase
 async function getAuthToken() {
   const { data: { session } } = await supabase.auth.getSession()
   return session?.access_token
 }
 
-// Generic API call helper
+// Generic API call helper — now handles plan limit errors
 async function apiCall(endpoint, options = {}) {
   const token = await getAuthToken()
   
-  // Ensure endpoint starts with / for proper URL construction
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const url = `${API_URL}${normalizedEndpoint}`
   
@@ -28,13 +25,52 @@ async function apiCall(endpoint, options = {}) {
   
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: response.statusText }))
+    
+    // Plan limit or feature lock — return structured error instead of throwing
+    if (response.status === 403 && (error.error === 'limit_reached' || error.error === 'feature_locked')) {
+      return {
+        success: false,
+        limitReached: true,
+        message: error.message,
+        usage: error.usage || null,
+        currentPlan: error.currentPlan,
+        upgradeTo: error.upgradeTo,
+      }
+    }
+    
     throw new Error(error.error || `API Error: ${response.statusText}`)
   }
   
   return response.json()
 }
 
-// Analytics API
+// ————————————————————————————————————————
+// SUBSCRIPTION API
+// ————————————————————————————————————————
+
+export async function getSubscriptionPlans() {
+  return apiCall('/subscription/plans')
+}
+
+export async function getCurrentPlan() {
+  return apiCall('/subscription/current')
+}
+
+export async function createCheckout(plan) {
+  return apiCall('/subscription/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ plan })
+  })
+}
+
+export async function getCustomerPortal() {
+  return apiCall('/subscription/portal')
+}
+
+// ————————————————————————————————————————
+// ANALYTICS API
+// ————————————————————————————————————————
+
 export async function getAnalytics(platform) {
   return apiCall(`/analytics/${platform}`)
 }
@@ -43,7 +79,10 @@ export async function getCombinedAnalytics() {
   return apiCall('/analytics/combined')
 }
 
-// Coach API
+// ————————————————————————————————————————
+// COACH API
+// ————————————————————————————————————————
+
 export async function chatWithCoach(message, platform = 'youtube', conversationId = null) {
   return apiCall('/coach/chat', {
     method: 'POST',
@@ -113,7 +152,10 @@ export async function updateNotificationPreferences(prefs) {
   })
 }
 
-// Ideas API
+// ————————————————————————————————————————
+// IDEAS API
+// ————————————————————————————————————————
+
 export async function generateIdeas(platform, count = 10, niche = null) {
   let url = `/ideas/${platform}?count=${count}`
   if (niche) {
@@ -126,7 +168,10 @@ export async function generateAllIdeas(count = 5) {
   return apiCall(`/ideas/all?count=${count}`)
 }
 
-// Profile API
+// ————————————————————————————————————————
+// PROFILE API
+// ————————————————————————————————————————
+
 export async function getProfile() {
   return apiCall('/auth/profile')
 }
@@ -138,7 +183,10 @@ export async function updateProfile(updates) {
   })
 }
 
-// Feedback API
+// ————————————————————————————————————————
+// FEEDBACK API
+// ————————————————————————————————————————
+
 export async function submitFeedback(rating, message, category = 'general') {
   return apiCall('/feedback/submit', {
     method: 'POST',
@@ -146,7 +194,10 @@ export async function submitFeedback(rating, message, category = 'general') {
   })
 }
 
-// YouTube API
+// ————————————————————————————————————————
+// YOUTUBE API
+// ————————————————————————————————————————
+
 export async function connectYouTube() {
   return apiCall('/youtube/connect')
 }
@@ -165,7 +216,10 @@ export async function disconnectYouTube() {
   })
 }
 
-// Coach Conversations API
+// ————————————————————————————————————————
+// COACH CONVERSATIONS API
+// ————————————————————————————————————————
+
 export async function listCoachConversations() {
   return apiCall('/coach/conversations')
 }
@@ -187,7 +241,10 @@ export async function deleteCoachConversation(conversationId) {
   })
 }
 
-// Competitors API
+// ————————————————————————————————————————
+// COMPETITORS API
+// ————————————————————————————————————————
+
 export async function searchCompetitors(query) {
   return apiCall(`/competitors/search?query=${encodeURIComponent(query)}`)
 }
