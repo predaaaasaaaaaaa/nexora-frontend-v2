@@ -126,7 +126,7 @@ export default function LandingPage() {
           <span style={{ fontSize: 9, fontWeight: 700, background: '#FF0000', color: '#fff', padding: '2px 7px', borderRadius: 4, letterSpacing: 0.8 }}>BETA</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {['Features', 'How it works', 'FAQ', 'Blog'].map((item, i) => (
+          {['Features', 'How it works', 'Pricing', 'FAQ', 'Blog'].map((item, i) => (
             <a key={i} className="nav-link" href={item === 'Blog' ? '/blog' : `#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
           ))}
           <Link href="/login" className="nav-link" style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>Login</Link>
@@ -345,10 +345,90 @@ export default function LandingPage() {
               </div>
             </Section>
           ))}
-        </div>
-      </section>
-
-      {/* ═══ FINAL CTA ═══ */}
+          </div>
+        </section>
+  
+        {/* ═══ PRICING ═══ */}
+        <section id="pricing" style={{ padding: '80px 40px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <Section>
+            <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 50px' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: '#FF0000', display: 'block', marginBottom: 12 }}>PRICING</span>
+              <h2 style={{ fontSize: 42, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 16 }}>Choose your plan</h2>
+              <p style={{ fontSize: 16, color: '#888', lineHeight: 1.6 }}>Start free. Upgrade when you're ready. Every paid plan includes a 14-day free trial.</p>
+            </div>
+          </Section>
+          <div style={{ maxWidth: 960, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {[
+              { id: 'free', name: 'Starter', price: 0, desc: 'See the value. Get hooked. Want more.', badge: null, featured: false, features: [
+                { text: 'Basic dashboard (7-day data)', ok: true },
+                { text: '5 AI Coach messages/day', ok: 'limit' },
+                { text: 'No conversation history', ok: false },
+                { text: '3 content ideas/week', ok: 'limit' },
+                { text: 'No content scheduler', ok: false },
+                { text: 'No competitor analysis', ok: false },
+              ]},
+              { id: 'pro', name: 'Nexora Pro', price: 19, desc: 'Everything you need to grow seriously.', badge: 'Most popular', featured: true, features: [
+                { text: 'Full dashboard (90-day data)', ok: true },
+                { text: '15 AI Coach messages/day', ok: true },
+                { text: 'Conversation history (saved)', ok: true },
+                { text: '30 content ideas/week', ok: true },
+                { text: 'Content scheduler + reminders', ok: true },
+                { text: 'Track 3 competitors', ok: 'limit' },
+              ]},
+              { id: 'max', name: 'Nexora Max', price: 49, desc: 'Full power. Zero limits. Total control.', badge: 'For serious creators', featured: false, features: [
+                { text: 'Full dashboard (all-time data)', ok: true },
+                { text: 'Unlimited AI Coach messages', ok: true },
+                { text: 'Full conversation history', ok: true },
+                { text: 'Unlimited content ideas', ok: true },
+                { text: 'Content scheduler + reminders', ok: true },
+                { text: 'Track 10 competitors', ok: true },
+              ]},
+            ].map((plan, i) => (
+              <Section key={plan.id} delay={i * 0.1}>
+                <div style={{
+                  background: '#141414', borderRadius: 16, padding: '28px 24px',
+                  border: plan.featured ? '2px solid #FF0000' : '1px solid #222',
+                  display: 'flex', flexDirection: 'column', height: '100%',
+                }}>
+                  {plan.badge && (
+                    <span style={{
+                      display: 'inline-block', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 6, marginBottom: 14, alignSelf: 'flex-start',
+                      background: plan.featured ? 'rgba(255,0,0,0.12)' : 'rgba(255,255,255,0.06)',
+                      color: plan.featured ? '#FF4444' : '#AAA',
+                    }}>{plan.badge}</span>
+                  )}
+                  {!plan.badge && <div style={{ height: 29 }} />}
+                  <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 6 }}>{plan.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                    <span style={{ fontSize: 36, fontWeight: 700 }}>${plan.price}</span>
+                    <span style={{ fontSize: 14, color: '#717171' }}>/month</span>
+                  </div>
+                  <p style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>{plan.desc}</p>
+                  <div style={{ height: 1, background: '#222', marginBottom: 20 }} />
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}>
+                    {plan.features.map((f, fi) => (
+                      <li key={fi} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: f.ok === false ? '#555' : '#CCC', marginBottom: 10, lineHeight: 1.4 }}>
+                        <span style={{ fontSize: 12, width: 16, textAlign: 'center', flexShrink: 0, color: f.ok === true ? '#3EA651' : f.ok === 'limit' ? '#EF9F27' : '#555' }}>
+                          {f.ok === true ? '✓' : f.ok === 'limit' ? '~' : '✗'}
+                        </span>
+                        {f.text}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={plan.id === 'free' ? '/signup' : '/pricing'} className={plan.featured ? 'cta-primary' : 'cta-secondary'} style={{
+                    marginTop: 24, width: '100%', padding: '12px 0', borderRadius: 10, textAlign: 'center', textDecoration: 'none', fontSize: 14, fontWeight: 600, display: 'block',
+                    background: plan.featured ? 'linear-gradient(135deg, #FF0000, #CC0000)' : 'transparent',
+                    border: plan.featured ? 'none' : '1px solid #2A2A2A',
+                    color: '#F1F1F1',
+                  }}>{plan.id === 'free' ? 'Start Free' : 'Start 14-day free trial'}</Link>
+                </div>
+              </Section>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', fontSize: 12, color: '#555', marginTop: 20 }}>Payments handled securely by Lemon Squeezy. Cancel anytime.</p>
+        </section>
+  
+        {/* ═══ FINAL CTA ═══ */}
       <Section>
         <section style={{ padding: '100px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 70%)', pointerEvents: 'none' }}/>
