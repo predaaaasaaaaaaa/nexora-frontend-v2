@@ -3,6 +3,7 @@ import Post2Content from './content/post2'
 import Post3Content from './content/post3'
 import Post4Content from './content/post4'
 import Post5Content from './content/post5'
+import Post6Content from './content/post6'
 
 export const posts = [
   {
@@ -49,5 +50,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['content ideas', 'AI tools', 'youtube strategy'],
     content: <Post5Content />,
+  },
+  {
+    slug: 'how-to-analyze-youtube-competitors',
+    title: 'How to Analyze YouTube Competitors (Free Methods + AI)',
+    description: 'Learn how to find and analyze YouTube competitors in your niche. Free tools, proven frameworks, and AI-powered analysis to accelerate your channel growth.',
+    date: '2026-03-25',
+    author: 'NEXORA Team',
+    tags: ['competitor analysis', 'youtube strategy', 'free tools'],
+    content: <Post6Content />,
   },
 ]
