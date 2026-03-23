@@ -415,7 +415,7 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href={plan.id === 'free' ? '/signup' : '/pricing'} className={plan.featured ? 'cta-primary' : 'cta-secondary'} style={{
+                  <Link href="/signup" className={plan.featured ? 'cta-primary' : 'cta-secondary'} style={{
                     marginTop: 24, width: '100%', padding: '12px 0', borderRadius: 10, textAlign: 'center', textDecoration: 'none', fontSize: 14, fontWeight: 600, display: 'block',
                     background: plan.featured ? 'linear-gradient(135deg, #FF0000, #CC0000)' : 'transparent',
                     border: plan.featured ? 'none' : '1px solid #2A2A2A',
