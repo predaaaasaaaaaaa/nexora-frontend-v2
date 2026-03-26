@@ -40,7 +40,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
     try {
       const result = await createCheckout(upgradeTo)
       if (result.success && result.checkoutUrl) {
-        window.LemonSqueezy.Url.Open(result.checkoutUrl)
+        window.location.href = result.checkoutUrl
       }
     } catch (error) {
       console.error('Checkout error:', error)
