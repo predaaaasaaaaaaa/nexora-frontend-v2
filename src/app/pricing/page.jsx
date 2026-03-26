@@ -87,7 +87,7 @@ export default function PricingPage() {
     try {
       const result = await createCheckout(planId)
       if (result.success && result.checkoutUrl) {
-        window.open(result.checkoutUrl, '_blank')
+        window.LemonSqueezy.Url.Open(result.checkoutUrl)
       }
     } catch (error) {
       console.error('Checkout error:', error)
