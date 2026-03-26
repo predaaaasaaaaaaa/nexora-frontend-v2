@@ -1,4 +1,5 @@
 import { Outfit } from 'next/font/google'
+import Script from 'next/script'
 import ThemeProvider from '@/components/shared/ThemeProvider'
 import './globals.css'
 
@@ -21,6 +22,10 @@ export default function RootLayout({ children }) {
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
       <body className={outfit.className}>
         <ThemeProvider>{children}</ThemeProvider>
+        <Script 
+          src="https://app.lemonsqueezy.com/js/lemon.js" 
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
