@@ -100,7 +100,7 @@ export default function PricingPage() {
     if (currentPlan === planId) return 'Current plan'
     if (planId === 'free') return 'Free forever'
     if (loading === planId) return 'Opening checkout...'
-    return `Start 14-day free trial`
+    return 'Subscribe now'
   }
 
   function isButtonDisabled(planId) {
@@ -148,7 +148,7 @@ export default function PricingPage() {
           Choose your plan
         </h1>
         <p style={{ fontSize: 16, color: '#AAA', maxWidth: 480, margin: '0 auto' }}>
-          Start free. Upgrade when you're ready. Every paid plan includes a 14-day free trial.
+          Start free. Upgrade when you're ready. Cancel anytime.
         </p>
       </div>
 
@@ -267,7 +267,7 @@ export default function PricingPage() {
       {/* Footer note */}
       <div style={{ textAlign: 'center', paddingBottom: 40 }}>
         <p style={{ fontSize: 12, color: '#555' }}>
-          Payments handled securely by Lemon Squeezy. Cancel anytime from your dashboard.
+          Payments handled securely by Paddle. Cancel anytime from your dashboard.
         </p>
       </div>
     </div>
