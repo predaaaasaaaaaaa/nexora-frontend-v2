@@ -4,6 +4,7 @@ import Post3Content from './content/post3'
 import Post4Content from './content/post4'
 import Post5Content from './content/post5'
 import Post6Content from './content/post6'
+import Post7Content from './content/post7'
 
 export const posts = [
   {
@@ -59,5 +60,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['competitor analysis', 'youtube strategy', 'free tools'],
     content: <Post6Content />,
+  },
+  {
+    slug: 'how-youtube-algorithm-works-2026',
+    title: 'How the YouTube Algorithm Works in 2026 (What Actually Matters)',
+    description: 'Stop guessing how YouTube promotes videos. Learn how the algorithm actually works in 2026 — the 5 recommendation surfaces, 4 key signals, and what changed this year.',
+    date: '2026-03-26',
+    author: 'NEXORA Team',
+    tags: ['youtube algorithm', 'youtube growth', '2026 guide'],
+    content: <Post7Content />,
   },
 ]
