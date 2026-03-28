@@ -354,7 +354,7 @@ export default function LandingPage() {
             <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 50px' }}>
               <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, color: '#FF0000', display: 'block', marginBottom: 12 }}>PRICING</span>
               <h2 style={{ fontSize: 42, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 16 }}>Choose your plan</h2>
-              <p style={{ fontSize: 16, color: '#888', lineHeight: 1.6 }}>Start free. Upgrade when you're ready. Every paid plan includes a 14-day free trial.</p>
+              <p style={{ fontSize: 16, color: '#888', lineHeight: 1.6 }}>Start free. Upgrade when you're ready. Cancel anytime.</p>
             </div>
           </Section>
           <div style={{ maxWidth: 960, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
@@ -420,12 +420,12 @@ export default function LandingPage() {
                     background: plan.featured ? 'linear-gradient(135deg, #FF0000, #CC0000)' : 'transparent',
                     border: plan.featured ? 'none' : '1px solid #2A2A2A',
                     color: '#F1F1F1',
-                  }}>{plan.id === 'free' ? 'Start Free' : 'Start 14-day free trial'}</Link>
+                  }}>{plan.id === 'free' ? 'Start Free' : 'Subscribe now'}</Link>
                 </div>
               </Section>
             ))}
           </div>
-          <p style={{ textAlign: 'center', fontSize: 12, color: '#555', marginTop: 20 }}>Payments handled securely by Lemon Squeezy. Cancel anytime.</p>
+          <p style={{ textAlign: 'center', fontSize: 12, color: '#555', marginTop: 20 }}>Payments handled securely by Paddle. Cancel anytime.</p>
         </section>
   
         {/* ═══ FINAL CTA ═══ */}
