@@ -5,6 +5,7 @@ import Post4Content from './content/post4'
 import Post5Content from './content/post5'
 import Post6Content from './content/post6'
 import Post7Content from './content/post7'
+import Post8Content from './content/post8'
 
 export const posts = [
   {
@@ -69,5 +70,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube algorithm', 'youtube growth', '2026 guide'],
     content: <Post7Content />,
+  },
+  {
+    slug: 'youtube-cpm-rates-2026',
+    title: 'YouTube CPM Rates in 2026: What Creators Actually Earn',
+    description: 'Real YouTube CPM and RPM data for 2026 by niche, country, and format. Finance earns $20-50 CPM while gaming earns $1-4. See the full breakdown.',
+    date: '2026-03-27',
+    author: 'NEXORA Team',
+    tags: ['youtube monetization', 'CPM rates', '2026 data'],
+    content: <Post8Content />,
   },
 ]
