@@ -6,6 +6,7 @@ import Post5Content from './content/post5'
 import Post6Content from './content/post6'
 import Post7Content from './content/post7'
 import Post8Content from './content/post8'
+import Post9Content from './content/post9'
 
 export const posts = [
   {
@@ -79,5 +80,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube monetization', 'CPM rates', '2026 data'],
     content: <Post8Content />,
+  },
+  {
+    slug: 'free-youtube-growth-tools-2026',
+    title: 'Free YouTube Growth Tools Every Creator Should Use in 2026',
+    description: 'The 14 best free tools for YouTube growth in 2026. From AI coaching to keyword research, thumbnails, and scheduling — build a complete toolkit at zero cost.',
+    date: '2026-03-28',
+    author: 'NEXORA Team',
+    tags: ['free tools', 'youtube growth', '2026 guide'],
+    content: <Post9Content />,
   },
 ]
