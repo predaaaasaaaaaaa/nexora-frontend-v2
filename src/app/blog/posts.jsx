@@ -7,6 +7,7 @@ import Post6Content from './content/post6'
 import Post7Content from './content/post7'
 import Post8Content from './content/post8'
 import Post9Content from './content/post9'
+import Post10Content from './content/post10'
 
 export const posts = [
   {
@@ -89,5 +90,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['free tools', 'youtube growth', '2026 guide'],
     content: <Post9Content />,
+  },
+  {
+    slug: 'how-to-get-first-1000-youtube-subscribers',
+    title: 'How to Get Your First 1,000 Subscribers on YouTube (AI-Powered Strategy)',
+    description: 'A step-by-step 12-week plan to reach 1,000 YouTube subscribers. Includes niche selection, keyword strategy, upload cadence, and how AI tools accelerate growth.',
+    date: '2026-03-29',
+    author: 'NEXORA Team',
+    tags: ['youtube subscribers', 'beginner guide', 'growth strategy'],
+    content: <Post10Content />,
   },
 ]
