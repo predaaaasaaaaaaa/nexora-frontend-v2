@@ -37,7 +37,7 @@ export default function SignupPage() {
     width: '100%', padding: '14px 16px 14px 46px', borderRadius: 12,
     border: '1px solid #2A2A2A', background: '#1A1A1A', color: '#F1F1F1',
     fontSize: 14, fontFamily: 'inherit', outline: 'none',
-    transition: 'border-color 0.2s ease',
+    transition: 'border-color 0.2s ease', boxSizing: 'border-box',
   }
 
   // Success state
@@ -45,10 +45,10 @@ export default function SignupPage() {
     return (
       <div style={{
         minHeight: '100vh', background: '#0A0A0A', color: '#F1F1F1',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
         fontFamily: "'Outfit', -apple-system, sans-serif",
       }}>
-        <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 40, textAlign: 'center', maxWidth: 400 }}>
+        <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 40, textAlign: 'center', maxWidth: 400, width: '100%' }}>
           <div style={{ width: 64, height: 64, borderRadius: 16, background: 'rgba(62,166,81,0.1)', border: '1px solid rgba(62,166,81,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3EA651" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
@@ -73,22 +73,30 @@ export default function SignupPage() {
         .auth-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(255,0,0,0.3); }
         .auth-link { transition: color 0.15s; }
         .auth-link:hover { color: #FF0000 !important; }
+        *, *::before, *::after { box-sizing: border-box; }
+
+        @media (max-width: 768px) {
+          .nx-auth-card { padding: 24px 20px !important; }
+          .nx-auth-logo { margin-bottom: 28px !important; }
+          .nx-auth-logo-text { font-size: 24px !important; }
+          .nx-auth-glow { width: 300px !important; height: 300px !important; }
+        }
       `}</style>
 
       {/* Background */}
-      <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 70%)', animation: 'heroGlow 6s ease-in-out infinite', pointerEvents: 'none' }}/>
+      <div className="nx-auth-glow" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 70%)', animation: 'heroGlow 6s ease-in-out infinite', pointerEvents: 'none' }}/>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }}/>
 
       <div style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 2 }}>
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 40, textDecoration: 'none', color: '#F1F1F1' }}>
+        <Link href="/" className="nx-auth-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 40, textDecoration: 'none', color: '#F1F1F1' }}>
           <NexoraLogo size={40} />
-          <span style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5 }}>NEXORA</span>
+          <span className="nx-auth-logo-text" style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5 }}>NEXORA</span>
           <span style={{ fontSize: 9, fontWeight: 700, background: '#FF0000', color: '#fff', padding: '2px 7px', borderRadius: 4, letterSpacing: 0.8 }}>BETA</span>
         </Link>
 
         {/* Card */}
-        <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 32, position: 'relative', overflow: 'hidden' }}>
+        <div className="nx-auth-card" style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 32, position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #FF0000, transparent)', opacity: 0.5 }}/>
 
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
