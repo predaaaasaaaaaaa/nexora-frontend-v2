@@ -8,6 +8,7 @@ import Post7Content from './content/post7'
 import Post8Content from './content/post8'
 import Post9Content from './content/post9'
 import Post10Content from './content/post10'
+import Post11Content from './content/post11'
 
 export const posts = [
   {
@@ -99,5 +100,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube subscribers', 'beginner guide', 'growth strategy'],
     content: <Post10Content />,
+  },
+  {
+    slug: 'youtube-shorts-vs-long-form-2026',
+    title: 'YouTube Shorts vs Long-Form in 2026: Which Format Should You Focus On?',
+    description: 'Shorts get 200B daily views but long-form earns 100x more revenue. Here is the real data, the hybrid strategy, and how to decide what works for your channel.',
+    date: '2026-04-07',
+    author: 'NEXORA Team',
+    tags: ['youtube shorts', 'long form video', 'content strategy'],
+    content: <Post11Content />,
   },
 ]
