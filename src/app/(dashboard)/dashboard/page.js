@@ -44,7 +44,6 @@ const I = {
 }
 
 export default function DashboardPage() {
-  // ── Your existing data logic (unchanged) ──
   const [ytData, setYtData] = useState(null)
   const [ytConnected, setYtConnected] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -149,10 +148,22 @@ export default function DashboardPage() {
         .fade-card:nth-child(4) { animation-delay: 0.16s; }
         .upload-row { transition: background 0.12s ease; cursor: pointer; }
         .upload-row:hover { background: ${c.cardHover} !important; }
+
+        @media (max-width: 768px) {
+          .nx-dash-banner { flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; padding: 16px !important; }
+          .nx-dash-banner-link { align-self: stretch; text-align: center; justify-content: center; }
+          .nx-dash-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+          .nx-dash-stats .fade-card { padding: 16px !important; }
+          .nx-dash-stats .fade-card .nx-stat-value { font-size: 24px !important; }
+          .nx-dash-two-col { grid-template-columns: 1fr !important; }
+          .nx-dash-platforms { grid-template-columns: repeat(2, 1fr) !important; }
+          .nx-upload-meta { display: none !important; }
+          .nx-upload-row { padding: 12px 14px !important; }
+        }
       `}</style>
 
       {/* ── Channel Banner ── */}
-      <div style={{
+      <div className="nx-dash-banner" style={{
         background: c.bannerGrad,
         border: `1px solid ${c.redBorder}`,
         borderRadius: 14, padding: '20px 24px',
@@ -181,19 +192,20 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        <Link href="/analytics" style={{
+        <Link href="/analytics" className="nx-dash-banner-link" style={{
           padding: '9px 18px', borderRadius: 8,
           background: 'transparent', border: `1px solid ${c.border}`,
           color: c.text, fontSize: 13, fontWeight: 500,
           textDecoration: 'none',
           display: 'flex', alignItems: 'center', gap: 6,
+          position: 'relative',
         }}>
           View full analytics <I.Arrow />
         </Link>
       </div>
 
       {/* ── Stats Grid ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+      <div className="nx-dash-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon
           return (
@@ -214,7 +226,7 @@ export default function DashboardPage() {
               }}>
                 <Icon />
               </div>
-              <div style={{ fontSize: 30, fontWeight: 800, color: c.text, letterSpacing: -1.2, lineHeight: 1 }}>
+              <div className="nx-stat-value" style={{ fontSize: 30, fontWeight: 800, color: c.text, letterSpacing: -1.2, lineHeight: 1 }}>
                 {stat.value}
               </div>
               <div style={{ fontSize: 12, color: c.textDim, marginTop: 6, fontWeight: 500 }}>
@@ -226,7 +238,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Two Column: Video + Insights ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 18, marginBottom: 20 }}>
+      <div className="nx-dash-two-col" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 18, marginBottom: 20 }}>
         {/* Best Performing Video */}
         <div style={{
           background: c.card, border: `1px solid ${c.border}`,
@@ -268,7 +280,7 @@ export default function DashboardPage() {
               <p style={{ fontSize: 14, fontWeight: 600, color: c.text, lineHeight: 1.4, marginBottom: 8 }}>
                 {ytData.topVideos[0].title}
               </p>
-              <div style={{ display: 'flex', gap: 14, fontSize: 12, color: c.textSec }}>
+              <div style={{ display: 'flex', gap: 14, fontSize: 12, color: c.textSec, flexWrap: 'wrap' }}>
                 <span>{formatNumber(ytData.topVideos[0].views)} views</span>
                 <span>{formatNumber(ytData.topVideos[0].likes)} likes</span>
                 <span style={{ color: c.green, fontWeight: 600 }}>{ytData.topVideos[0].engagement_rate}% ER</span>
@@ -343,7 +355,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           {ytData.videos.slice(0, 5).map((video, i) => (
-            <div key={i} className="upload-row" style={{
+            <div key={i} className="upload-row nx-upload-row" style={{
               display: 'flex', alignItems: 'center', gap: 14,
               padding: '14px 22px',
               borderBottom: i < Math.min(ytData.videos.length, 5) - 1 ? `1px solid ${c.borderLight}` : 'none',
@@ -369,7 +381,7 @@ export default function DashboardPage() {
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>{video.title}</p>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+              <div className="nx-upload-meta" style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
                 <span style={{ fontSize: 13, color: c.textSec }}>{formatNumber(video.views)} views</span>
                 <span style={{
                   fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 6,
@@ -384,7 +396,7 @@ export default function DashboardPage() {
       )}
 
       {/* ── Platform Status ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+      <div className="nx-dash-platforms" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
         {[
           { name: 'YouTube', status: 'Connected', ok: true, icon: '▶' },
           { name: 'Instagram', status: 'Coming soon', ok: false, icon: '◎' },
