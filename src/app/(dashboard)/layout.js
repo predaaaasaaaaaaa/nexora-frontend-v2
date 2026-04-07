@@ -82,6 +82,11 @@ export default function DashboardLayout({ children }) {
     }
   }, [pathname])
 
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pathname])
+
   async function checkAuth() {
     const { user, error } = await getCurrentUser()
     if (!user || error) { router.push('/login'); return }
@@ -146,21 +151,66 @@ export default function DashboardLayout({ children }) {
       <style>{`
         @keyframes pulseGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         @keyframes slideRight { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideSidebar { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+        @media (max-width: 768px) {
+          .nx-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+          }
+          .nx-sidebar.open {
+            transform: translateX(0);
+          }
+          .nx-overlay {
+            display: block !important;
+          }
+          .nx-hamburger {
+            display: flex !important;
+          }
+          .nx-main {
+            margin-left: 0 !important;
+          }
+          .nx-header {
+            padding: 14px 16px !important;
+          }
+          .nx-header-title {
+            font-size: 18px !important;
+          }
+          .nx-header-sub {
+            font-size: 11px !important;
+          }
+          .nx-content {
+            padding: 16px 16px 32px !important;
+          }
+          .nx-yt-status-text {
+            display: none;
+          }
+          .nx-yt-status {
+            padding: 7px 10px !important;
+          }
+        }
       `}</style>
 
+      {/* ══ MOBILE OVERLAY ══ */}
       {sidebarOpen && (
-        <div onClick={() => setSidebarOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 45, display: 'none' }}
-          className="lg-show" />
+        <div
+          className="nx-overlay"
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 45, display: 'none',
+          }}
+        />
       )}
 
       {/* ══ SIDEBAR ══ */}
-      <aside style={{
+      <aside className={`nx-sidebar${sidebarOpen ? ' open' : ''}`} style={{
         width: 232, background: c.sidebar,
         borderRight: `1px solid ${c.border}`,
         position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50,
         display: 'flex', flexDirection: 'column',
-        transition: 'background-color 0.35s ease, border-color 0.35s ease',
+        transition: 'background-color 0.35s ease, border-color 0.35s ease, transform 0.25s ease',
       }}>
         <div style={{
           padding: '22px 20px 18px',
@@ -182,6 +232,20 @@ export default function DashboardLayout({ children }) {
             background: c.red, color: '#fff',
             padding: '2px 7px', borderRadius: 4, marginLeft: -2,
           }}>BETA</span>
+
+          {/* Close button — mobile only */}
+          <button
+            className="nx-hamburger"
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              display: 'none', alignItems: 'center', justifyContent: 'center',
+              marginLeft: 'auto', width: 32, height: 32, borderRadius: 8,
+              border: `1px solid ${c.border}`, background: 'transparent',
+              color: c.textSec, cursor: 'pointer',
+            }}
+          >
+            <X size={16} />
+          </button>
         </div>
 
         <nav style={{ flex: 1, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -282,38 +346,53 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* ══ MAIN CONTENT ══ */}
-      <main style={{ marginLeft: 232, flex: 1, minHeight: '100vh' }}>
-        <header style={{
+      <main className="nx-main" style={{ marginLeft: 232, flex: 1, minHeight: '100vh' }}>
+        <header className="nx-header" style={{
           padding: '18px 32px', borderBottom: `1px solid ${c.borderLight}`,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           background: c.glass, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
           position: 'sticky', top: 0, zIndex: 40, transition: 'all 0.35s ease',
         }}>
-          <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>{pageInfo.title}</h1>
-            <p style={{ fontSize: 13, color: c.textDim, marginTop: 2, fontWeight: 400 }}>{pageInfo.sub}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {/* Hamburger — mobile only */}
+            <button
+              className="nx-hamburger"
+              onClick={() => setSidebarOpen(true)}
+              style={{
+                display: 'none', alignItems: 'center', justifyContent: 'center',
+                width: 36, height: 36, borderRadius: 8,
+                border: `1px solid ${c.border}`, background: c.card,
+                color: c.text, cursor: 'pointer',
+              }}
+            >
+              <Menu size={18} />
+            </button>
+            <div>
+              <h1 className="nx-header-title" style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>{pageInfo.title}</h1>
+              <p className="nx-header-sub" style={{ fontSize: 13, color: c.textDim, marginTop: 2, fontWeight: 400 }}>{pageInfo.sub}</p>
+            </div>
           </div>
           {ytConnected ? (
-            <div style={{
+            <div className="nx-yt-status" style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '7px 16px', borderRadius: 20,
               background: c.greenBg, border: `1px solid ${c.greenBorder}`,
             }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.green, boxShadow: `0 0 6px ${c.green}` }}/>
-              <span style={{ fontSize: 12, fontWeight: 500, color: c.green }}>Live data connected</span>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.green, boxShadow: `0 0 6px ${c.green}`, flexShrink: 0 }}/>
+              <span className="nx-yt-status-text" style={{ fontSize: 12, fontWeight: 500, color: c.green }}>Live data connected</span>
             </div>
           ) : (
-            <Link href="/settings" style={{
+            <Link href="/settings" className="nx-yt-status" style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '7px 16px', borderRadius: 20,
               background: c.warnBg, border: `1px solid ${c.warnBorder}`, textDecoration: 'none',
             }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.warnText }}/>
-              <span style={{ fontSize: 12, fontWeight: 500, color: c.warnText }}>Connect YouTube</span>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: c.warnText, flexShrink: 0 }}/>
+              <span className="nx-yt-status-text" style={{ fontSize: 12, fontWeight: 500, color: c.warnText }}>Connect YouTube</span>
             </Link>
           )}
         </header>
-        <div style={{ padding: '24px 32px 40px' }}>{children}</div>
+        <div className="nx-content" style={{ padding: '24px 32px 40px' }}>{children}</div>
       </main>
 
       <FeedbackPopup />
