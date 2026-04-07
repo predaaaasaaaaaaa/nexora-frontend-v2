@@ -65,7 +65,6 @@ function getPatternStyle(index, c) {
 }
 
 export default function AnalyticsPage() {
-  // ── Your existing data logic (unchanged) ──
   const [selectedPlatform, setSelectedPlatform] = useState('youtube')
   const [analyticsData, setAnalyticsData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -151,11 +150,28 @@ export default function AnalyticsPage() {
         .fade-in:nth-child(4) { animation-delay: 0.16s; }
         .row-hover { transition: background 0.12s ease; cursor: pointer; }
         .row-hover:hover { background: ${c.cardHover} !important; }
+
+        @media (max-width: 768px) {
+          .nx-an-platform-tabs { flex-wrap: wrap !important; }
+          .nx-an-platform-tabs button { padding: 7px 12px !important; font-size: 12px !important; }
+          .nx-an-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+          .nx-an-stats .fade-in { padding: 16px !important; }
+          .nx-an-stats .nx-an-stat-value { font-size: 24px !important; }
+          .nx-an-channel { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+          .nx-an-top-row { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; padding: 14px 16px !important; }
+          .nx-an-top-row .nx-an-thumb { width: 100% !important; height: auto !important; aspect-ratio: 16/9; border-radius: 8px !important; }
+          .nx-an-top-row .nx-an-er { align-self: flex-start; }
+          .nx-an-top-meta { flex-wrap: wrap; }
+          .nx-an-recent-row { padding: 12px 14px !important; }
+          .nx-an-recent-meta { display: none !important; }
+          .nx-an-outlier-row { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+          .nx-an-outlier-views { margin-left: 0 !important; }
+        }
       `}</style>
 
       {/* ── Platform Tabs ── */}
       <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '16px 20px', marginBottom: 20 }}>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <div className="nx-an-platform-tabs" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           {platforms.map((p) => (
             <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
               style={{
@@ -223,7 +239,7 @@ export default function AnalyticsPage() {
       {analyticsData && !loading && selectedPlatform === 'youtube' && (
         <>
           {/* Stats Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+          <div className="nx-an-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
             {[
               { label: 'Subscribers', value: formatNumber(analyticsData.subscribers), icon: I.Users },
               { label: 'Total Views', value: formatNumber(analyticsData.total_views), icon: I.Eye },
@@ -239,14 +255,14 @@ export default function AnalyticsPage() {
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg, ${c.red}, transparent)`, opacity: 0.5 }}/>
                   <div style={{ width: 38, height: 38, borderRadius: 10, background: c.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.red, marginBottom: 14 }}><Icon /></div>
                   <div style={{ fontSize: 12, color: c.textDim, fontWeight: 500, marginBottom: 4 }}>{s.label}</div>
-                  <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: -1.2, lineHeight: 1, color: c.text }}>{s.value}</div>
+                  <div className="nx-an-stat-value" style={{ fontSize: 30, fontWeight: 800, letterSpacing: -1.2, lineHeight: 1, color: c.text }}>{s.value}</div>
                 </div>
               )
             })}
           </div>
 
           {/* Channel Info */}
-          <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div className="nx-an-channel" style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
             <ChannelAvatar src={analyticsData.channel_thumbnail || null} name={analyticsData.channel_name} size={52} />
             <div>
               <h3 style={{ fontSize: 18, fontWeight: 700, color: c.text }}>{analyticsData.channel_name}</h3>
@@ -294,7 +310,7 @@ export default function AnalyticsPage() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {analyticsData.insights.outlierVideos.map((video, i) => (
-                  <div key={i} style={{
+                  <div key={i} className="nx-an-outlier-row" style={{
                     background: c.greenBg, border: `1px solid ${c.greenBorder}`,
                     borderRadius: 12, padding: '16px 20px',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -303,7 +319,7 @@ export default function AnalyticsPage() {
                       <p style={{ fontSize: 14, fontWeight: 600, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
                       <p style={{ fontSize: 12, color: c.green, fontWeight: 500, marginTop: 4 }}>{video.multiplier}</p>
                     </div>
-                    <span style={{ fontSize: 22, fontWeight: 800, color: c.red, flexShrink: 0, marginLeft: 20, letterSpacing: -0.5 }}>{formatNumber(video.views)}</span>
+                    <span className="nx-an-outlier-views" style={{ fontSize: 22, fontWeight: 800, color: c.red, flexShrink: 0, marginLeft: 20, letterSpacing: -0.5 }}>{formatNumber(video.views)}</span>
                   </div>
                 ))}
               </div>
@@ -317,13 +333,13 @@ export default function AnalyticsPage() {
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>Top Performing Videos</h3>
               </div>
               {analyticsData.topVideos.map((video, i) => (
-                <div key={i} className="row-hover" style={{
+                <div key={i} className="row-hover nx-an-top-row" style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '14px 22px',
                   borderBottom: i < analyticsData.topVideos.length - 1 ? `1px solid ${c.borderLight}` : 'none',
                 }}>
                   <span style={{ fontSize: 16, fontWeight: 800, color: i < 3 ? c.red : c.textDim, width: 28, textAlign: 'center', flexShrink: 0 }}>#{i + 1}</span>
-                  <div style={{ width: 80, height: 46, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
+                  <div className="nx-an-thumb" style={{ width: 80, height: 46, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
                     {video.thumbnail ? (
                       <img src={video.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
@@ -334,14 +350,14 @@ export default function AnalyticsPage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
-                    <div style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11, color: c.textDim }}>
+                    <div className="nx-an-top-meta" style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11, color: c.textDim }}>
                       <span>👁 {formatNumber(video.views)}</span>
                       <span>♡ {formatNumber(video.likes)}</span>
                       <span>💬 {formatNumber(video.comments)}</span>
                       <span>⏰ {timeAgo(video.published_at)}</span>
                     </div>
                   </div>
-                  <span style={{
+                  <span className="nx-an-er" style={{
                     fontSize: 12, fontWeight: 700, padding: '5px 12px', borderRadius: 8,
                     background: parseFloat(video.engagement_rate) > 10 ? c.greenBg : c.redBg,
                     border: `1px solid ${parseFloat(video.engagement_rate) > 10 ? c.greenBorder : c.redBorder}`,
@@ -360,7 +376,7 @@ export default function AnalyticsPage() {
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>Recent Uploads</h3>
               </div>
               {analyticsData.videos.slice(0, 10).map((video, i) => (
-                <div key={i} className="row-hover" style={{
+                <div key={i} className="row-hover nx-an-recent-row" style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '14px 22px',
                   borderBottom: i < Math.min(analyticsData.videos.length, 10) - 1 ? `1px solid ${c.borderLight}` : 'none',
@@ -378,7 +394,7 @@ export default function AnalyticsPage() {
                     <p style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
                     <p style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>{timeAgo(video.published_at)}</p>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+                  <div className="nx-an-recent-meta" style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
                     <span style={{ fontSize: 13, color: c.textSec }}>{formatNumber(video.views)} views</span>
                     <span style={{
                       fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 6,
