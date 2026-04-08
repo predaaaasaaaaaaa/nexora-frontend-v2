@@ -107,7 +107,6 @@ export default function IdeasPage() {
       const nicheValue = selectedNiche || 'user-niche'
       const data = await generateIdeas(selectedPlatform, 10, nicheValue)
 
-      // Check for plan limit
       if (data.limitReached) {
         setUpgradePrompt({
           message: data.message,
@@ -119,7 +118,6 @@ export default function IdeasPage() {
       }
 
       setIdeas(data)
-      // Refresh plan info to update remaining count
       await loadPlanInfo()
     } catch (err) {
       console.error('Error generating ideas:', err)
@@ -135,6 +133,16 @@ export default function IdeasPage() {
         @keyframes spin { to { transform: rotate(360deg); } }
         .gen-btn { transition: all 0.2s ease; cursor: pointer; }
         .gen-btn:hover { transform: scale(1.02); box-shadow: 0 6px 24px rgba(255,0,0,0.3); }
+
+        @media (max-width: 768px) {
+          .nx-ideas-platforms { flex-wrap: wrap !important; }
+          .nx-ideas-platforms button { padding: 8px 14px !important; font-size: 12px !important; }
+          .nx-ideas-cta { flex-direction: column !important; gap: 14px !important; padding: 16px !important; }
+          .nx-ideas-cta .gen-btn { width: 100%; justify-content: center; }
+          .nx-ideas-results-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+          .nx-ideas-results-header button { align-self: flex-start; }
+          .nx-ideas-context { display: none !important; }
+        }
       `}</style>
 
       {/* ── Controls Card ── */}
@@ -173,7 +181,7 @@ export default function IdeasPage() {
                 background: c.selectBg, color: c.text,
                 fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
                 appearance: 'none', cursor: 'pointer', outline: 'none',
-                opacity: loading ? 0.5 : 1,
+                opacity: loading ? 0.5 : 1, boxSizing: 'border-box',
               }}
             >
               {niches.map(n => <option key={n} value={n}>{nicheMapping[n]}</option>)}
@@ -188,7 +196,7 @@ export default function IdeasPage() {
         {/* Platform Selector */}
         <div style={{ marginBottom: 20 }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: c.text, display: 'block', marginBottom: 8 }}>Select Platform:</span>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="nx-ideas-platforms" style={{ display: 'flex', gap: 8 }}>
             {platforms.map((p) => (
               <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
                 disabled={loading || !p.available}
@@ -211,7 +219,7 @@ export default function IdeasPage() {
 
         {/* Generate CTA */}
         {currentPlatform?.available && (
-          <div style={{
+          <div className="nx-ideas-cta" style={{
             background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
             borderRadius: 12, padding: '18px 24px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -231,7 +239,7 @@ export default function IdeasPage() {
                 background: '#fff', color: c.red,
                 border: 'none', fontSize: 14, fontWeight: 700, fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 8,
-                opacity: loading ? 0.7 : 1,
+                opacity: loading ? 0.7 : 1, flexShrink: 0,
               }}>
               {loading ? (
                 <>
@@ -298,13 +306,13 @@ export default function IdeasPage() {
       {/* ── Ideas Display ── */}
       {ideas && !loading && (
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div className="nx-ideas-results-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <h2 style={{ fontSize: 17, fontWeight: 700, color: c.text }}>
               {currentPlatform?.name} Content Ideas
             </h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               {ideas.contextUsed && (
-                <span style={{ fontSize: 12, color: c.textDim }}>
+                <span className="nx-ideas-context" style={{ fontSize: 12, color: c.textDim }}>
                   <span style={{ color: c.red }}>✦</span> {ideas.contextUsed.conversations} conversations analyzed
                 </span>
               )}
