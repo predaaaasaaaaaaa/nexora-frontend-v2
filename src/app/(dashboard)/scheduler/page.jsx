@@ -78,6 +78,7 @@ const QUICK_REMINDERS = [
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT']
+const DAYS_SHORT = ['S','M','T','W','T','F','S']
 
 const I = {
   Sparkle: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>,
@@ -127,17 +128,14 @@ export default function SchedulerPage() {
   async function loadInitialData() {
     setLoading(true)
     try {
-      // Check plan first — if scheduler is locked, show upgrade screen
       const planRes = await getCurrentPlan()
       if (planRes.success && !planRes.limits?.hasScheduler) {
         setFeatureLocked(true)
         setLoading(false)
         return
       }
-
       await Promise.all([loadPostsForMonth(), loadRecommendations(), loadNotificationPrefs()])
     } catch (err) {
-      // If the API returns a feature_locked error, show upgrade screen
       if (err.message?.includes('feature_locked') || err.message?.includes('Scheduler')) {
         setFeatureLocked(true)
       }
@@ -151,10 +149,7 @@ export default function SchedulerPage() {
       const month = currentMonth.getMonth() + 1
       const year = currentMonth.getFullYear()
       const data = await getScheduledPosts(month, year)
-      if (data.limitReached) {
-        setFeatureLocked(true)
-        return
-      }
+      if (data.limitReached) { setFeatureLocked(true); return }
       setScheduledPosts(data.posts || [])
     } catch (err) { console.error('Failed to load posts:', err) }
     finally { setPostsLoading(false) }
@@ -310,6 +305,7 @@ export default function SchedulerPage() {
     width: '100%', padding: '10px 14px', borderRadius: 10,
     border: `1px solid ${c.inputBorder}`, background: c.inputBg,
     color: c.text, fontSize: 14, fontFamily: 'inherit', outline: 'none',
+    boxSizing: 'border-box',
   }
 
   // ── Loading ──
@@ -369,50 +365,87 @@ export default function SchedulerPage() {
         .tip-row:nth-child(1) { animation-delay: 0.1s; }
         .tip-row:nth-child(2) { animation-delay: 0.2s; }
         .tip-row:nth-child(3) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+          .nx-sched-cal-header { padding: 14px 14px !important; }
+          .nx-sched-cal-header h2 { font-size: 16px !important; }
+          .nx-sched-day-header { font-size: 10px !important; padding: 6px 2px !important; letter-spacing: 0 !important; }
+          .nx-sched-cell { min-height: 52px !important; padding: 4px !important; }
+          .nx-sched-cell-date { width: 24px !important; height: 24px !important; font-size: 11px !important; border-radius: 6px !important; }
+          .nx-sched-cell-event { display: none !important; }
+          .nx-sched-cell-dot { display: flex !important; }
+          .nx-sched-bottom { grid-template-columns: 1fr !important; }
+          .nx-sched-upcoming-row { padding: 12px 14px !important; }
+          .nx-sched-upcoming-meta { display: none !important; }
+          .nx-sched-upcoming-actions { display: none !important; }
+          .nx-sched-modal { padding: 20px !important; }
+          .nx-sched-modal-grid { grid-template-columns: 1fr !important; }
+          .nx-sched-today-btn { display: none !important; }
+        }
       `}</style>
 
       {/* ── Calendar ── */}
       <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden', marginBottom: 24 }}>
-        <div style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${c.borderLight}` }}>
+        <div className="nx-sched-cal-header" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${c.borderLight}` }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5, color: c.text }}>
             {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
           </h2>
           <div style={{ display: 'flex', gap: 6 }}>
             <button onClick={() => navigateMonth(-1)} style={{ width: 36, height: 36, borderRadius: 8, background: c.chip, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textSec }}><I.ChevL /></button>
-            <button onClick={goToToday} style={{ padding: '0 14px', height: 36, borderRadius: 8, background: c.chip, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: c.textSec, fontFamily: 'inherit' }}>Today</button>
+            <button className="nx-sched-today-btn" onClick={goToToday} style={{ padding: '0 14px', height: 36, borderRadius: 8, background: c.chip, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: c.textSec, fontFamily: 'inherit' }}>Today</button>
             <button onClick={() => navigateMonth(1)} style={{ width: 36, height: 36, borderRadius: 8, background: c.chip, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textSec }}><I.ChevR /></button>
           </div>
         </div>
+        {/* Day headers — desktop shows full, mobile shows single letter */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${c.borderLight}` }}>
-          {DAYS.map(d => (
-            <div key={d} style={{ padding: 10, textAlign: 'center', fontSize: 11, fontWeight: 700, letterSpacing: 1, color: c.textDim }}>{d}</div>
+          {DAYS.map((d, i) => (
+            <div key={d} className="nx-sched-day-header" style={{ padding: 10, textAlign: 'center', fontSize: 11, fontWeight: 700, letterSpacing: 1, color: c.textDim }}>
+              <span className="nx-sched-day-full">{d}</span>
+              <span className="nx-sched-day-short" style={{ display: 'none' }}>{DAYS_SHORT[i]}</span>
+            </div>
           ))}
         </div>
+        <style>{`
+          @media (max-width: 768px) {
+            .nx-sched-day-full { display: none !important; }
+            .nx-sched-day-short { display: inline !important; }
+          }
+        `}</style>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
           {calendarDays.map((date, i) => {
             const isToday = date && date.toDateString() === today.toDateString()
             const isPast = date && date < new Date(today.getFullYear(), today.getMonth(), today.getDate())
             const posts = date ? getPostsForDate(date) : []
             return (
-              <div key={i} className={date ? 'cal-cell' : ''} onClick={() => { if (date && !isPast) openScheduleModal(date); else if (date && isPast && posts.length > 0) openDayDetail(date) }}
+              <div key={i} className={date ? 'cal-cell nx-sched-cell' : 'nx-sched-cell'} onClick={() => { if (date && !isPast) openScheduleModal(date); else if (date && isPast && posts.length > 0) openDayDetail(date) }}
                 style={{ minHeight: 90, padding: 8, borderRight: (i + 1) % 7 !== 0 ? `1px solid ${c.borderLight}` : 'none', borderBottom: `1px solid ${c.borderLight}`, opacity: date ? (isPast ? 0.5 : 1) : 0.2 }}>
                 {date && (
                   <>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: isToday ? c.today : 'transparent', color: isToday ? c.todayText : c.text, fontSize: 13, fontWeight: isToday ? 700 : 500, marginBottom: 4 }}>{date.getDate()}</span>
+                    <span className="nx-sched-cell-date" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: isToday ? c.today : 'transparent', color: isToday ? c.todayText : c.text, fontSize: 13, fontWeight: isToday ? 700 : 500, marginBottom: 4 }}>{date.getDate()}</span>
+                    {/* Desktop: show event pills */}
                     {posts.slice(0, 3).map((p, pi) => {
                       const plat = PLATFORMS[p.platform] || PLATFORMS.youtube
                       const postTime = new Date(p.scheduled_at)
                       const timeStr = postTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
                       const isMissed = p.status === 'missed'
                       return (
-                        <div key={pi} style={{ marginTop: 2, padding: '3px 6px', borderRadius: 5, background: isMissed ? c.orangeBg : c.eventBg, border: `1px solid ${isMissed ? (c.orange + '33') : c.eventBorder}`, fontSize: 10, fontWeight: 500, color: isMissed ? c.orange : c.red, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }} onClick={(e) => { e.stopPropagation(); openDayDetail(date) }}>
+                        <div key={pi} className="nx-sched-cell-event" style={{ marginTop: 2, padding: '3px 6px', borderRadius: 5, background: isMissed ? c.orangeBg : c.eventBg, border: `1px solid ${isMissed ? (c.orange + '33') : c.eventBorder}`, fontSize: 10, fontWeight: 500, color: isMissed ? c.orange : c.red, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }} onClick={(e) => { e.stopPropagation(); openDayDetail(date) }}>
                           <span style={{ flexShrink: 0 }}>{plat.icon}</span>
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</span>
                           <span style={{ marginLeft: 'auto', fontSize: 9, color: c.textDim, flexShrink: 0 }}>{timeStr}</span>
                         </div>
                       )
                     })}
-                    {posts.length > 3 && <div style={{ fontSize: 9, color: c.textDim, padding: '2px 6px' }}>+{posts.length - 3} more</div>}
+                    {posts.length > 3 && <div className="nx-sched-cell-event" style={{ fontSize: 9, color: c.textDim, padding: '2px 6px' }}>+{posts.length - 3} more</div>}
+                    {/* Mobile: show dots instead */}
+                    {posts.length > 0 && (
+                      <div className="nx-sched-cell-dot" style={{ display: 'none', gap: 3, marginTop: 2, justifyContent: 'center' }} onClick={(e) => { e.stopPropagation(); openDayDetail(date) }}>
+                        {posts.slice(0, 3).map((p, pi) => (
+                          <div key={pi} style={{ width: 5, height: 5, borderRadius: '50%', background: p.status === 'missed' ? c.orange : c.red }}/>
+                        ))}
+                        {posts.length > 3 && <div style={{ width: 5, height: 5, borderRadius: '50%', background: c.textDim }}/>}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -422,7 +455,7 @@ export default function SchedulerPage() {
       </div>
 
       {/* ── Bottom: Upcoming + AI Tips ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
+      <div className="nx-sched-bottom" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
         <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden' }}>
           <div style={{ padding: '18px 22px', borderBottom: `1px solid ${c.borderLight}`, display: 'flex', alignItems: 'center', gap: 8 }}>
             <I.Clock /><h3 style={{ fontSize: 15, fontWeight: 700, color: c.text }}>Upcoming Content</h3>
@@ -434,13 +467,13 @@ export default function SchedulerPage() {
             const dayStr = postDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
             const timeStr = postDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
             return (
-              <div key={post.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: i < arr.length - 1 ? `1px solid ${c.borderLight}` : 'none' }}>
+              <div key={post.id} className="nx-sched-upcoming-row" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 22px', borderBottom: i < arr.length - 1 ? `1px solid ${c.borderLight}` : 'none' }}>
                 <div style={{ width: 36, height: 36, borderRadius: 8, background: c.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.red, flexShrink: 0, fontSize: 14 }}>{plat.icon}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: 14, fontWeight: 600, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.title}</p>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 3, fontSize: 12, color: c.textDim }}><span>{dayStr}</span><span>at {timeStr}</span><span style={{ color: c.textSec }}>· <span style={{ textTransform: 'capitalize' }}>{post.content_type}</span></span></div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 3, fontSize: 12, color: c.textDim, flexWrap: 'wrap' }}><span>{dayStr}</span><span>at {timeStr}</span><span className="nx-sched-upcoming-meta" style={{ color: c.textSec }}>· <span style={{ textTransform: 'capitalize' }}>{post.content_type}</span></span></div>
                 </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                <div className="nx-sched-upcoming-actions" style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                   <button className="action-btn" onClick={() => startEditPost(post)} style={{ width: 32, height: 32, borderRadius: 7, background: 'transparent', border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textSec }}><I.Edit /></button>
                   <button className="action-btn" onClick={() => handleDeletePost(post)} style={{ width: 32, height: 32, borderRadius: 7, background: 'transparent', border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textSec }}><I.Trash /></button>
                 </div>
@@ -474,7 +507,7 @@ export default function SchedulerPage() {
       {/* ── Modals (Schedule, Day Detail, Notifications) ── */}
       {showScheduleModal && (
         <div onClick={() => { setShowScheduleModal(false); setEditingPost(null) }} style={{ position: 'fixed', inset: 0, background: c.modalOverlay, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60, padding: 16 }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 500, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
+          <div className="nx-sched-modal" onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 500, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div>
                 <h3 style={{ fontSize: 20, fontWeight: 700, color: c.text }}>{editingPost ? 'Edit Content' : 'Schedule Content'}</h3>
@@ -489,7 +522,7 @@ export default function SchedulerPage() {
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Content Title *</label><input type="text" value={form.title} onChange={e => setForm({ title: e.target.value })} placeholder="e.g., How I Built an AI Agent in 24 Hours" autoFocus style={inputStyle} /></div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div className="nx-sched-modal-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                     <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Platform</label><select value={form.platform} onChange={e => { const p = e.target.value; setForm({ platform: p, content_type: CONTENT_TYPES[p][0] }) }} style={inputStyle}>{Object.entries(PLATFORMS).map(([key, val]) => <option key={key} value={key}>{val.label}</option>)}</select></div>
                     <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Content Type</label><select value={form.content_type} onChange={e => setForm({ content_type: e.target.value })} style={inputStyle}>{(CONTENT_TYPES[form.platform] || ['video']).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}</select></div>
                   </div>
@@ -511,7 +544,7 @@ export default function SchedulerPage() {
 
       {showDayDetail && selectedDate && (
         <div onClick={() => setShowDayDetail(false)} style={{ position: 'fixed', inset: 0, background: c.modalOverlay, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60, padding: 16 }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 500, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
+          <div className="nx-sched-modal" onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 500, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div><h3 style={{ fontSize: 20, fontWeight: 700, color: c.text }}>{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h3><p style={{ fontSize: 13, color: c.textDim, marginTop: 4 }}>{getPostsForDate(selectedDate).length} scheduled item{getPostsForDate(selectedDate).length !== 1 ? 's' : ''}</p></div>
               <button onClick={() => setShowDayDetail(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: c.textDim, padding: 4 }}><I.X /></button>
@@ -532,7 +565,7 @@ export default function SchedulerPage() {
                         <div style={{ width: 36, height: 36, borderRadius: 8, background: c.card, border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: isMissed ? c.orange : c.red, fontSize: 14, flexShrink: 0 }}>{plat.icon}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <p style={{ fontWeight: 600, color: c.text }}>{post.title}</p>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 12, color: c.textDim }}><I.Clock /> <span>{timeStr}</span> <span>·</span> <span style={{ textTransform: 'capitalize' }}>{post.content_type}</span>{isMissed && <><span>·</span><span style={{ color: c.orange, fontWeight: 600 }}>Missed</span></>}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 12, color: c.textDim, flexWrap: 'wrap' }}><I.Clock /> <span>{timeStr}</span> <span>·</span> <span style={{ textTransform: 'capitalize' }}>{post.content_type}</span>{isMissed && <><span>·</span><span style={{ color: c.orange, fontWeight: 600 }}>Missed</span></>}</div>
                           {post.description && <p style={{ fontSize: 13, color: c.textSec, marginTop: 8 }}>{post.description}</p>}
                         </div>
                         {isFuture && (
@@ -559,7 +592,7 @@ export default function SchedulerPage() {
 
       {showNotificationModal && (
         <div onClick={() => setShowNotificationModal(false)} style={{ position: 'fixed', inset: 0, background: c.modalOverlay, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60, padding: 16 }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 440, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
+          <div className="nx-sched-modal" onClick={e => e.stopPropagation()} style={{ background: c.modalBg, borderRadius: 16, maxWidth: 440, width: '100%', padding: 28, border: `1px solid ${c.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.4)', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 38, height: 38, borderRadius: 10, background: c.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.red }}><I.Bell /></div>
