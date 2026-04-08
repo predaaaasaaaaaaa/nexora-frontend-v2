@@ -9,6 +9,7 @@ import Post8Content from './content/post8'
 import Post9Content from './content/post9'
 import Post10Content from './content/post10'
 import Post11Content from './content/post11'
+import Post12Content from './content/post12'
 
 export const posts = [
   {
@@ -109,5 +110,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube shorts', 'long form video', 'content strategy'],
     content: <Post11Content />,
+  },
+  {
+    slug: 'youtube-thumbnail-guide-ctr-2026',
+    title: 'YouTube Thumbnail Guide 2026: 8 Rules to Double Your Click-Through Rate',
+    description: 'Learn the 8 proven rules behind high-CTR YouTube thumbnails. Real data, CTR benchmarks by traffic source, common mistakes, and a step-by-step design workflow.',
+    date: '2026-04-08',
+    author: 'NEXORA Team',
+    tags: ['youtube thumbnails', 'CTR', 'click through rate'],
+    content: <Post12Content />,
   },
 ]
