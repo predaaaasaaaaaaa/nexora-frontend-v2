@@ -55,6 +55,8 @@ const I = {
   YouTube: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.7A11.87 11.87 0 0012 3.5a11.87 11.87 0 00-3.82.49 4.83 4.83 0 01-3.77 2.7A4.78 4.78 0 002 11.5v1a4.78 4.78 0 002.41 4.31 4.83 4.83 0 013.77 2.7 11.87 11.87 0 003.82.49 11.87 11.87 0 003.82-.49 4.83 4.83 0 013.77-2.7A4.78 4.78 0 0022 12.5v-1a4.78 4.78 0 00-2.41-4.81zM10 15.5v-7l6 3.5z"/></svg>,
   Warning: () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
   Lock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
+  History: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>,
+  X: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
 }
 
 // ── Prompts that require YouTube data ──
@@ -79,10 +81,11 @@ export default function CoachPage() {
   const [conversations, setConversations] = useState([])
   const [activeConversationId, setActiveConversationId] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(true)
   const [ytConnected, setYtConnected] = useState(null)
-  const [userPlan, setUserPlan] = useState(null) // { plan, usage, limits }
-  const [upgradePrompt, setUpgradePrompt] = useState(null) // shown when limit hit
+  const [userPlan, setUserPlan] = useState(null)
+  const [upgradePrompt, setUpgradePrompt] = useState(null)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const { dark } = useTheme()
@@ -116,7 +119,6 @@ export default function CoachPage() {
     try {
       setLoadingHistory(true)
       const data = await listCoachConversations()
-      // Handle limit error — free users can't access conversation history
       if (data.limitReached) {
         setConversations([])
         return
@@ -130,16 +132,14 @@ export default function CoachPage() {
     try {
       setLoading(true)
       const data = await getCoachMessages(conversationId)
-      if (data.limitReached) {
-        // Free user trying to access history
-        return
-      }
+      if (data.limitReached) return
       const formattedMessages = (data.messages || []).map(msg => ({
         role: msg.role, content: msg.content,
         timestamp: new Date(msg.created_at), contextUsed: msg.context_used,
       }))
       setMessages(formattedMessages)
       setActiveConversationId(conversationId)
+      setMobileSidebarOpen(false)
     } catch (err) { console.error('Error loading messages:', err) }
     finally { setLoading(false) }
   }
@@ -148,6 +148,7 @@ export default function CoachPage() {
     setMessages([])
     setActiveConversationId(null)
     setUpgradePrompt(null)
+    setMobileSidebarOpen(false)
     inputRef.current?.focus()
   }
 
@@ -165,7 +166,6 @@ export default function CoachPage() {
     e.preventDefault()
     if (!input.trim() || loading) return
 
-    // ── YouTube connection guard ──
     if (!ytConnected && requiresYouTubeData(input)) {
       const guardMessage = {
         role: 'assistant',
@@ -186,7 +186,6 @@ export default function CoachPage() {
     try {
       const response = await chatWithCoach(currentInput, selectedPlatform, activeConversationId)
 
-      // ── Plan limit check ──
       if (response.limitReached) {
         setUpgradePrompt({
           message: response.message,
@@ -194,7 +193,6 @@ export default function CoachPage() {
           upgradeTo: response.upgradeTo,
           usage: response.usage,
         })
-        // Remove the user message we just added since it wasn't processed
         setMessages(prev => prev.slice(0, -1))
         setLoading(false)
         return
@@ -206,7 +204,6 @@ export default function CoachPage() {
       }])
       if (response.conversationId) setActiveConversationId(response.conversationId)
       await loadConversations()
-      // Refresh plan info to update remaining count
       await loadPlanInfo()
     } catch (error) {
       setMessages(prev => [...prev, {
@@ -283,109 +280,172 @@ export default function CoachPage() {
 
   const grouped = groupConversations(conversations)
 
+  // ── Shared sidebar content (used in both desktop & mobile) ──
+  const sidebarContent = (
+    <>
+      <div style={{ padding: 16 }}>
+        <button onClick={handleNewChat} style={{
+          width: '100%', padding: '11px',
+          background: c.red, color: '#fff',
+          border: 'none', borderRadius: 10,
+          fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}>
+          <I.Plus /> New Chat
+        </button>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
+        {isFreePlan ? (
+          <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <div style={{ color: c.textDim, marginBottom: 8, display: 'flex', justifyContent: 'center' }}><I.Lock /></div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: c.text, marginBottom: 4 }}>Conversation History</p>
+            <p style={{ fontSize: 12, color: c.textDim, marginBottom: 12 }}>Upgrade to save and revisit your coaching sessions.</p>
+            <a href="/pricing" style={{
+              display: 'inline-block', fontSize: 12, fontWeight: 600,
+              padding: '8px 16px', borderRadius: 8,
+              background: c.red, color: '#fff', textDecoration: 'none',
+            }}>
+              Upgrade to Pro
+            </a>
+          </div>
+        ) : loadingHistory ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '32px 0' }}>
+            <div style={{ width: 20, height: 20, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        ) : conversations.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+            <div style={{ color: c.textDim, marginBottom: 8 }}><I.Chat /></div>
+            <p style={{ fontSize: 12, color: c.textDim }}>No conversations yet</p>
+          </div>
+        ) : (
+          <>
+            {[
+              { label: 'Today', items: grouped.today },
+              { label: 'This Week', items: grouped.week },
+              { label: 'Older', items: grouped.older },
+            ].map((group) => group.items.length > 0 && (
+              <div key={group.label}>
+                <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 1, color: c.textDim, textTransform: 'uppercase' }}>
+                  {group.label}
+                </div>
+                {group.items.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className="hist-item"
+                    onClick={() => loadMessages(conv.id)}
+                    style={{
+                      padding: '10px 14px', borderRadius: 8, marginBottom: 2,
+                      background: activeConversationId === conv.id ? c.histActive : 'transparent',
+                      display: 'flex', alignItems: 'flex-start', gap: 8,
+                    }}
+                  >
+                    <div style={{ color: c.textDim, flexShrink: 0, marginTop: 2 }}><I.Chat /></div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{ fontSize: 13, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.title}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, fontSize: 11, color: c.textDim }}>
+                        <I.Clock /> {timeAgo(conv.updated_at)}
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => handleDeleteConversation(e, conv.id)}
+                      style={{
+                        background: 'transparent', border: 'none', cursor: 'pointer',
+                        padding: 4, borderRadius: 4, color: c.textDim,
+                        opacity: 0.4, transition: 'opacity 0.15s',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                      onMouseLeave={e => e.currentTarget.style.opacity = 0.4}
+                    >
+                      <I.Trash />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </>
+  )
+
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 140px)', marginTop: -24, marginLeft: -32, marginRight: -32, marginBottom: -40 }}>
+    <div className="nx-coach-root" style={{ display: 'flex', height: 'calc(100vh - 140px)', marginTop: -24, marginLeft: -32, marginRight: -32, marginBottom: -40 }}>
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideSidebar { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .msg-in { animation: fadeIn 0.3s ease forwards; }
         .hist-item { transition: background 0.12s ease; cursor: pointer; }
         .hist-item:hover { background: ${c.histHover} !important; }
         .qa-btn { transition: all 0.15s ease; cursor: pointer; border: none; }
         .qa-btn:hover:not(.qa-locked) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .qa-locked { opacity: 0.4; cursor: not-allowed !important; }
+
+        @media (max-width: 768px) {
+          .nx-coach-root {
+            height: calc(100vh - 60px) !important;
+            margin: -16px -16px -32px !important;
+          }
+          .nx-coach-sidebar-desktop { display: none !important; }
+          .nx-coach-mobile-history-btn { display: flex !important; }
+          .nx-coach-header { padding: 10px 14px !important; }
+          .nx-coach-header-badges { display: none !important; }
+          .nx-coach-header-platforms { display: none !important; }
+          .nx-coach-messages { padding: 16px !important; }
+          .nx-coach-msg-bubble { max-width: 85% !important; }
+          .nx-coach-input-form { padding: 10px 14px 14px !important; }
+          .nx-coach-welcome-icon { width: 48px !important; height: 48px !important; border-radius: 14px !important; }
+          .nx-coach-welcome-icon svg { width: 24px !important; height: 24px !important; }
+          .nx-coach-welcome-title { font-size: 18px !important; }
+          .nx-coach-welcome-desc { font-size: 13px !important; margin-bottom: 24px !important; }
+          .nx-coach-qa-grid-top { grid-template-columns: repeat(2, 1fr) !important; max-width: 100% !important; }
+          .nx-coach-qa-grid-bottom { grid-template-columns: repeat(2, 1fr) !important; max-width: 100% !important; }
+          .nx-coach-followups { padding: 6px 14px !important; }
+          .nx-coach-yt-banner { margin: 8px 14px 0 !important; padding: 10px 12px !important; flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+          .nx-coach-yt-banner a { align-self: stretch; text-align: center; }
+        }
       `}</style>
 
-      {/* ── Chat History Panel ── */}
+      {/* ── Desktop Sidebar ── */}
       {sidebarOpen && (
-        <div style={{
+        <div className="nx-coach-sidebar-desktop" style={{
           width: 280, background: c.histBg,
           borderRight: `1px solid ${c.border}`,
           display: 'flex', flexDirection: 'column', flexShrink: 0,
         }}>
-          <div style={{ padding: 16 }}>
-            <button onClick={handleNewChat} style={{
-              width: '100%', padding: '11px',
-              background: c.red, color: '#fff',
-              border: 'none', borderRadius: 10,
-              fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}>
-              <I.Plus /> New Chat
-            </button>
-          </div>
+          {sidebarContent}
+        </div>
+      )}
 
-          <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
-            {/* Free plan — conversation history locked */}
-            {isFreePlan ? (
-              <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-                <div style={{ color: c.textDim, marginBottom: 8, display: 'flex', justifyContent: 'center' }}><I.Lock /></div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: c.text, marginBottom: 4 }}>Conversation History</p>
-                <p style={{ fontSize: 12, color: c.textDim, marginBottom: 12 }}>Upgrade to save and revisit your coaching sessions.</p>
-                <a href="/pricing" style={{
-                  display: 'inline-block', fontSize: 12, fontWeight: 600,
-                  padding: '8px 16px', borderRadius: 8,
-                  background: c.red, color: '#fff', textDecoration: 'none',
-                }}>
-                  Upgrade to Pro
-                </a>
-              </div>
-            ) : loadingHistory ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '32px 0' }}>
-                <div style={{ width: 20, height: 20, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
-                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-              </div>
-            ) : conversations.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-                <div style={{ color: c.textDim, marginBottom: 8 }}><I.Chat /></div>
-                <p style={{ fontSize: 12, color: c.textDim }}>No conversations yet</p>
-              </div>
-            ) : (
-              <>
-                {[
-                  { label: 'Today', items: grouped.today },
-                  { label: 'This Week', items: grouped.week },
-                  { label: 'Older', items: grouped.older },
-                ].map((group) => group.items.length > 0 && (
-                  <div key={group.label}>
-                    <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 1, color: c.textDim, textTransform: 'uppercase' }}>
-                      {group.label}
-                    </div>
-                    {group.items.map((conv) => (
-                      <div
-                        key={conv.id}
-                        className="hist-item"
-                        onClick={() => loadMessages(conv.id)}
-                        style={{
-                          padding: '10px 14px', borderRadius: 8, marginBottom: 2,
-                          background: activeConversationId === conv.id ? c.histActive : 'transparent',
-                          display: 'flex', alignItems: 'flex-start', gap: 8,
-                        }}
-                      >
-                        <div style={{ color: c.textDim, flexShrink: 0, marginTop: 2 }}><I.Chat /></div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <span style={{ fontSize: 13, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.title}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, fontSize: 11, color: c.textDim }}>
-                            <I.Clock /> {timeAgo(conv.updated_at)}
-                          </div>
-                        </div>
-                        <button
-                          onClick={(e) => handleDeleteConversation(e, conv.id)}
-                          style={{
-                            background: 'transparent', border: 'none', cursor: 'pointer',
-                            padding: 4, borderRadius: 4, color: c.textDim,
-                            opacity: 0.4, transition: 'opacity 0.15s',
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                          onMouseLeave={e => e.currentTarget.style.opacity = 0.4}
-                        >
-                          <I.Trash />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </>
-            )}
+      {/* ── Mobile Sidebar Overlay ── */}
+      {mobileSidebarOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex' }}>
+          {/* Backdrop */}
+          <div onClick={() => setMobileSidebarOpen(false)} style={{
+            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)',
+          }}/>
+          {/* Panel */}
+          <div style={{
+            position: 'relative', width: 280, maxWidth: '80vw',
+            background: c.histBg, display: 'flex', flexDirection: 'column',
+            animation: 'slideSidebar 0.25s ease', zIndex: 201,
+            borderRight: `1px solid ${c.border}`,
+          }}>
+            {/* Close button */}
+            <div style={{
+              padding: '14px 16px 0', display: 'flex', justifyContent: 'flex-end',
+            }}>
+              <button onClick={() => setMobileSidebarOpen(false)} style={{
+                width: 32, height: 32, borderRadius: 8, border: `1px solid ${c.border}`,
+                background: 'transparent', color: c.textSec, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <I.X />
+              </button>
+            </div>
+            {sidebarContent}
           </div>
         </div>
       )}
@@ -394,12 +454,20 @@ export default function CoachPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
         {/* Chat Header */}
-        <header style={{
+        <header className="nx-coach-header" style={{
           padding: '14px 24px', borderBottom: `1px solid ${c.borderLight}`,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           background: c.glass, backdropFilter: 'blur(16px)', flexShrink: 0,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Mobile history button */}
+            <button className="nx-coach-mobile-history-btn" onClick={() => setMobileSidebarOpen(true)} style={{
+              display: 'none', alignItems: 'center', justifyContent: 'center',
+              width: 34, height: 34, borderRadius: 8, border: `1px solid ${c.border}`,
+              background: c.card, color: c.text, cursor: 'pointer', flexShrink: 0,
+            }}>
+              <I.History />
+            </button>
             <div style={{
               width: 36, height: 36, borderRadius: 10,
               background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
@@ -412,33 +480,37 @@ export default function CoachPage() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Usage counter for non-unlimited plans */}
-            {userPlan?.usage?.coachMessages && userPlan.usage.coachMessages.limit !== 'unlimited' && (
-              <div style={{
-                fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 8,
-                background: c.redBg, border: `1px solid ${c.redBorder}`, color: c.red,
-              }}>
-                {userPlan.usage.coachMessages.remaining}/{userPlan.usage.coachMessages.limit} messages left today
-              </div>
-            )}
-            {/* YouTube connection status badge */}
-            {ytConnected !== null && (
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '5px 10px', borderRadius: 8,
-                background: ytConnected ? c.greenBg : c.warnBg,
-                border: `1px solid ${ytConnected ? c.greenBorder : c.warnBorder}`,
-                fontSize: 12, fontWeight: 600,
-                color: ytConnected ? c.green : c.warnText,
-              }}>
+            {/* Usage counter */}
+            <div className="nx-coach-header-badges">
+              {userPlan?.usage?.coachMessages && userPlan.usage.coachMessages.limit !== 'unlimited' && (
                 <div style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: ytConnected ? c.green : c.warnText,
-                }}/>
-                {ytConnected ? 'YouTube connected' : 'YouTube not connected'}
-              </div>
-            )}
-            <div style={{ display: 'flex', gap: 6 }}>
+                  fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 8,
+                  background: c.redBg, border: `1px solid ${c.redBorder}`, color: c.red,
+                }}>
+                  {userPlan.usage.coachMessages.remaining}/{userPlan.usage.coachMessages.limit} messages left today
+                </div>
+              )}
+            </div>
+            {/* YouTube connection status badge */}
+            <div className="nx-coach-header-badges">
+              {ytConnected !== null && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '5px 10px', borderRadius: 8,
+                  background: ytConnected ? c.greenBg : c.warnBg,
+                  border: `1px solid ${ytConnected ? c.greenBorder : c.warnBorder}`,
+                  fontSize: 12, fontWeight: 600,
+                  color: ytConnected ? c.green : c.warnText,
+                }}>
+                  <div style={{
+                    width: 6, height: 6, borderRadius: '50%',
+                    background: ytConnected ? c.green : c.warnText,
+                  }}/>
+                  {ytConnected ? 'YouTube connected' : 'YouTube not connected'}
+                </div>
+              )}
+            </div>
+            <div className="nx-coach-header-platforms" style={{ display: 'flex', gap: 6 }}>
               {platforms.map((p) => (
                 <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
                   style={{
@@ -458,7 +530,7 @@ export default function CoachPage() {
 
         {/* ── YouTube not connected banner ── */}
         {ytConnected === false && (
-          <div style={{
+          <div className="nx-coach-yt-banner" style={{
             margin: '12px 24px 0',
             padding: '12px 16px',
             background: c.warnBg,
@@ -493,22 +565,22 @@ export default function CoachPage() {
         )}
 
         {/* Messages / Welcome */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
+        <div className="nx-coach-messages" style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
           {messages.length === 0 && !loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center' }}>
-              <div style={{
+              <div className="nx-coach-welcome-icon" style={{
                 width: 64, height: 64, borderRadius: 18,
                 background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginBottom: 20, boxShadow: `0 0 40px ${c.redGlow}`, color: '#fff',
               }}><svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg></div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
-              <p style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
+              <h2 className="nx-coach-welcome-title" style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
+              <p className="nx-coach-welcome-desc" style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
                 {ytConnected
                   ? "I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy."
                   : "You can ask me general questions or competitor research. Connect YouTube in Settings to unlock personalized coaching."}
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
+              <div className="nx-coach-qa-grid-top" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
                 {quickActions.slice(0, 4).map((qa, i) => {
                   const QIcon = qa.icon
                   const locked = qa.needsYT && !ytConnected
@@ -524,7 +596,7 @@ export default function CoachPage() {
                   )
                 })}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
+              <div className="nx-coach-qa-grid-bottom" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
                 {quickActions.slice(4).map((qa, i) => {
                   const QIcon = qa.icon
                   const locked = qa.needsYT && !ytConnected
@@ -553,7 +625,7 @@ export default function CoachPage() {
                   }}>
                     {msg.role === 'user' ? 'Y' : <I.Sparkle />}
                   </div>
-                  <div style={{
+                  <div className="nx-coach-msg-bubble" style={{
                     maxWidth: '70%', padding: '14px 18px',
                     borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
                     background: msg.role === 'user' ? c.userBubble : msg.isGuard ? c.warnBg : c.aiBubble,
@@ -580,7 +652,6 @@ export default function CoachPage() {
                 </div>
               ))}
 
-              {/* Upgrade prompt shown inline when limit is hit */}
               {upgradePrompt && (
                 <div style={{ maxWidth: '70%' }}>
                   <UpgradePrompt
@@ -608,7 +679,6 @@ export default function CoachPage() {
                   }}>
                     <div style={{ width: 16, height: 16, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
                     Analyzing your data...
-                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                   </div>
                 </div>
               )}
@@ -620,7 +690,7 @@ export default function CoachPage() {
 
         {/* Quick follow-ups */}
         {messages.length > 0 && messages.length < 8 && !loading && !upgradePrompt && (
-          <div style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="nx-coach-followups" style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {['Go deeper', 'Give me action steps', 'Next video idea'].map((q, i) => (
               <button key={i} onClick={() => handleQuickPrompt(q)}
                 style={{
@@ -636,7 +706,7 @@ export default function CoachPage() {
         )}
 
         {/* Input */}
-        <form id="coach-form" onSubmit={handleSubmit} style={{ padding: '16px 24px 20px', borderTop: `1px solid ${c.borderLight}`, flexShrink: 0 }}>
+        <form id="coach-form" onSubmit={handleSubmit} className="nx-coach-input-form" style={{ padding: '16px 24px 20px', borderTop: `1px solid ${c.borderLight}`, flexShrink: 0 }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
             background: c.inputBg, border: `1.5px solid ${input ? c.red : c.inputBorder}`,
@@ -649,7 +719,7 @@ export default function CoachPage() {
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder={ytConnected ? "Ask about your channel, competitors (@handle), or strategy..." : "Ask a general question or connect YouTube for personalized coaching..."}
+              placeholder={ytConnected ? "Ask about your channel, competitors, or strategy..." : "Ask a question or connect YouTube for coaching..."}
               disabled={loading}
               style={{
                 flex: 1, border: 'none', outline: 'none',
