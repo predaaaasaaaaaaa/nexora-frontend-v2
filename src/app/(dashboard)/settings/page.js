@@ -67,7 +67,6 @@ const Toggle = ({ on, onToggle, c, accentColor }) => (
 )
 
 export default function SettingsPage() {
-  // ── Your existing state & logic (unchanged) ──
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [success, setSuccess] = useState('')
@@ -136,7 +135,6 @@ export default function SettingsPage() {
     window.location.href = '/login'
   }
 
-  // Shared section styles
   const sectionStyle = { background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden', marginBottom: 20 }
   const sectionHeader = (icon, title) => (
     <div style={{ padding: '18px 24px', borderBottom: `1px solid ${c.borderLight}`, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -150,7 +148,6 @@ export default function SettingsPage() {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
   })
 
-  // Loading
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
@@ -168,6 +165,19 @@ export default function SettingsPage() {
         .disconnect-btn:hover { background: ${c.redBg} !important; color: ${c.red} !important; border-color: ${c.redBorder} !important; }
         .danger-btn { transition: all 0.15s ease; }
         .danger-btn:hover { background: ${c.redBg} !important; border-color: ${c.redBorder} !important; color: ${c.red} !important; }
+
+        @media (max-width: 768px) {
+          .nx-set-row { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; padding: 14px 16px !important; }
+          .nx-set-row-inline { padding: 14px 16px !important; }
+          .nx-set-section-header { padding: 14px 16px !important; }
+          .nx-set-yt-row { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; padding: 14px 16px !important; }
+          .nx-set-yt-row button { align-self: flex-start; }
+          .nx-set-platform-row { padding: 14px 16px !important; }
+          .nx-set-notif-hint { padding: 0 16px 14px !important; }
+          .nx-set-notif-desc { padding: 0 16px 10px !important; }
+          .nx-set-notif-empty { padding: 14px 16px 18px !important; }
+          .nx-set-email-val { font-size: 12px !important; word-break: break-all; }
+        }
       `}</style>
 
       {/* ── Success Banner ── */}
@@ -196,14 +206,14 @@ export default function SettingsPage() {
       {/* ── Account ── */}
       <div style={sectionStyle}>
         {sectionHeader(<I.User />, 'Account')}
-        <div style={rowStyle()}>
+        <div className="nx-set-row" style={rowStyle()}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ color: c.textDim }}><I.Mail /></div>
             <span style={{ fontSize: 14, color: c.textSec }}>Email</span>
           </div>
-          <span style={{ fontSize: 14, fontWeight: 500, color: c.text }}>{user?.email}</span>
+          <span className="nx-set-email-val" style={{ fontSize: 14, fontWeight: 500, color: c.text }}>{user?.email}</span>
         </div>
-        <div style={rowStyle()}>
+        <div className="nx-set-row" style={rowStyle()}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ color: c.textDim }}><I.Calendar /></div>
             <span style={{ fontSize: 14, color: c.textSec }}>Member since</span>
@@ -212,7 +222,7 @@ export default function SettingsPage() {
             {new Date(user?.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </span>
         </div>
-        <div style={rowStyle(true)}>
+        <div className="nx-set-row" style={rowStyle(true)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ color: c.textDim }}><I.Shield /></div>
             <span style={{ fontSize: 14, color: c.textSec }}>Plan</span>
@@ -225,17 +235,17 @@ export default function SettingsPage() {
       <div style={sectionStyle}>
         {sectionHeader(<I.Link />, 'Connected Platforms')}
         <div style={{ padding: '4px 0' }}>
-          <p style={{ padding: '0 24px 12px', fontSize: 13, color: c.textDim }}>Connect your accounts to unlock analytics and AI coaching</p>
+          <p className="nx-set-notif-desc" style={{ padding: '0 24px 12px', fontSize: 13, color: c.textDim }}>Connect your accounts to unlock analytics and AI coaching</p>
 
           {/* YouTube */}
-          <div style={{ ...rowStyle(), opacity: 1 }}>
+          <div className="nx-set-yt-row" style={{ ...rowStyle(), opacity: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{
                 width: 40, height: 40, borderRadius: 10,
                 background: youtubeStatus?.connected ? c.redBg : c.chip,
                 border: youtubeStatus?.connected ? `1px solid ${c.redBorder}` : `1px solid ${c.border}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: youtubeStatus?.connected ? c.red : c.textDim, fontSize: 16,
+                color: youtubeStatus?.connected ? c.red : c.textDim, fontSize: 16, flexShrink: 0,
               }}>▶</div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>YouTube</div>
@@ -284,9 +294,9 @@ export default function SettingsPage() {
             { name: 'TikTok', icon: '♪' },
             { name: 'Threads', icon: '@' },
           ].map((p, i) => (
-            <div key={p.name} style={{ ...rowStyle(i === 2), opacity: 0.5 }}>
+            <div key={p.name} className="nx-set-platform-row" style={{ ...rowStyle(i === 2), opacity: 0.5 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: c.chip, border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textDim, fontSize: 16 }}>{p.icon}</div>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: c.chip, border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.textDim, fontSize: 16, flexShrink: 0 }}>{p.icon}</div>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>{p.name}</div>
                   <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Coming soon</div>
@@ -302,7 +312,7 @@ export default function SettingsPage() {
       <div style={sectionStyle}>
         {sectionHeader(<I.Bell />, 'Notifications')}
         <div style={{ padding: '4px 0' }}>
-          <p style={{ padding: '0 24px 12px', fontSize: 13, color: c.textDim }}>Manage your email reminders for scheduled content</p>
+          <p className="nx-set-notif-desc" style={{ padding: '0 24px 12px', fontSize: 13, color: c.textDim }}>Manage your email reminders for scheduled content</p>
 
           {notifLoading ? (
             <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 8, color: c.textDim }}>
@@ -311,14 +321,14 @@ export default function SettingsPage() {
             </div>
           ) : notifPrefs ? (
             <>
-              <div style={rowStyle()}>
+              <div className="nx-set-row-inline" style={rowStyle()}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: c.text, marginBottom: 2 }}>Email reminders</div>
                   <div style={{ fontSize: 12, color: c.textDim }}>{notifPrefs.notification_email}</div>
                 </div>
                 <Toggle on={notifPrefs.enabled} onToggle={toggleNotifications} c={c} />
               </div>
-              <div style={rowStyle(true)}>
+              <div className="nx-set-row-inline" style={rowStyle(true)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ color: c.textDim }}><I.Clock /></div>
                   <span style={{ fontSize: 13, color: c.textSec }}>
@@ -332,14 +342,14 @@ export default function SettingsPage() {
                   </span>
                 </div>
               </div>
-              <div style={{ padding: '0 24px 16px' }}>
+              <div className="nx-set-notif-hint" style={{ padding: '0 24px 16px' }}>
                 <p style={{ fontSize: 12, color: c.textDim }}>
                   To change reminder timing or email, go to <Link href="/scheduler" style={{ color: c.red, fontWeight: 500, textDecoration: 'none' }}>Scheduler</Link> and click the bell icon.
                 </p>
               </div>
             </>
           ) : (
-            <div style={{ padding: '16px 24px 20px' }}>
+            <div className="nx-set-notif-empty" style={{ padding: '16px 24px 20px' }}>
               <p style={{ fontSize: 13, color: c.textSec, marginBottom: 12 }}>No notification preferences set yet.</p>
               <Link href="/scheduler" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -357,7 +367,7 @@ export default function SettingsPage() {
       {/* ── Appearance ── */}
       <div style={sectionStyle}>
         {sectionHeader(dark ? <I.Moon /> : <I.Sun />, 'Appearance')}
-        <div style={rowStyle(true)}>
+        <div className="nx-set-row-inline" style={rowStyle(true)}>
           <div>
             <div style={{ fontSize: 14, fontWeight: 600, color: c.text, marginBottom: 2 }}>Dark Mode</div>
             <div style={{ fontSize: 12, color: c.textDim }}>Switch between light and dark themes</div>
@@ -371,11 +381,11 @@ export default function SettingsPage() {
         background: c.dangerBg, border: `1px solid ${c.dangerBorder}`,
         borderRadius: 14, overflow: 'hidden',
       }}>
-        <div style={{ padding: '18px 24px', borderBottom: `1px solid ${c.dangerBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="nx-set-section-header" style={{ padding: '18px 24px', borderBottom: `1px solid ${c.dangerBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ color: c.red }}><I.Shield /></div>
           <h3 style={{ fontSize: 16, fontWeight: 700, color: c.red }}>Danger Zone</h3>
         </div>
-        <div style={{ ...rowStyle(true), borderBottomColor: c.dangerBorder }}>
+        <div className="nx-set-row" style={{ ...rowStyle(true), borderBottomColor: c.dangerBorder }}>
           <div>
             <div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>Sign Out</div>
             <div style={{ fontSize: 12, color: c.textDim }}>Sign out of your NEXORA account</div>
