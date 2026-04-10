@@ -33,6 +33,7 @@ export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0)
   const [openFaq, setOpenFaq] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobilePricingTab, setMobilePricingTab] = useState('pro')
 
   useEffect(() => {
     const h = () => setScrollY(window.scrollY)
@@ -178,7 +179,11 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           .nx-pricing-section { padding: 60px 20px !important; }
           .nx-pricing-heading { font-size: 30px !important; }
-          .nx-pricing-grid { grid-template-columns: 1fr !important; max-width: 400px !important; }
+          .nx-pricing-grid { display: none !important; }
+          .nx-pricing-mobile { display: block !important; }
+        }
+        @media (min-width: 769px) {
+          .nx-pricing-mobile { display: none !important; }
         }
 
         /* ── Mobile Final CTA ── */
@@ -547,6 +552,93 @@ export default function LandingPage() {
             </Section>
           ))}
         </div>
+
+        {/* ── Mobile: ChatGPT-style tab bar ── */}
+        {(() => {
+          const pricingPlans = [
+            { id: 'free', name: 'Starter', price: 0, desc: 'See the value. Get hooked. Want more.', badge: null, featured: false, features: [
+              { text: 'Basic dashboard (7-day data)', ok: true },
+              { text: '5 AI Coach messages/day', ok: 'limit' },
+              { text: 'No conversation history', ok: false },
+              { text: '3 content ideas/week', ok: 'limit' },
+              { text: 'No content scheduler', ok: false },
+              { text: 'No competitor analysis', ok: false },
+            ]},
+            { id: 'pro', name: 'Nexora Pro', price: 19, desc: 'Everything you need to grow seriously.', badge: 'Most popular', featured: true, features: [
+              { text: 'Full dashboard (90-day data)', ok: true },
+              { text: '15 AI Coach messages/day', ok: true },
+              { text: 'Conversation history (saved)', ok: true },
+              { text: '30 content ideas/week', ok: true },
+              { text: 'Content scheduler + reminders', ok: true },
+              { text: 'Track 3 competitors', ok: 'limit' },
+            ]},
+            { id: 'max', name: 'Nexora Max', price: 49, desc: 'Full power. Zero limits. Total control.', badge: 'For serious creators', featured: false, features: [
+              { text: 'Full dashboard (all-time data)', ok: true },
+              { text: 'Unlimited AI Coach messages', ok: true },
+              { text: 'Full conversation history', ok: true },
+              { text: 'Unlimited content ideas', ok: true },
+              { text: 'Content scheduler + reminders', ok: true },
+              { text: 'Track 10 competitors', ok: true },
+            ]},
+          ]
+          const activePlan = pricingPlans.find(p => p.id === mobilePricingTab)
+          return (
+            <div className="nx-pricing-mobile" style={{ display: 'none', maxWidth: 500, margin: '0 auto' }}>
+              <div style={{ display: 'flex', background: '#1A1A1A', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid #2A2A2A' }}>
+                {pricingPlans.map((plan) => (
+                  <button key={plan.id} onClick={() => setMobilePricingTab(plan.id)} style={{
+                    flex: 1, padding: '12px 0', borderRadius: 10, border: 'none',
+                    background: mobilePricingTab === plan.id ? (plan.featured ? '#FF0000' : '#2A2A2A') : 'transparent',
+                    color: mobilePricingTab === plan.id ? '#fff' : '#888',
+                    fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s ease',
+                  }}>
+                    {plan.name === 'Nexora Pro' ? 'Pro' : plan.name === 'Nexora Max' ? 'Max' : plan.name}
+                  </button>
+                ))}
+              </div>
+              {activePlan && (
+                <div style={{
+                  background: '#141414', borderRadius: 16, padding: '28px 24px',
+                  border: activePlan.featured ? '2px solid #FF0000' : '1px solid #222',
+                  display: 'flex', flexDirection: 'column',
+                }}>
+                  {activePlan.badge && (
+                    <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 6, marginBottom: 14, alignSelf: 'flex-start', background: activePlan.featured ? 'rgba(255,0,0,0.12)' : 'rgba(255,255,255,0.06)', color: activePlan.featured ? '#FF4444' : '#AAA' }}>{activePlan.badge}</span>
+                  )}
+                  <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>{activePlan.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                    <span style={{ fontSize: 42, fontWeight: 800 }}>${activePlan.price}</span>
+                    <span style={{ fontSize: 15, color: '#717171' }}>/month</span>
+                  </div>
+                  <p style={{ fontSize: 14, color: '#888', marginBottom: 24 }}>{activePlan.desc}</p>
+                  <div style={{ height: 1, background: '#222', marginBottom: 20 }} />
+                  <div style={{ background: '#0F0F0F', borderRadius: 12, border: '1px solid #222', overflow: 'hidden', marginBottom: 24 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 50px', padding: '12px 16px', borderBottom: '1px solid #222' }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#888' }}>Features</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: activePlan.featured ? '#FF0000' : '#F1F1F1', textAlign: 'center' }}>
+                        {activePlan.name === 'Nexora Pro' ? 'Pro' : activePlan.name === 'Nexora Max' ? 'Max' : '✓'}
+                      </span>
+                    </div>
+                    {activePlan.features.map((f, fi) => (
+                      <div key={fi} style={{ display: 'grid', gridTemplateColumns: '1fr 50px', padding: '12px 16px', borderBottom: fi < activePlan.features.length - 1 ? '1px solid #1A1A1A' : 'none' }}>
+                        <span style={{ fontSize: 13, color: f.ok === false ? '#555' : '#CCC', lineHeight: 1.4 }}>{f.text}</span>
+                        <div style={{ textAlign: 'center' }}>
+                          {f.ok === true ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activePlan.featured ? '#FF0000' : '#3EA651'} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg> : f.ok === 'limit' ? <span style={{ fontSize: 14, color: '#EF9F27' }}>~</span> : <span style={{ fontSize: 14, color: '#555' }}>—</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Link href="/signup" style={{
+                    width: '100%', padding: '16px 0', borderRadius: 12, textAlign: 'center', textDecoration: 'none', display: 'block',
+                    fontSize: 16, fontWeight: 700,
+                    background: activePlan.featured ? 'linear-gradient(135deg, #FF0000, #CC0000)' : '#2A2A2A',
+                    border: 'none', color: '#F1F1F1',
+                  }}>{activePlan.id === 'free' ? 'Start Free' : 'Subscribe now'}</Link>
+                </div>
+              )}
+            </div>
+          )
+        })()}
         <p style={{ textAlign: 'center', fontSize: 12, color: '#555', marginTop: 20 }}>Payments handled securely by Paddle. Cancel anytime.</p>
       </section>
 

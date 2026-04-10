@@ -72,6 +72,7 @@ export default function PricingPage() {
   const router = useRouter()
   const [currentPlan, setCurrentPlan] = useState(null)
   const [loading, setLoading] = useState(null)
+  const [mobileTab, setMobileTab] = useState('pro')
 
   useEffect(() => {
     getCurrentPlan()
@@ -84,12 +85,12 @@ export default function PricingPage() {
   async function handleUpgrade(planId) {
     if (planId === 'free') return
     setLoading(planId)
-    
+
     const priceIds = {
       pro: 'pri_01kms1rwnahqaft4frraz3g7xq',
       max: 'pri_01kms1p5vvzgq94pgdz453p0wn',
     }
-  
+
     try {
       if (window.Paddle) {
         window.Paddle.Checkout.open({
@@ -117,6 +118,8 @@ export default function PricingPage() {
     return currentPlan === planId || loading === planId
   }
 
+  const activeMobilePlan = plans.find(p => p.id === mobileTab)
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -127,9 +130,13 @@ export default function PricingPage() {
       <style>{`
         @media (max-width: 768px) {
           .nx-price-nav { padding: 12px 16px !important; }
-          .nx-price-header { padding: 40px 20px 30px !important; }
+          .nx-price-header { padding: 40px 20px 24px !important; }
           .nx-price-header h1 { font-size: 26px !important; }
-          .nx-price-grid { grid-template-columns: 1fr !important; max-width: 400px !important; padding: 0 16px 60px !important; }
+          .nx-price-grid-desktop { display: none !important; }
+          .nx-price-mobile { display: block !important; }
+        }
+        @media (min-width: 769px) {
+          .nx-price-mobile { display: none !important; }
         }
       `}</style>
 
@@ -171,8 +178,8 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Plans */}
-      <div className="nx-price-grid" style={{
+      {/* ═══ DESKTOP: 3-column grid (unchanged) ═══ */}
+      <div className="nx-price-grid-desktop" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 20,
@@ -193,61 +200,32 @@ export default function PricingPage() {
               flexDirection: 'column',
             }}
           >
-            {/* Badge */}
             {plan.badge && (
               <span style={{
-                display: 'inline-block',
-                fontSize: 11,
-                fontWeight: 600,
-                padding: '4px 12px',
-                borderRadius: 6,
-                marginBottom: 14,
+                display: 'inline-block', fontSize: 11, fontWeight: 600,
+                padding: '4px 12px', borderRadius: 6, marginBottom: 14,
                 background: plan.featured ? 'rgba(255,0,0,0.12)' : 'rgba(255,255,255,0.06)',
-                color: plan.featured ? '#FF4444' : '#AAA',
-                alignSelf: 'flex-start',
-              }}>
-                {plan.badge}
-              </span>
+                color: plan.featured ? '#FF4444' : '#AAA', alignSelf: 'flex-start',
+              }}>{plan.badge}</span>
             )}
             {!plan.badge && <div style={{ height: 29 }} />}
-
-            {/* Plan name */}
             <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 6 }}>{plan.name}</h3>
-
-            {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-              <span style={{ fontSize: 36, fontWeight: 700 }}>
-                ${plan.price}
-              </span>
+              <span style={{ fontSize: 36, fontWeight: 700 }}>${plan.price}</span>
               <span style={{ fontSize: 14, color: '#717171' }}>/month</span>
             </div>
-
-            {/* Description */}
             <p style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>{plan.description}</p>
-
-            {/* Divider */}
             <div style={{ height: 1, background: '#2A2A2A', marginBottom: 20 }} />
-
-            {/* Features */}
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}>
               {plan.features.map((f, i) => (
                 <li key={i} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13,
-                  color: f.included === false ? '#555' : '#CCC',
-                  marginBottom: 10,
-                  lineHeight: 1.4,
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  fontSize: 13, color: f.included === false ? '#555' : '#CCC',
+                  marginBottom: 10, lineHeight: 1.4,
                 }}>
                   <span style={{
-                    fontSize: 12,
-                    width: 16,
-                    textAlign: 'center',
-                    flexShrink: 0,
-                    color: f.included === true ? '#3EA651'
-                      : f.included === 'limit' ? '#EF9F27'
-                      : '#555',
+                    fontSize: 12, width: 16, textAlign: 'center', flexShrink: 0,
+                    color: f.included === true ? '#3EA651' : f.included === 'limit' ? '#EF9F27' : '#555',
                   }}>
                     {f.included === true ? '✓' : f.included === 'limit' ? '~' : '✗'}
                   </span>
@@ -255,23 +233,15 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-
-            {/* CTA Button */}
             <button
               onClick={() => handleUpgrade(plan.id)}
               disabled={isButtonDisabled(plan.id)}
               style={{
-                marginTop: 24,
-                width: '100%',
-                padding: '12px 0',
-                borderRadius: 10,
+                marginTop: 24, width: '100%', padding: '12px 0', borderRadius: 10,
                 border: plan.featured ? 'none' : '1px solid #2A2A2A',
-                background: plan.featured
-                  ? (currentPlan === plan.id ? '#333' : '#FF0000')
-                  : (currentPlan === plan.id ? '#222' : 'transparent'),
+                background: plan.featured ? (currentPlan === plan.id ? '#333' : '#FF0000') : (currentPlan === plan.id ? '#222' : 'transparent'),
                 color: currentPlan === plan.id ? '#666' : '#F1F1F1',
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: 14, fontWeight: 600,
                 cursor: isButtonDisabled(plan.id) ? 'default' : 'pointer',
                 transition: 'all 0.2s',
                 opacity: isButtonDisabled(plan.id) ? 0.6 : 1,
@@ -281,6 +251,116 @@ export default function PricingPage() {
             </button>
           </div>
         ))}
+      </div>
+
+      {/* ═══ MOBILE: ChatGPT-style tab bar + single card ═══ */}
+      <div className="nx-price-mobile" style={{ display: 'none', padding: '0 20px 60px' }}>
+        {/* Tab Bar */}
+        <div style={{
+          display: 'flex', background: '#1A1A1A', borderRadius: 12,
+          padding: 4, marginBottom: 24, border: '1px solid #2A2A2A',
+        }}>
+          {plans.map((plan) => (
+            <button
+              key={plan.id}
+              onClick={() => setMobileTab(plan.id)}
+              style={{
+                flex: 1, padding: '12px 0', borderRadius: 10, border: 'none',
+                background: mobileTab === plan.id
+                  ? (plan.featured ? '#FF0000' : '#2A2A2A')
+                  : 'transparent',
+                color: mobileTab === plan.id ? '#fff' : '#888',
+                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'all 0.2s ease',
+              }}
+            >
+              {plan.name === 'Nexora Pro' ? 'Pro' : plan.name === 'Nexora Max' ? 'Max' : plan.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Active Plan Card */}
+        {activeMobilePlan && (
+          <div style={{
+            background: '#1A1A1A',
+            borderRadius: 16,
+            border: activeMobilePlan.featured ? '2px solid #FF0000' : '1px solid #2A2A2A',
+            padding: '28px 24px',
+            display: 'flex', flexDirection: 'column',
+          }}>
+            {activeMobilePlan.badge && (
+              <span style={{
+                display: 'inline-block', fontSize: 11, fontWeight: 600,
+                padding: '4px 12px', borderRadius: 6, marginBottom: 14,
+                background: activeMobilePlan.featured ? 'rgba(255,0,0,0.12)' : 'rgba(255,255,255,0.06)',
+                color: activeMobilePlan.featured ? '#FF4444' : '#AAA', alignSelf: 'flex-start',
+              }}>{activeMobilePlan.badge}</span>
+            )}
+
+            <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>{activeMobilePlan.name}</h3>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+              <span style={{ fontSize: 42, fontWeight: 800 }}>${activeMobilePlan.price}</span>
+              <span style={{ fontSize: 15, color: '#717171' }}>/month</span>
+            </div>
+            <p style={{ fontSize: 14, color: '#888', marginBottom: 24 }}>{activeMobilePlan.description}</p>
+
+            <div style={{ height: 1, background: '#2A2A2A', marginBottom: 20 }} />
+
+            {/* Features table */}
+            <div style={{
+              background: '#141414', borderRadius: 12, border: '1px solid #222',
+              overflow: 'hidden', marginBottom: 24,
+            }}>
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1fr 50px',
+                padding: '12px 16px', borderBottom: '1px solid #222',
+              }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#888' }}>Features</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: activeMobilePlan.featured ? '#FF0000' : '#F1F1F1', textAlign: 'center' }}>
+                  {activeMobilePlan.name === 'Nexora Pro' ? 'Pro' : activeMobilePlan.name === 'Nexora Max' ? 'Max' : '✓'}
+                </span>
+              </div>
+              {activeMobilePlan.features.map((f, i) => (
+                <div key={i} style={{
+                  display: 'grid', gridTemplateColumns: '1fr 50px',
+                  padding: '12px 16px',
+                  borderBottom: i < activeMobilePlan.features.length - 1 ? '1px solid #1A1A1A' : 'none',
+                }}>
+                  <span style={{ fontSize: 13, color: f.included === false ? '#555' : '#CCC', lineHeight: 1.4 }}>{f.text}</span>
+                  <div style={{ textAlign: 'center' }}>
+                    {f.included === true ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeMobilePlan.featured ? '#FF0000' : '#3EA651'} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : f.included === 'limit' ? (
+                      <span style={{ fontSize: 14, color: '#EF9F27' }}>~</span>
+                    ) : (
+                      <span style={{ fontSize: 14, color: '#555' }}>—</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <button
+              onClick={() => handleUpgrade(activeMobilePlan.id)}
+              disabled={isButtonDisabled(activeMobilePlan.id)}
+              style={{
+                width: '100%', padding: '16px 0', borderRadius: 12,
+                border: 'none',
+                background: activeMobilePlan.featured
+                  ? (currentPlan === activeMobilePlan.id ? '#333' : 'linear-gradient(135deg, #FF0000, #CC0000)')
+                  : (currentPlan === activeMobilePlan.id ? '#222' : '#2A2A2A'),
+                color: currentPlan === activeMobilePlan.id ? '#666' : '#F1F1F1',
+                fontSize: 16, fontWeight: 700,
+                cursor: isButtonDisabled(activeMobilePlan.id) ? 'default' : 'pointer',
+                transition: 'all 0.2s',
+                opacity: isButtonDisabled(activeMobilePlan.id) ? 0.6 : 1,
+              }}
+            >
+              {getButtonText(activeMobilePlan.id)}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Footer note */}
