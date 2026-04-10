@@ -84,10 +84,20 @@ export default function PricingPage() {
   async function handleUpgrade(planId) {
     if (planId === 'free') return
     setLoading(planId)
+    
+    const priceIds = {
+      pro: 'pri_01kms1rwnahqaft4frraz3g7xq',
+      max: 'pri_01kms1p5vvzgq94pgdz453p0wn',
+    }
+  
     try {
-      const result = await createCheckout(planId)
-      if (result.success && result.checkoutUrl) {
-        window.location.href = result.checkoutUrl
+      if (window.Paddle) {
+        window.Paddle.Checkout.open({
+          items: [{ priceId: priceIds[planId], quantity: 1 }],
+          settings: {
+            successUrl: 'https://nexora-ai.org/dashboard?upgraded=true',
+          },
+        })
       }
     } catch (error) {
       console.error('Checkout error:', error)
