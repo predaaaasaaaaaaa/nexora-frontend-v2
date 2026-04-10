@@ -22,17 +22,19 @@ export default function RootLayout({ children }) {
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
       <body className={outfit.className}>
         <ThemeProvider>{children}</ThemeProvider>
-        <Script 
-          src="https://cdn.paddle.com/paddle/v2/paddle.js"
-          strategy="afterInteractive"
-          onLoad={() => {
-            if (window.Paddle) {
-              window.Paddle.Initialize({ 
-                token: 'live_3c5100e719eb15b9336ffb8f405',
-              });
+        <Script src="https://cdn.paddle.com/paddle/v2/paddle.js" strategy="afterInteractive" />
+        <Script id="paddle-init" strategy="lazyOnload">
+          {`
+            function initPaddle() {
+              if (window.Paddle) {
+                window.Paddle.Initialize({ token: 'live_3c5100e719eb15b9336ffb8f405' });
+              } else {
+                setTimeout(initPaddle, 500);
+              }
             }
-          }}
-        />
+            initPaddle();
+          `}
+        </Script>
       </body>
     </html>
   )
