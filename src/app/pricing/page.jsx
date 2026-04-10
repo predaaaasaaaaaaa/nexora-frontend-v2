@@ -114,8 +114,17 @@ export default function PricingPage() {
       color: '#F1F1F1',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .nx-price-nav { padding: 12px 16px !important; }
+          .nx-price-header { padding: 40px 20px 30px !important; }
+          .nx-price-header h1 { font-size: 26px !important; }
+          .nx-price-grid { grid-template-columns: 1fr !important; max-width: 400px !important; padding: 0 16px 60px !important; }
+        }
+      `}</style>
+
       {/* Nav */}
-      <nav style={{
+      <nav className="nx-price-nav" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -143,7 +152,7 @@ export default function PricingPage() {
       </nav>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', padding: '60px 20px 40px' }}>
+      <div className="nx-price-header" style={{ textAlign: 'center', padding: '60px 20px 40px' }}>
         <h1 style={{ fontSize: 36, fontWeight: 700, marginBottom: 12, letterSpacing: '-0.5px' }}>
           Choose your plan
         </h1>
@@ -153,7 +162,7 @@ export default function PricingPage() {
       </div>
 
       {/* Plans */}
-      <div style={{
+      <div className="nx-price-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 20,
@@ -207,7 +216,7 @@ export default function PricingPage() {
             <p style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>{plan.description}</p>
 
             {/* Divider */}
-            <div style={{ height: 1, background: '#2A2A2A', margin: '0 -24px', marginBottom: 20, padding: '0 24px' }} />
+            <div style={{ height: 1, background: '#2A2A2A', marginBottom: 20 }} />
 
             {/* Features */}
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}>
