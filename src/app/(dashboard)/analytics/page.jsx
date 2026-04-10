@@ -81,24 +81,18 @@ export default function AnalyticsPage() {
   ]
 
   useEffect(() => {
-    if (selectedPlatform === 'youtube') {
-      loadAnalytics()
-    }
+    if (selectedPlatform === 'youtube') loadAnalytics()
   }, [selectedPlatform])
 
   async function loadAnalytics() {
     try {
-      setLoading(true)
-      setError(null)
+      setLoading(true); setError(null)
       const data = await getAnalytics(selectedPlatform)
-      setAnalyticsData(data.data)
-      setSource(data.source)
+      setAnalyticsData(data.data); setSource(data.source)
     } catch (err) {
       console.error('Error loading analytics:', err)
       setError(err.message || 'Failed to load analytics')
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   function formatNumber(num) {
@@ -122,16 +116,11 @@ export default function AnalyticsPage() {
 
   const currentPlatform = platforms.find(p => p.id === selectedPlatform)
 
-  // ── Loading ──
   if (loading && currentPlatform?.available) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: 48, height: 48, border: `3px solid ${c.border}`,
-            borderTopColor: c.red, borderRadius: '50%',
-            animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
-          }}/>
+          <div style={{ width: 48, height: 48, border: `3px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }}/>
           <p style={{ color: c.textDim, fontSize: 14 }}>Loading analytics...</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
@@ -158,14 +147,26 @@ export default function AnalyticsPage() {
           .nx-an-stats .fade-in { padding: 16px !important; }
           .nx-an-stats .nx-an-stat-value { font-size: 24px !important; }
           .nx-an-channel { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
-          .nx-an-top-row { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; padding: 14px 16px !important; }
-          .nx-an-top-row .nx-an-thumb { width: 100% !important; height: auto !important; aspect-ratio: 16/9; border-radius: 8px !important; }
-          .nx-an-top-row .nx-an-er { align-self: flex-start; }
-          .nx-an-top-meta { flex-wrap: wrap; }
+          /* Top videos: compact row layout on mobile */
+          .nx-an-top-row { padding: 14px 16px !important; }
+          .nx-an-top-thumb { width: 90px !important; height: 52px !important; }
+          .nx-an-top-rank { display: none !important; }
+          .nx-an-top-meta { display: none !important; }
+          .nx-an-top-title { font-size: 12px !important; }
+          .nx-an-top-views-mobile { display: flex !important; }
+          .nx-an-er { font-size: 11px !important; padding: 3px 8px !important; }
+          /* Recent uploads compact */
           .nx-an-recent-row { padding: 12px 14px !important; }
           .nx-an-recent-meta { display: none !important; }
-          .nx-an-outlier-row { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
-          .nx-an-outlier-views { margin-left: 0 !important; }
+          /* Outliers */
+          .nx-an-outlier-row { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; padding: 14px 16px !important; }
+          .nx-an-outlier-views { margin-left: 0 !important; font-size: 18px !important; }
+          .nx-an-outlier-title { white-space: normal !important; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+          /* Patterns */
+          .nx-an-pattern { padding: 14px 16px !important; }
+        }
+        @media (min-width: 769px) {
+          .nx-an-top-views-mobile { display: none !important; }
         }
       `}</style>
 
@@ -181,8 +182,7 @@ export default function AnalyticsPage() {
                 color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
                 border: 'none', cursor: p.available ? 'pointer' : 'default',
                 fontSize: 13, fontWeight: 600, fontFamily: 'inherit',
-                opacity: p.available ? 1 : 0.45,
-                transition: 'all 0.15s ease',
+                opacity: p.available ? 1 : 0.45, transition: 'all 0.15s ease',
               }}>
               {p.id === 'youtube' && '▶ '}{p.name}
               {!p.available && <span style={{ fontSize: 9, fontWeight: 700, background: dark ? '#333' : '#ddd', padding: '1px 6px', borderRadius: 3, marginLeft: 4, color: c.textDim }}>Soon</span>}
@@ -202,40 +202,21 @@ export default function AnalyticsPage() {
         )}
       </div>
 
-      {/* ── Coming Soon for non-YouTube ── */}
       {!currentPlatform?.available && (
-        <div style={{
-          background: c.card, border: `1px solid ${c.border}`,
-          borderRadius: 14, padding: '60px 20px', textAlign: 'center',
-        }}>
-          <div style={{
-            width: 64, height: 64, borderRadius: 16, background: c.chip,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 20px', color: c.textDim, fontSize: 24, fontWeight: 700,
-          }}>
-            {currentPlatform?.name?.[0]}
-          </div>
-          <h3 style={{ fontSize: 20, fontWeight: 700, color: c.text, marginBottom: 8 }}>
-            {currentPlatform?.name} Analytics Coming Soon
-          </h3>
-          <p style={{ fontSize: 14, color: c.textSec }}>
-            We're working on integrating {currentPlatform?.name}. Stay tuned!
-          </p>
+        <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '60px 20px', textAlign: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: c.chip, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: c.textDim, fontSize: 24, fontWeight: 700 }}>{currentPlatform?.name?.[0]}</div>
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: c.text, marginBottom: 8 }}>{currentPlatform?.name} Analytics Coming Soon</h3>
+          <p style={{ fontSize: 14, color: c.textSec }}>We're working on integrating {currentPlatform?.name}. Stay tuned!</p>
         </div>
       )}
 
-      {/* ── Error ── */}
       {error && (
-        <div style={{
-          background: c.redBg, border: `1px solid ${c.redBorder}`,
-          borderRadius: 12, padding: '16px 20px', marginBottom: 20,
-        }}>
+        <div style={{ background: c.redBg, border: `1px solid ${c.redBorder}`, borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
           <p style={{ fontSize: 14, fontWeight: 600, color: c.red }}>Error loading analytics</p>
           <p style={{ fontSize: 13, color: c.textSec, marginTop: 4 }}>{error}</p>
         </div>
       )}
 
-      {/* ── YouTube Analytics ── */}
       {analyticsData && !loading && selectedPlatform === 'youtube' && (
         <>
           {/* Stats Grid */}
@@ -248,10 +229,7 @@ export default function AnalyticsPage() {
             ].map((s, i) => {
               const Icon = s.icon
               return (
-                <div key={i} className="fade-in" style={{
-                  background: c.card, border: `1px solid ${c.border}`,
-                  borderRadius: 14, padding: '20px', position: 'relative', overflow: 'hidden',
-                }}>
+                <div key={i} className="fade-in" style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, padding: '20px', position: 'relative', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2.5, background: `linear-gradient(90deg, ${c.red}, transparent)`, opacity: 0.5 }}/>
                   <div style={{ width: 38, height: 38, borderRadius: 10, background: c.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.red, marginBottom: 14 }}><Icon /></div>
                   <div style={{ fontSize: 12, color: c.textDim, fontWeight: 500, marginBottom: 4 }}>{s.label}</div>
@@ -282,17 +260,12 @@ export default function AnalyticsPage() {
                 {analyticsData.insights.patterns.map((pattern, i) => {
                   const ps = getPatternStyle(i, c)
                   return (
-                    <div key={i} style={{
-                      background: ps.bg, border: `1px solid ${ps.border}`,
-                      borderRadius: 12, padding: '16px 20px',
-                      display: 'flex', alignItems: 'flex-start', gap: 14,
-                      position: 'relative', overflow: 'hidden',
-                    }}>
+                    <div key={i} className="nx-an-pattern" style={{ background: ps.bg, border: `1px solid ${ps.border}`, borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: 14, position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ps.color, borderRadius: '3px 0 0 3px' }}/>
                       <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}>{ps.icon}</span>
-                      <div>
+                      <div style={{ minWidth: 0 }}>
                         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: ps.color, display: 'block', marginBottom: 4 }}>{ps.label}</span>
-                        <p style={{ fontSize: 13, color: c.text, lineHeight: 1.5 }}>{pattern}</p>
+                        <p style={{ fontSize: 13, color: c.text, lineHeight: 1.5, wordBreak: 'break-word' }}>{pattern}</p>
                       </div>
                     </div>
                   )
@@ -310,13 +283,9 @@ export default function AnalyticsPage() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {analyticsData.insights.outlierVideos.map((video, i) => (
-                  <div key={i} className="nx-an-outlier-row" style={{
-                    background: c.greenBg, border: `1px solid ${c.greenBorder}`,
-                    borderRadius: 12, padding: '16px 20px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  }}>
+                  <div key={i} className="nx-an-outlier-row" style={{ background: c.greenBg, border: `1px solid ${c.greenBorder}`, borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                      <p className="nx-an-outlier-title" style={{ fontSize: 14, fontWeight: 600, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
                       <p style={{ fontSize: 12, color: c.green, fontWeight: 500, marginTop: 4 }}>{video.multiplier}</p>
                     </div>
                     <span className="nx-an-outlier-views" style={{ fontSize: 22, fontWeight: 800, color: c.red, flexShrink: 0, marginLeft: 20, letterSpacing: -0.5 }}>{formatNumber(video.views)}</span>
@@ -338,8 +307,8 @@ export default function AnalyticsPage() {
                   padding: '14px 22px',
                   borderBottom: i < analyticsData.topVideos.length - 1 ? `1px solid ${c.borderLight}` : 'none',
                 }}>
-                  <span style={{ fontSize: 16, fontWeight: 800, color: i < 3 ? c.red : c.textDim, width: 28, textAlign: 'center', flexShrink: 0 }}>#{i + 1}</span>
-                  <div className="nx-an-thumb" style={{ width: 80, height: 46, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
+                  <span className="nx-an-top-rank" style={{ fontSize: 16, fontWeight: 800, color: i < 3 ? c.red : c.textDim, width: 28, textAlign: 'center', flexShrink: 0 }}>#{i + 1}</span>
+                  <div className="nx-an-top-thumb" style={{ width: 80, height: 46, borderRadius: 7, flexShrink: 0, overflow: 'hidden' }}>
                     {video.thumbnail ? (
                       <img src={video.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
@@ -349,12 +318,19 @@ export default function AnalyticsPage() {
                     )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                    <p className="nx-an-top-title" style={{ fontSize: 13, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title}</p>
+                    {/* Desktop meta */}
                     <div className="nx-an-top-meta" style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 11, color: c.textDim }}>
                       <span>👁 {formatNumber(video.views)}</span>
                       <span>♡ {formatNumber(video.likes)}</span>
                       <span>💬 {formatNumber(video.comments)}</span>
                       <span>⏰ {timeAgo(video.published_at)}</span>
+                    </div>
+                    {/* Mobile mini stats */}
+                    <div className="nx-an-top-views-mobile" style={{ display: 'none', gap: 8, marginTop: 4, fontSize: 11, color: c.textDim }}>
+                      <span>{formatNumber(video.views)} views</span>
+                      <span>·</span>
+                      <span>{timeAgo(video.published_at)}</span>
                     </div>
                   </div>
                   <span className="nx-an-er" style={{
@@ -363,7 +339,7 @@ export default function AnalyticsPage() {
                     border: `1px solid ${parseFloat(video.engagement_rate) > 10 ? c.greenBorder : c.redBorder}`,
                     color: parseFloat(video.engagement_rate) > 10 ? c.green : c.red,
                     flexShrink: 0,
-                  }}>{video.engagement_rate}% ER</span>
+                  }}>{video.engagement_rate}%</span>
                 </div>
               ))}
             </div>
