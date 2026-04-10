@@ -154,11 +154,17 @@ export default function DashboardPage() {
           .nx-dash-banner-link { align-self: stretch; text-align: center; justify-content: center; }
           .nx-dash-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
           .nx-dash-stats .fade-card { padding: 16px !important; }
-          .nx-dash-stats .fade-card .nx-stat-value { font-size: 24px !important; }
+          .nx-dash-stats .nx-stat-value { font-size: 24px !important; }
           .nx-dash-two-col { grid-template-columns: 1fr !important; }
           .nx-dash-platforms { grid-template-columns: repeat(2, 1fr) !important; }
           .nx-upload-meta { display: none !important; }
           .nx-upload-row { padding: 12px 14px !important; }
+          /* Best video: compact horizontal layout on mobile */
+          .nx-dash-best-video-desktop { display: none !important; }
+          .nx-dash-best-video-mobile { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .nx-dash-best-video-mobile { display: none !important; }
         }
       `}</style>
 
@@ -250,40 +256,72 @@ export default function DashboardPage() {
           </div>
           {ytData.topVideos?.[0] && (
             <>
-              <div style={{
-                width: '100%', aspectRatio: '16/9',
-                borderRadius: 10, overflow: 'hidden', marginBottom: 14,
-                position: 'relative', cursor: 'pointer',
-              }}>
-                {ytData.topVideos[0].thumbnail ? (
-                  <img
-                    src={ytData.topVideos[0].thumbnail}
-                    alt=""
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div style={{
-                    width: '100%', height: '100%',
-                    background: dark ? 'linear-gradient(135deg, #1a1a1a, #252525)' : 'linear-gradient(135deg, #f0f0f0, #e8e8e8)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
+              {/* Desktop: full thumbnail */}
+              <div className="nx-dash-best-video-desktop">
+                <div style={{
+                  width: '100%', aspectRatio: '16/9',
+                  borderRadius: 10, overflow: 'hidden', marginBottom: 14,
+                  position: 'relative', cursor: 'pointer',
+                }}>
+                  {ytData.topVideos[0].thumbnail ? (
+                    <img
+                      src={ytData.topVideos[0].thumbnail}
+                      alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
                     <div style={{
-                      width: 56, height: 56, borderRadius: '50%',
-                      background: 'rgba(0,0,0,0.75)',
+                      width: '100%', height: '100%',
+                      background: dark ? 'linear-gradient(135deg, #1a1a1a, #252525)' : 'linear-gradient(135deg, #f0f0f0, #e8e8e8)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      <div style={{ color: '#fff', marginLeft: 3 }}><I.Play /></div>
+                      <div style={{
+                        width: 56, height: 56, borderRadius: '50%',
+                        background: 'rgba(0,0,0,0.75)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <div style={{ color: '#fff', marginLeft: 3 }}><I.Play /></div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: c.text, lineHeight: 1.4, marginBottom: 8 }}>
+                  {ytData.topVideos[0].title}
+                </p>
+                <div style={{ display: 'flex', gap: 14, fontSize: 12, color: c.textSec, flexWrap: 'wrap' }}>
+                  <span>{formatNumber(ytData.topVideos[0].views)} views</span>
+                  <span>{formatNumber(ytData.topVideos[0].likes)} likes</span>
+                  <span style={{ color: c.green, fontWeight: 600 }}>{ytData.topVideos[0].engagement_rate}% ER</span>
+                </div>
               </div>
-              <p style={{ fontSize: 14, fontWeight: 600, color: c.text, lineHeight: 1.4, marginBottom: 8 }}>
-                {ytData.topVideos[0].title}
-              </p>
-              <div style={{ display: 'flex', gap: 14, fontSize: 12, color: c.textSec, flexWrap: 'wrap' }}>
-                <span>{formatNumber(ytData.topVideos[0].views)} views</span>
-                <span>{formatNumber(ytData.topVideos[0].likes)} likes</span>
-                <span style={{ color: c.green, fontWeight: 600 }}>{ytData.topVideos[0].engagement_rate}% ER</span>
+
+              {/* Mobile: compact horizontal card */}
+              <div className="nx-dash-best-video-mobile" style={{ display: 'none', gap: 14, alignItems: 'flex-start' }}>
+                <div style={{
+                  width: 120, height: 68, borderRadius: 8, overflow: 'hidden', flexShrink: 0,
+                }}>
+                  {ytData.topVideos[0].thumbnail ? (
+                    <img src={ytData.topVideos[0].thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{
+                      width: '100%', height: '100%',
+                      background: dark ? '#1a1a1a' : '#f0f0f0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <div style={{ opacity: 0.4, color: c.textDim }}><I.Play /></div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: c.text, lineHeight: 1.4, marginBottom: 8, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {ytData.topVideos[0].title}
+                  </p>
+                  <div style={{ display: 'flex', gap: 10, fontSize: 11, color: c.textSec, flexWrap: 'wrap' }}>
+                    <span>{formatNumber(ytData.topVideos[0].views)} views</span>
+                    <span>{formatNumber(ytData.topVideos[0].likes)} likes</span>
+                    <span style={{ color: c.green, fontWeight: 600 }}>{ytData.topVideos[0].engagement_rate}% ER</span>
+                  </div>
+                </div>
               </div>
             </>
           )}
