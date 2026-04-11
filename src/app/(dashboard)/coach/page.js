@@ -20,6 +20,7 @@ const themes = {
     inputBg: '#1A1A1A', inputBorder: '#2A2A2A',
     histBg: '#161616', histHover: '#1E1E1E', histActive: '#222',
     warnBg: 'rgba(255,140,0,0.08)', warnBorder: 'rgba(255,140,0,0.25)', warnText: '#FF8C00',
+    overlay: 'rgba(0,0,0,0.6)',
   },
   light: {
     card: '#FFFFFF', cardHover: '#F5F5F5', text: '#0F0F0F', textSec: '#606060', textDim: '#909090',
@@ -34,6 +35,7 @@ const themes = {
     inputBg: '#FFFFFF', inputBorder: '#E5E5E5',
     histBg: '#FAFAFA', histHover: '#F2F2F2', histActive: '#EDEDED',
     warnBg: 'rgba(255,140,0,0.06)', warnBorder: 'rgba(255,140,0,0.2)', warnText: '#E67E00',
+    overlay: 'rgba(0,0,0,0.4)',
   },
 }
 
@@ -57,14 +59,14 @@ const I = {
   Lock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>,
   History: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>,
   X: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  PanelLeft: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>,
 }
 
-// ── Prompts that require YouTube data ──
 const DATA_DEPENDENT_PROMPTS = [
   'channel audit', 'my channel', 'my data', 'my video', 'my analytics',
   'my subscribers', 'my views', 'my engagement', 'my performance',
   'give me action steps', 'go deeper', 'next video idea',
-  'channel audit', 'growth strategy', 'audience insights', 'video review',
+  'growth strategy', 'audience insights', 'video review',
   'how am i doing', 'my latest', 'my stats', 'my top',
 ]
 
@@ -80,8 +82,7 @@ export default function CoachPage() {
   const [selectedPlatform, setSelectedPlatform] = useState('youtube')
   const [conversations, setConversations] = useState([])
   const [activeConversationId, setActiveConversationId] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(true)
   const [ytConnected, setYtConnected] = useState(null)
   const [userPlan, setUserPlan] = useState(null)
@@ -91,38 +92,25 @@ export default function CoachPage() {
   const { dark } = useTheme()
   const c = dark ? themes.dark : themes.light
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
 
   useEffect(() => { scrollToBottom() }, [messages])
   useEffect(() => { loadConversations(); checkYouTubeStatus(); loadPlanInfo() }, [])
   useEffect(() => { if (!loadingHistory) inputRef.current?.focus() }, [loadingHistory, activeConversationId])
 
   async function loadPlanInfo() {
-    try {
-      const res = await getCurrentPlan()
-      if (res.success) setUserPlan(res)
-    } catch {}
+    try { const res = await getCurrentPlan(); if (res.success) setUserPlan(res) } catch {}
   }
 
   async function checkYouTubeStatus() {
-    try {
-      const data = await getYouTubeStatus()
-      setYtConnected(data.connected === true)
-    } catch {
-      setYtConnected(false)
-    }
+    try { const data = await getYouTubeStatus(); setYtConnected(data.connected === true) } catch { setYtConnected(false) }
   }
 
   async function loadConversations() {
     try {
       setLoadingHistory(true)
       const data = await listCoachConversations()
-      if (data.limitReached) {
-        setConversations([])
-        return
-      }
+      if (data.limitReached) { setConversations([]); return }
       setConversations(data.conversations || [])
     } catch (err) { console.error('Error loading conversations:', err) }
     finally { setLoadingHistory(false) }
@@ -133,23 +121,19 @@ export default function CoachPage() {
       setLoading(true)
       const data = await getCoachMessages(conversationId)
       if (data.limitReached) return
-      const formattedMessages = (data.messages || []).map(msg => ({
+      setMessages((data.messages || []).map(msg => ({
         role: msg.role, content: msg.content,
         timestamp: new Date(msg.created_at), contextUsed: msg.context_used,
-      }))
-      setMessages(formattedMessages)
+      })))
       setActiveConversationId(conversationId)
-      setMobileSidebarOpen(false)
+      setHistoryOpen(false)
     } catch (err) { console.error('Error loading messages:', err) }
     finally { setLoading(false) }
   }
 
   function handleNewChat() {
-    setMessages([])
-    setActiveConversationId(null)
-    setUpgradePrompt(null)
-    setMobileSidebarOpen(false)
-    inputRef.current?.focus()
+    setMessages([]); setActiveConversationId(null); setUpgradePrompt(null)
+    setHistoryOpen(false); inputRef.current?.focus()
   }
 
   async function handleDeleteConversation(e, conversationId) {
@@ -170,71 +154,43 @@ export default function CoachPage() {
       const guardMessage = {
         role: 'assistant',
         content: "To give you personalized insights about your channel, I need access to your YouTube data first.\n\nGo to **Settings → Connected Platforms → YouTube → Connect** to link your account.\n\nOnce connected, I'll have access to your real analytics, videos, and audience data to give you accurate, tailored advice. 🎯",
-        timestamp: new Date(),
-        isGuard: true,
+        timestamp: new Date(), isGuard: true,
       }
       setMessages(prev => [...prev, { role: 'user', content: input, timestamp: new Date() }, guardMessage])
-      setInput('')
-      return
+      setInput(''); return
     }
 
     const userMessage = { role: 'user', content: input, timestamp: new Date() }
     setMessages(prev => [...prev, userMessage])
-    const currentInput = input
-    setInput('')
-    setLoading(true)
+    const currentInput = input; setInput(''); setLoading(true)
     try {
       const response = await chatWithCoach(currentInput, selectedPlatform, activeConversationId)
-
       if (response.limitReached) {
-        setUpgradePrompt({
-          message: response.message,
-          currentPlan: response.currentPlan,
-          upgradeTo: response.upgradeTo,
-          usage: response.usage,
-        })
-        setMessages(prev => prev.slice(0, -1))
-        setLoading(false)
-        return
+        setUpgradePrompt({ message: response.message, currentPlan: response.currentPlan, upgradeTo: response.upgradeTo, usage: response.usage })
+        setMessages(prev => prev.slice(0, -1)); setLoading(false); return
       }
-
-      setMessages(prev => [...prev, {
-        role: 'assistant', content: response.response,
-        timestamp: new Date(), contextUsed: response.contextUsed,
-      }])
+      setMessages(prev => [...prev, { role: 'assistant', content: response.response, timestamp: new Date(), contextUsed: response.contextUsed }])
       if (response.conversationId) setActiveConversationId(response.conversationId)
-      await loadConversations()
-      await loadPlanInfo()
+      await loadConversations(); await loadPlanInfo()
     } catch (error) {
-      setMessages(prev => [...prev, {
-        role: 'assistant', content: "Sorry, I'm having trouble connecting right now. Please try again.",
-        timestamp: new Date(), error: true,
-      }])
-    } finally {
-      setLoading(false)
-      inputRef.current?.focus()
-    }
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting right now. Please try again.", timestamp: new Date(), error: true }])
+    } finally { setLoading(false); inputRef.current?.focus() }
   }
 
   function handleQuickPrompt(prompt) {
     setInput(prompt)
-    setTimeout(() => {
-      const form = document.getElementById('coach-form')
-      if (form) form.requestSubmit()
-    }, 100)
+    setTimeout(() => { document.getElementById('coach-form')?.requestSubmit() }, 100)
   }
 
   function timeAgo(dateStr) {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const mins = Math.floor((now - date) / 60000)
+    const mins = Math.floor((new Date() - new Date(dateStr)) / 60000)
     if (mins < 1) return 'Just now'
     if (mins < 60) return `${mins}m ago`
     const hours = Math.floor(mins / 60)
     if (hours < 24) return `${hours}h ago`
     const days = Math.floor(hours / 24)
     if (days < 7) return `${days}d ago`
-    return date.toLocaleDateString()
+    return new Date(dateStr).toLocaleDateString()
   }
 
   function groupConversations(convs) {
@@ -242,9 +198,7 @@ export default function CoachPage() {
     const now = new Date()
     convs.forEach(c => {
       const days = Math.floor((now - new Date(c.updated_at)) / (1000 * 60 * 60 * 24))
-      if (days < 1) today.push(c)
-      else if (days < 7) week.push(c)
-      else older.push(c)
+      if (days < 1) today.push(c); else if (days < 7) week.push(c); else older.push(c)
     })
     return { today, week, older }
   }
@@ -260,13 +214,7 @@ export default function CoachPage() {
   }
 
   const isFreePlan = !userPlan || userPlan?.subscription?.plan === 'free'
-
-  const platforms = [
-    { id: 'youtube', name: 'YouTube', available: true },
-    { id: 'instagram', name: 'Instagram', available: false },
-    { id: 'tiktok', name: 'TikTok', available: false },
-    { id: 'threads', name: 'Threads', available: false },
-  ]
+  const grouped = groupConversations(conversations)
 
   const quickActions = [
     { icon: I.BarChart, label: 'Channel Audit', prompt: 'Give me a quick audit of my channel — what am I doing well and what needs improvement?', color: c.red, bg: c.redBg, border: c.redBorder, needsYT: true },
@@ -278,41 +226,27 @@ export default function CoachPage() {
     { icon: I.Video, label: 'Video Review', prompt: 'Review my latest video — how did it perform and what can I improve?', color: '#FF8C00', bg: 'rgba(255,140,0,0.1)', border: 'rgba(255,140,0,0.2)', needsYT: true },
   ]
 
-  const grouped = groupConversations(conversations)
-
-  // ── Shared sidebar content (used in both desktop & mobile) ──
-  const sidebarContent = (
+  // ── Shared history panel content ──
+  const historyContent = (
     <>
-      <div style={{ padding: 16 }}>
-        <button onClick={handleNewChat} style={{
-          width: '100%', padding: '11px',
-          background: c.red, color: '#fff',
-          border: 'none', borderRadius: 10,
-          fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        }}>
-          <I.Plus /> New Chat
-        </button>
+      <div style={{ padding: '16px 16px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Chat History</span>
+        <button onClick={() => setHistoryOpen(false)} style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${c.border}`, background: 'transparent', color: c.textSec, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><I.X /></button>
       </div>
-
+      <div style={{ padding: '0 16px 12px' }}>
+        <button onClick={handleNewChat} style={{ width: '100%', padding: '10px', background: c.red, color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><I.Plus /> New Chat</button>
+      </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
         {isFreePlan ? (
           <div style={{ textAlign: 'center', padding: '32px 16px' }}>
             <div style={{ color: c.textDim, marginBottom: 8, display: 'flex', justifyContent: 'center' }}><I.Lock /></div>
             <p style={{ fontSize: 13, fontWeight: 600, color: c.text, marginBottom: 4 }}>Conversation History</p>
             <p style={{ fontSize: 12, color: c.textDim, marginBottom: 12 }}>Upgrade to save and revisit your coaching sessions.</p>
-            <a href="/pricing" style={{
-              display: 'inline-block', fontSize: 12, fontWeight: 600,
-              padding: '8px 16px', borderRadius: 8,
-              background: c.red, color: '#fff', textDecoration: 'none',
-            }}>
-              Upgrade to Pro
-            </a>
+            <a href="/pricing" style={{ display: 'inline-block', fontSize: 12, fontWeight: 600, padding: '8px 16px', borderRadius: 8, background: c.red, color: '#fff', textDecoration: 'none' }}>Upgrade to Pro</a>
           </div>
         ) : loadingHistory ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '32px 0' }}>
             <div style={{ width: 20, height: 20, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : conversations.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '32px 16px' }}>
@@ -320,61 +254,32 @@ export default function CoachPage() {
             <p style={{ fontSize: 12, color: c.textDim }}>No conversations yet</p>
           </div>
         ) : (
-          <>
-            {[
-              { label: 'Today', items: grouped.today },
-              { label: 'This Week', items: grouped.week },
-              { label: 'Older', items: grouped.older },
-            ].map((group) => group.items.length > 0 && (
-              <div key={group.label}>
-                <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 1, color: c.textDim, textTransform: 'uppercase' }}>
-                  {group.label}
-                </div>
-                {group.items.map((conv) => (
-                  <div
-                    key={conv.id}
-                    className="hist-item"
-                    onClick={() => loadMessages(conv.id)}
-                    style={{
-                      padding: '10px 14px', borderRadius: 8, marginBottom: 2,
-                      background: activeConversationId === conv.id ? c.histActive : 'transparent',
-                      display: 'flex', alignItems: 'flex-start', gap: 8,
-                    }}
-                  >
-                    <div style={{ color: c.textDim, flexShrink: 0, marginTop: 2 }}><I.Chat /></div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ fontSize: 13, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.title}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, fontSize: 11, color: c.textDim }}>
-                        <I.Clock /> {timeAgo(conv.updated_at)}
-                      </div>
-                    </div>
-                    <button
-                      onClick={(e) => handleDeleteConversation(e, conv.id)}
-                      style={{
-                        background: 'transparent', border: 'none', cursor: 'pointer',
-                        padding: 4, borderRadius: 4, color: c.textDim,
-                        opacity: 0.4, transition: 'opacity 0.15s',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                      onMouseLeave={e => e.currentTarget.style.opacity = 0.4}
-                    >
-                      <I.Trash />
-                    </button>
+          [{label:'Today',items:grouped.today},{label:'This Week',items:grouped.week},{label:'Older',items:grouped.older}].map(group => group.items.length > 0 && (
+            <div key={group.label}>
+              <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 1, color: c.textDim, textTransform: 'uppercase' }}>{group.label}</div>
+              {group.items.map(conv => (
+                <div key={conv.id} className="hist-item" onClick={() => loadMessages(conv.id)} style={{ padding: '10px 14px', borderRadius: 8, marginBottom: 2, background: activeConversationId === conv.id ? c.histActive : 'transparent', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <div style={{ color: c.textDim, flexShrink: 0, marginTop: 2 }}><I.Chat /></div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: 13, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.title}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, fontSize: 11, color: c.textDim }}><I.Clock /> {timeAgo(conv.updated_at)}</div>
                   </div>
-                ))}
-              </div>
-            ))}
-          </>
+                  <button onClick={(e) => handleDeleteConversation(e, conv.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, borderRadius: 4, color: c.textDim, opacity: 0.4, transition: 'opacity 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.4}><I.Trash /></button>
+                </div>
+              ))}
+            </div>
+          ))
         )}
       </div>
     </>
   )
 
   return (
-    <div className="nx-coach-root" style={{ display: 'flex', height: 'calc(100vh - 140px)', marginTop: -24, marginLeft: -32, marginRight: -32, marginBottom: -40 }}>
+    <div className="nx-coach-root" style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 140px)', marginTop: -24, marginLeft: -32, marginRight: -32, marginBottom: -40 }}>
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideSidebar { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        @keyframes slidePanelIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
         .msg-in { animation: fadeIn 0.3s ease forwards; }
         .hist-item { transition: background 0.12s ease; cursor: pointer; }
@@ -384,15 +289,9 @@ export default function CoachPage() {
         .qa-locked { opacity: 0.4; cursor: not-allowed !important; }
 
         @media (max-width: 768px) {
-          .nx-coach-root {
-            height: calc(100vh - 60px) !important;
-            margin: -16px -16px -32px !important;
-          }
-          .nx-coach-sidebar-desktop { display: none !important; }
-          .nx-coach-mobile-history-btn { display: flex !important; }
+          .nx-coach-root { height: calc(100vh - 60px) !important; margin: -16px -16px -32px !important; }
           .nx-coach-header { padding: 10px 14px !important; }
-          .nx-coach-header-badges { display: none !important; }
-          .nx-coach-header-platforms { display: none !important; }
+          .nx-coach-header-right { display: none !important; }
           .nx-coach-messages { padding: 16px !important; }
           .nx-coach-msg-bubble { max-width: 85% !important; }
           .nx-coach-input-form { padding: 10px 14px 14px !important; }
@@ -405,308 +304,167 @@ export default function CoachPage() {
           .nx-coach-followups { padding: 6px 14px !important; }
           .nx-coach-yt-banner { margin: 8px 14px 0 !important; padding: 10px 12px !important; flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
           .nx-coach-yt-banner a { align-self: stretch; text-align: center; }
+          .nx-coach-panel { width: 280px !important; }
         }
       `}</style>
 
-      {/* ── Desktop Sidebar ── */}
-      {sidebarOpen && (
-        <div className="nx-coach-sidebar-desktop" style={{
-          width: 280, background: c.histBg,
-          borderRight: `1px solid ${c.border}`,
-          display: 'flex', flexDirection: 'column', flexShrink: 0,
-        }}>
-          {sidebarContent}
-        </div>
-      )}
-
-      {/* ── Mobile Sidebar Overlay ── */}
-      {mobileSidebarOpen && (
+      {/* ── Slide-over History Panel (both desktop + mobile) ── */}
+      {historyOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex' }}>
-          {/* Backdrop */}
-          <div onClick={() => setMobileSidebarOpen(false)} style={{
-            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)',
-          }}/>
-          {/* Panel */}
-          <div style={{
-            position: 'relative', width: 280, maxWidth: '80vw',
+          <div onClick={() => setHistoryOpen(false)} style={{ position: 'absolute', inset: 0, background: c.overlay }}/>
+          <div className="nx-coach-panel" style={{
+            position: 'relative', width: 320, maxWidth: '85vw',
             background: c.histBg, display: 'flex', flexDirection: 'column',
-            animation: 'slideSidebar 0.25s ease', zIndex: 201,
+            animation: 'slidePanelIn 0.2s ease', zIndex: 201,
             borderRight: `1px solid ${c.border}`,
           }}>
-            {/* Close button */}
-            <div style={{
-              padding: '14px 16px 0', display: 'flex', justifyContent: 'flex-end',
-            }}>
-              <button onClick={() => setMobileSidebarOpen(false)} style={{
-                width: 32, height: 32, borderRadius: 8, border: `1px solid ${c.border}`,
-                background: 'transparent', color: c.textSec, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <I.X />
-              </button>
-            </div>
-            {sidebarContent}
+            {historyContent}
           </div>
         </div>
       )}
 
-      {/* ── Main Chat Area ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-
-        {/* Chat Header */}
-        <header className="nx-coach-header" style={{
-          padding: '14px 24px', borderBottom: `1px solid ${c.borderLight}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: c.glass, backdropFilter: 'blur(16px)', flexShrink: 0,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {/* Mobile history button */}
-            <button className="nx-coach-mobile-history-btn" onClick={() => setMobileSidebarOpen(true)} style={{
-              display: 'none', alignItems: 'center', justifyContent: 'center',
-              width: 34, height: 34, borderRadius: 8, border: `1px solid ${c.border}`,
-              background: c.card, color: c.text, cursor: 'pointer', flexShrink: 0,
-            }}>
-              <I.History />
-            </button>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: `0 0 20px ${c.redGlow}`, color: '#fff',
-            }}><I.Sparkle /></div>
-            <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>AI Coach</h2>
-              <span style={{ fontSize: 12, color: c.textDim }}>YouTube growth strategist</span>
-            </div>
+      {/* ── Chat Header ── */}
+      <header className="nx-coach-header" style={{
+        padding: '14px 24px', borderBottom: `1px solid ${c.borderLight}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: c.glass, backdropFilter: 'blur(16px)', flexShrink: 0,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* History toggle */}
+          <button onClick={() => setHistoryOpen(true)} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 36, height: 36, borderRadius: 8, border: `1px solid ${c.border}`,
+            background: c.card, color: c.text, cursor: 'pointer', flexShrink: 0,
+          }} title="Chat history">
+            <I.PanelLeft />
+          </button>
+          <div style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: `0 0 20px ${c.redGlow}`, color: '#fff',
+          }}><I.Sparkle /></div>
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: c.text }}>AI Coach</h2>
+            <span style={{ fontSize: 12, color: c.textDim }}>YouTube growth strategist</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Usage counter */}
-            <div className="nx-coach-header-badges">
-              {userPlan?.usage?.coachMessages && userPlan.usage.coachMessages.limit !== 'unlimited' && (
-                <div style={{
-                  fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 8,
-                  background: c.redBg, border: `1px solid ${c.redBorder}`, color: c.red,
-                }}>
-                  {userPlan.usage.coachMessages.remaining}/{userPlan.usage.coachMessages.limit} messages left today
-                </div>
-              )}
+        </div>
+        <div className="nx-coach-header-right" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {userPlan?.usage?.coachMessages && userPlan.usage.coachMessages.limit !== 'unlimited' && (
+            <div style={{ fontSize: 11, fontWeight: 600, padding: '5px 10px', borderRadius: 8, background: c.redBg, border: `1px solid ${c.redBorder}`, color: c.red }}>
+              {userPlan.usage.coachMessages.remaining}/{userPlan.usage.coachMessages.limit} messages left today
             </div>
-            {/* YouTube connection status badge */}
-            <div className="nx-coach-header-badges">
-              {ytConnected !== null && (
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '5px 10px', borderRadius: 8,
-                  background: ytConnected ? c.greenBg : c.warnBg,
-                  border: `1px solid ${ytConnected ? c.greenBorder : c.warnBorder}`,
-                  fontSize: 12, fontWeight: 600,
-                  color: ytConnected ? c.green : c.warnText,
-                }}>
-                  <div style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: ytConnected ? c.green : c.warnText,
-                  }}/>
-                  {ytConnected ? 'YouTube connected' : 'YouTube not connected'}
-                </div>
-              )}
-            </div>
-            <div className="nx-coach-header-platforms" style={{ display: 'flex', gap: 6 }}>
-              {platforms.map((p) => (
-                <button key={p.id} onClick={() => p.available && setSelectedPlatform(p.id)}
-                  style={{
-                    padding: '6px 14px', borderRadius: 7, border: 'none', fontFamily: 'inherit',
-                    background: selectedPlatform === p.id && p.available ? c.chipActive : c.chip,
-                    color: selectedPlatform === p.id && p.available ? c.chipActiveText : c.textSec,
-                    cursor: p.available ? 'pointer' : 'default',
-                    fontSize: 12, fontWeight: 600, opacity: p.available ? 1 : 0.4,
-                    transition: 'all 0.15s ease',
-                  }}>
-                  {p.id === 'youtube' && '▶ '}{p.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </header>
-
-        {/* ── YouTube not connected banner ── */}
-        {ytConnected === false && (
-          <div className="nx-coach-yt-banner" style={{
-            margin: '12px 24px 0',
-            padding: '12px 16px',
-            background: c.warnBg,
-            border: `1px solid ${c.warnBorder}`,
-            borderRadius: 12,
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
-            flexShrink: 0,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ color: c.warnText, flexShrink: 0 }}><I.Warning /></div>
-              <div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: c.warnText, marginBottom: 1 }}>
-                  YouTube not connected
-                </p>
-                <p style={{ fontSize: 12, color: c.textDim }}>
-                  Connect your channel to unlock personalized analytics, coaching, and insights.
-                </p>
-              </div>
-            </div>
-            <a href="/settings" style={{
-              padding: '7px 14px', borderRadius: 8, flexShrink: 0,
-              background: c.warnText, color: '#fff',
-              fontSize: 12, fontWeight: 700, textDecoration: 'none',
-              transition: 'opacity 0.15s',
-            }}
-              onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-            >
-              Connect
-            </a>
-          </div>
-        )}
-
-        {/* Messages / Welcome */}
-        <div className="nx-coach-messages" style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
-          {messages.length === 0 && !loading ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center' }}>
-              <div className="nx-coach-welcome-icon" style={{
-                width: 64, height: 64, borderRadius: 18,
-                background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: 20, boxShadow: `0 0 40px ${c.redGlow}`, color: '#fff',
-              }}><svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg></div>
-              <h2 className="nx-coach-welcome-title" style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
-              <p className="nx-coach-welcome-desc" style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
-                {ytConnected
-                  ? "I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy."
-                  : "You can ask me general questions or competitor research. Connect YouTube in Settings to unlock personalized coaching."}
-              </p>
-              <div className="nx-coach-qa-grid-top" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
-                {quickActions.slice(0, 4).map((qa, i) => {
-                  const QIcon = qa.icon
-                  const locked = qa.needsYT && !ytConnected
-                  return (
-                    <button key={i}
-                      className={`qa-btn${locked ? ' qa-locked' : ''}`}
-                      onClick={() => !locked && handleQuickPrompt(qa.prompt)}
-                      title={locked ? 'Connect YouTube to use this' : ''}
-                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
-                      <QIcon />{qa.label}
-                      {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="nx-coach-qa-grid-bottom" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
-                {quickActions.slice(4).map((qa, i) => {
-                  const QIcon = qa.icon
-                  const locked = qa.needsYT && !ytConnected
-                  return (
-                    <button key={i}
-                      className={`qa-btn${locked ? ' qa-locked' : ''}`}
-                      onClick={() => !locked && handleQuickPrompt(qa.prompt)}
-                      title={locked ? 'Connect YouTube to use this' : ''}
-                      style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
-                      <QIcon />{qa.label}
-                      {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-              {messages.map((msg, i) => (
-                <div key={i} className="msg-in" style={{ display: 'flex', gap: 12, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#fff', fontSize: 13, fontWeight: 700,
-                  }}>
-                    {msg.role === 'user' ? 'Y' : <I.Sparkle />}
-                  </div>
-                  <div className="nx-coach-msg-bubble" style={{
-                    maxWidth: '70%', padding: '14px 18px',
-                    borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                    background: msg.role === 'user' ? c.userBubble : msg.isGuard ? c.warnBg : c.aiBubble,
-                    color: msg.role === 'user' ? c.userBubbleText : c.aiBubbleText,
-                    border: msg.role === 'assistant' ? `1px solid ${msg.isGuard ? c.warnBorder : c.border}` : 'none',
-                    fontSize: 14, lineHeight: 1.6,
-                  }}>
-                    {msg.role === 'user' ? (
-                      <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
-                    ) : (
-                      <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatCoachMessage(msg.content) }} />
-                    )}
-                    {msg.isGuard && (
-                      <a href="/settings" style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 6,
-                        marginTop: 12, padding: '8px 14px', borderRadius: 8,
-                        background: c.warnText, color: '#fff',
-                        fontSize: 12, fontWeight: 700, textDecoration: 'none',
-                      }}>
-                        <I.YouTube /> Go to Settings → Connect YouTube
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {upgradePrompt && (
-                <div style={{ maxWidth: '70%' }}>
-                  <UpgradePrompt
-                    message={upgradePrompt.message}
-                    currentPlan={upgradePrompt.currentPlan}
-                    upgradeTo={upgradePrompt.upgradeTo}
-                    usage={upgradePrompt.usage}
-                    onDismiss={() => setUpgradePrompt(null)}
-                  />
-                </div>
-              )}
-
-              {loading && (
-                <div className="msg-in" style={{ display: 'flex', gap: 12 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10,
-                    background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
-                  }}><I.Sparkle /></div>
-                  <div style={{
-                    padding: '14px 18px', borderRadius: '14px 14px 14px 4px',
-                    background: c.aiBubble, border: `1px solid ${c.border}`,
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    fontSize: 13, color: c.textDim,
-                  }}>
-                    <div style={{ width: 16, height: 16, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
-                    Analyzing your data...
-                  </div>
-                </div>
-              )}
-
-              <div ref={messagesEndRef} />
+          )}
+          {ytConnected !== null && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 8, background: ytConnected ? c.greenBg : c.warnBg, border: `1px solid ${ytConnected ? c.greenBorder : c.warnBorder}`, fontSize: 12, fontWeight: 600, color: ytConnected ? c.green : c.warnText }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: ytConnected ? c.green : c.warnText }}/>
+              {ytConnected ? 'YouTube connected' : 'YouTube not connected'}
             </div>
           )}
         </div>
+      </header>
 
-        {/* Quick follow-ups */}
-        {messages.length > 0 && messages.length < 8 && !loading && !upgradePrompt && (
-          <div className="nx-coach-followups" style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {['Go deeper', 'Give me action steps', 'Next video idea'].map((q, i) => (
-              <button key={i} onClick={() => handleQuickPrompt(q)}
-                style={{
-                  fontSize: 12, padding: '6px 14px', borderRadius: 20,
-                  background: c.chip, border: 'none', color: c.textSec,
-                  cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s',
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = c.cardHover}
-                onMouseLeave={e => e.currentTarget.style.background = c.chip}
-              >{q}</button>
+      {/* ── YouTube not connected banner ── */}
+      {ytConnected === false && (
+        <div className="nx-coach-yt-banner" style={{ margin: '12px 24px 0', padding: '12px 16px', background: c.warnBg, border: `1px solid ${c.warnBorder}`, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ color: c.warnText, flexShrink: 0 }}><I.Warning /></div>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: c.warnText, marginBottom: 1 }}>YouTube not connected</p>
+              <p style={{ fontSize: 12, color: c.textDim }}>Connect your channel to unlock personalized coaching.</p>
+            </div>
+          </div>
+          <a href="/settings" style={{ padding: '7px 14px', borderRadius: 8, flexShrink: 0, background: c.warnText, color: '#fff', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>Connect</a>
+        </div>
+      )}
+
+      {/* ── Messages / Welcome ── */}
+      <div className="nx-coach-messages" style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
+        {messages.length === 0 && !loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', maxWidth: 680, margin: '0 auto' }}>
+            <div className="nx-coach-welcome-icon" style={{ width: 64, height: 64, borderRadius: 18, background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: `0 0 40px ${c.redGlow}`, color: '#fff' }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+            </div>
+            <h2 className="nx-coach-welcome-title" style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, color: c.text }}>What can I help you with?</h2>
+            <p className="nx-coach-welcome-desc" style={{ fontSize: 14, color: c.textSec, maxWidth: 480, lineHeight: 1.5, marginBottom: 32 }}>
+              {ytConnected
+                ? "I have access to your YouTube data + competitor intelligence — ask about your channel, rivals, or growth strategy."
+                : "You can ask me general questions or competitor research. Connect YouTube in Settings to unlock personalized coaching."}
+            </p>
+            <div className="nx-coach-qa-grid-top" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, maxWidth: 600, width: '100%' }}>
+              {quickActions.slice(0, 4).map((qa, i) => {
+                const QIcon = qa.icon; const locked = qa.needsYT && !ytConnected
+                return (
+                  <button key={i} className={`qa-btn${locked ? ' qa-locked' : ''}`} onClick={() => !locked && handleQuickPrompt(qa.prompt)} title={locked ? 'Connect YouTube to use this' : ''} style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
+                    <QIcon />{qa.label}
+                    {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
+                  </button>
+                )
+              })}
+            </div>
+            <div className="nx-coach-qa-grid-bottom" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 450, width: '100%', marginTop: 10 }}>
+              {quickActions.slice(4).map((qa, i) => {
+                const QIcon = qa.icon; const locked = qa.needsYT && !ytConnected
+                return (
+                  <button key={i} className={`qa-btn${locked ? ' qa-locked' : ''}`} onClick={() => !locked && handleQuickPrompt(qa.prompt)} title={locked ? 'Connect YouTube to use this' : ''} style={{ padding: '14px 12px', borderRadius: 12, background: qa.bg, border: `1px solid ${qa.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: qa.color, fontFamily: 'inherit', position: 'relative' }}>
+                    <QIcon />{qa.label}
+                    {locked && <span style={{ fontSize: 9, position: 'absolute', bottom: 6, color: c.textDim }}>needs YT</span>}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ) : (
+          <div style={{ maxWidth: 780, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {messages.map((msg, i) => (
+              <div key={i} className="msg-in" style={{ display: 'flex', gap: 12, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700 }}>
+                  {msg.role === 'user' ? 'Y' : <I.Sparkle />}
+                </div>
+                <div className="nx-coach-msg-bubble" style={{
+                  maxWidth: '70%', padding: '14px 18px',
+                  borderRadius: msg.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                  background: msg.role === 'user' ? c.userBubble : msg.isGuard ? c.warnBg : c.aiBubble,
+                  color: msg.role === 'user' ? c.userBubbleText : c.aiBubbleText,
+                  border: msg.role === 'assistant' ? `1px solid ${msg.isGuard ? c.warnBorder : c.border}` : 'none',
+                  fontSize: 14, lineHeight: 1.6,
+                }}>
+                  {msg.role === 'user' ? <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p> : <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatCoachMessage(msg.content) }} />}
+                  {msg.isGuard && (
+                    <a href="/settings" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, padding: '8px 14px', borderRadius: 8, background: c.warnText, color: '#fff', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
+                      <I.YouTube /> Go to Settings → Connect YouTube
+                    </a>
+                  )}
+                </div>
+              </div>
             ))}
+            {upgradePrompt && <div style={{ maxWidth: '70%' }}><UpgradePrompt message={upgradePrompt.message} currentPlan={upgradePrompt.currentPlan} upgradeTo={upgradePrompt.upgradeTo} usage={upgradePrompt.usage} onDismiss={() => setUpgradePrompt(null)} /></div>}
+            {loading && (
+              <div className="msg-in" style={{ display: 'flex', gap: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.red}, ${c.redDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}><I.Sparkle /></div>
+                <div style={{ padding: '14px 18px', borderRadius: '14px 14px 14px 4px', background: c.aiBubble, border: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: c.textDim }}>
+                  <div style={{ width: 16, height: 16, border: `2px solid ${c.border}`, borderTopColor: c.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>Analyzing your data...
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
         )}
+      </div>
 
-        {/* Input */}
-        <form id="coach-form" onSubmit={handleSubmit} className="nx-coach-input-form" style={{ padding: '16px 24px 20px', borderTop: `1px solid ${c.borderLight}`, flexShrink: 0 }}>
+      {/* Quick follow-ups */}
+      {messages.length > 0 && messages.length < 8 && !loading && !upgradePrompt && (
+        <div className="nx-coach-followups" style={{ padding: '8px 24px', borderTop: `1px solid ${c.borderLight}`, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+          {['Go deeper', 'Give me action steps', 'Next video idea'].map((q, i) => (
+            <button key={i} onClick={() => handleQuickPrompt(q)} style={{ fontSize: 12, padding: '6px 14px', borderRadius: 20, background: c.chip, border: 'none', color: c.textSec, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s' }}
+              onMouseEnter={e => e.currentTarget.style.background = c.cardHover} onMouseLeave={e => e.currentTarget.style.background = c.chip}>{q}</button>
+          ))}
+        </div>
+      )}
+
+      {/* Input */}
+      <form id="coach-form" onSubmit={handleSubmit} className="nx-coach-input-form" style={{ padding: '16px 24px 20px', borderTop: `1px solid ${c.borderLight}`, flexShrink: 0 }}>
+        <div style={{ maxWidth: 780, margin: '0 auto' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
             background: c.inputBg, border: `1.5px solid ${input ? c.red : c.inputBorder}`,
@@ -714,33 +472,22 @@ export default function CoachPage() {
             transition: 'border-color 0.2s ease',
             boxShadow: input ? `0 0 0 3px ${c.redGlow}` : 'none',
           }}>
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={e => setInput(e.target.value)}
+            <input ref={inputRef} type="text" value={input} onChange={e => setInput(e.target.value)}
               placeholder={ytConnected ? "Ask about your channel, competitors, or strategy..." : "Ask a question or connect YouTube for coaching..."}
               disabled={loading}
-              style={{
-                flex: 1, border: 'none', outline: 'none',
-                background: 'transparent', color: c.text,
-                fontSize: 14, fontFamily: 'inherit', padding: '12px 0',
-              }}
+              style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', color: c.text, fontSize: 14, fontFamily: 'inherit', padding: '12px 0' }}
             />
-            <button type="submit" disabled={!input.trim() || loading}
-              style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: input.trim() ? c.red : c.chip,
-                border: 'none', cursor: input.trim() ? 'pointer' : 'default',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: input.trim() ? '#fff' : c.textDim,
-                transition: 'all 0.15s ease', flexShrink: 0,
-              }}>
-              <I.Send />
-            </button>
+            <button type="submit" disabled={!input.trim() || loading} style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: input.trim() ? c.red : c.chip,
+              border: 'none', cursor: input.trim() ? 'pointer' : 'default',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: input.trim() ? '#fff' : c.textDim,
+              transition: 'all 0.15s ease', flexShrink: 0,
+            }}><I.Send /></button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   )
 }
