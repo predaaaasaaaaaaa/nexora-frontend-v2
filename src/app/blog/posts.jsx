@@ -10,6 +10,7 @@ import Post9Content from './content/post9'
 import Post10Content from './content/post10'
 import Post11Content from './content/post11'
 import Post12Content from './content/post12'
+import Post13Content from './content/post13'
 
 export const posts = [
   {
@@ -119,5 +120,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube thumbnails', 'CTR', 'click through rate'],
     content: <Post12Content />,
+  },
+  {
+    slug: 'youtube-mistakes-killing-your-channel-2026',
+    title: '10 YouTube Mistakes Secretly Killing Your Channel in 2026 (And How to Fix Them)',
+    description: 'Most channels fail because of invisible mistakes that compound silently. Here are the 10 most common growth killers in 2026 with exact fixes for each one.',
+    date: '2026-04-09',
+    author: 'NEXORA Team',
+    tags: ['youtube mistakes', 'channel growth', 'youtube tips'],
+    content: <Post13Content />,
   },
 ]
