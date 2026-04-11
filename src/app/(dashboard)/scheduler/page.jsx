@@ -526,7 +526,59 @@ export default function SchedulerPage() {
                     <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Platform</label><select value={form.platform} onChange={e => { const p = e.target.value; setForm({ platform: p, content_type: CONTENT_TYPES[p][0] }) }} style={inputStyle}>{Object.entries(PLATFORMS).map(([key, val]) => <option key={key} value={key}>{val.label}</option>)}</select></div>
                     <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Content Type</label><select value={form.content_type} onChange={e => setForm({ content_type: e.target.value })} style={inputStyle}>{(CONTENT_TYPES[form.platform] || ['video']).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}</select></div>
                   </div>
-                  <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Time</label><input type="time" value={form.time} onChange={e => setForm({ time: e.target.value })} style={inputStyle} /></div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Time</label>
+                    {(() => {
+                      const [h24, m] = (form.time || '09:00').split(':').map(Number)
+                      const period = h24 >= 12 ? 'PM' : 'AM'
+                      const h12 = h24 === 0 ? 12 : h24 > 12 ? h24 - 12 : h24
+                      const setTime = (hour12, minute, per) => {
+                        let h = hour12
+                        if (per === 'AM' && h === 12) h = 0
+                        else if (per === 'PM' && h !== 12) h += 12
+                        setForm({ time: `${String(h).padStart(2, '0')}:${String(minute).padStart(2, '0')}` })
+                      }
+                      const selectStyle = {
+                        padding: '10px 8px', borderRadius: 10,
+                        border: `1px solid ${c.inputBorder}`, background: c.inputBg,
+                        color: c.text, fontSize: 16, fontWeight: 600, fontFamily: 'inherit',
+                        outline: 'none', appearance: 'none', textAlign: 'center',
+                        boxSizing: 'border-box', cursor: 'pointer', width: '100%',
+                      }
+                      return (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                          <div style={{ position: 'relative' }}>
+                            <select value={h12} onChange={e => setTime(Number(e.target.value), m, period)} style={selectStyle}>
+                              {[12,1,2,3,4,5,6,7,8,9,10,11].map(h => <option key={h} value={h}>{h}</option>)}
+                            </select>
+                            <div style={{ position: 'absolute', bottom: -2, left: '50%', transform: 'translateX(-50%)', fontSize: 9, color: c.textDim, fontWeight: 500 }}>Hour</div>
+                          </div>
+                          <div style={{ position: 'relative' }}>
+                            <select value={m} onChange={e => setTime(h12, Number(e.target.value), period)} style={selectStyle}>
+                              {[0,5,10,15,20,25,30,35,40,45,50,55].map(min => <option key={min} value={min}>{String(min).padStart(2, '0')}</option>)}
+                            </select>
+                            <div style={{ position: 'absolute', bottom: -2, left: '50%', transform: 'translateX(-50%)', fontSize: 9, color: c.textDim, fontWeight: 500 }}>Min</div>
+                          </div>
+                          <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: `1px solid ${c.inputBorder}` }}>
+                            <button type="button" onClick={() => setTime(h12, m, 'AM')} style={{
+                              flex: 1, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                              fontSize: 14, fontWeight: 700,
+                              background: period === 'AM' ? c.red : c.inputBg,
+                              color: period === 'AM' ? '#fff' : c.textDim,
+                              transition: 'all 0.15s',
+                            }}>AM</button>
+                            <button type="button" onClick={() => setTime(h12, m, 'PM')} style={{
+                              flex: 1, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                              fontSize: 14, fontWeight: 700,
+                              background: period === 'PM' ? c.red : c.inputBg,
+                              color: period === 'PM' ? '#fff' : c.textDim,
+                              transition: 'all 0.15s',
+                            }}>PM</button>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
                   <div><label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: c.textSec, marginBottom: 6 }}>Notes <span style={{ fontWeight: 400, color: c.textDim }}>(optional)</span></label><textarea value={form.description} onChange={e => setForm({ description: e.target.value })} placeholder="Key points, hashtags..." rows="3" style={{ ...inputStyle, resize: 'none' }} /></div>
                   <div style={{ display: 'flex', gap: 12, marginTop: 4 }}>
                     <button onClick={() => { setShowScheduleModal(false); setEditingPost(null) }} style={{ flex: 1, padding: '12px', borderRadius: 10, background: 'transparent', border: `1px solid ${c.border}`, color: c.textSec, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
