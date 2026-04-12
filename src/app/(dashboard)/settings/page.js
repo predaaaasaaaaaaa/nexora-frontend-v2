@@ -147,11 +147,14 @@ export default function SettingsPage() {
         <style>{`
           @media (max-width: 768px) {
             .nx-set-grid { grid-template-columns: 1fr !important; }
+            .nx-set-col-left { order: 1; }
+            .nx-set-col-right { order: 2; }
+            .nx-set-danger { order: 3; }
           }
         `}</style>
 
         {/* ── LEFT COLUMN ── */}
-        <div>
+        <div className="nx-set-col-left">
           {/* Success Banner */}
           {success && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 18px', marginBottom: 20, borderRadius: 12, background: c.successBg, border: `1px solid ${c.successBorder}` }}>
@@ -190,20 +193,24 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Danger Zone */}
-          <div style={{ background: c.dangerBg, border: `1px solid ${c.dangerBorder}`, borderRadius: 14, overflow: 'hidden' }}>
-            <div className="nx-set-section-header" style={{ padding: '18px 24px', borderBottom: `1px solid ${c.dangerBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ color: c.red }}><I.Shield /></div><h3 style={{ fontSize: 16, fontWeight: 700, color: c.red }}>Danger Zone</h3>
-            </div>
-            <div className="nx-set-row" style={{ ...rowStyle(true), borderBottomColor: c.dangerBorder }}>
-              <div><div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>Sign Out</div><div style={{ fontSize: 12, color: c.textDim }}>Sign out of your NEXORA account</div></div>
-              <button className="danger-btn" onClick={handleSignOut} style={{ padding: '8px 20px', borderRadius: 8, background: 'transparent', border: `1px solid ${c.border}`, color: c.textSec, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}><I.LogOut /> Sign Out</button>
+          {/* Danger Zone — moved outside columns for mobile ordering */}
+          </div>
+
+          {/* ── DANGER ZONE (own grid item for mobile reorder) ── */}
+          <div className="nx-set-danger" style={{ gridColumn: '1 / -1' }}>
+            <div style={{ background: c.dangerBg, border: `1px solid ${c.dangerBorder}`, borderRadius: 14, overflow: 'hidden' }}>
+              <div className="nx-set-section-header" style={{ padding: '18px 24px', borderBottom: `1px solid ${c.dangerBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ color: c.red }}><I.Shield /></div><h3 style={{ fontSize: 16, fontWeight: 700, color: c.red }}>Danger Zone</h3>
+              </div>
+              <div className="nx-set-row" style={{ ...rowStyle(true), borderBottomColor: c.dangerBorder }}>
+                <div><div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>Sign Out</div><div style={{ fontSize: 12, color: c.textDim }}>Sign out of your NEXORA account</div></div>
+                <button className="danger-btn" onClick={handleSignOut} style={{ padding: '8px 20px', borderRadius: 8, background: 'transparent', border: `1px solid ${c.border}`, color: c.textSec, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}><I.LogOut /> Sign Out</button>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* ── RIGHT COLUMN ── */}
-        <div>
+        <div className="nx-set-col-right">
           {/* Connected Platforms */}
           <div style={sectionStyle}>
             {sectionHeader(<I.Link />, 'Connected Platforms')}
