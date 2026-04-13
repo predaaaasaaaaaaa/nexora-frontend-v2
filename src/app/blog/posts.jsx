@@ -11,6 +11,7 @@ import Post10Content from './content/post10'
 import Post11Content from './content/post11'
 import Post12Content from './content/post12'
 import Post13Content from './content/post13'
+import Post14Content from './content/post14'
 
 export const posts = [
   {
@@ -129,5 +130,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube mistakes', 'channel growth', 'youtube tips'],
     content: <Post13Content />,
+  },
+  {
+    slug: 'how-to-make-money-on-youtube-2026',
+    title: 'How to Make Money on YouTube in 2026: Complete Monetization Guide',
+    description: 'Every way to earn money on YouTube in 2026. YPP requirements, 7 revenue streams, realistic income by channel size, and the strategies that maximize earnings.',
+    date: '2026-04-10',
+    author: 'NEXORA Team',
+    tags: ['youtube monetization', 'make money youtube', '2026 guide'],
+    content: <Post14Content />,
   },
 ]
