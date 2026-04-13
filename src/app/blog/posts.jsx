@@ -13,6 +13,7 @@ import Post12Content from './content/post12'
 import Post13Content from './content/post13'
 import Post14Content from './content/post14'
 import Post15Content from './content/post15'
+import Post16Content from './content/post16'
 
 export const posts = [
   {
@@ -149,5 +150,13 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['AI tools', 'youtube creator tools', '2026'],
     content: <Post15Content />,
+  },{
+    slug: 'youtube-title-formulas-that-get-clicks-2026',
+    title: '10 YouTube Title Formulas That Actually Get Clicks in 2026 (With Examples)',
+    description: 'The 10 proven title formulas top creators use to 2-5x their CTR. Real examples, the psychology behind each one, and how to combine them for maximum impact.',
+    date: '2026-04-12',
+    author: 'NEXORA Team',
+    tags: ['youtube titles', 'CTR', 'title formulas'],
+    content: <Post16Content />,
   },
 ]
