@@ -12,6 +12,7 @@ import Post11Content from './content/post11'
 import Post12Content from './content/post12'
 import Post13Content from './content/post13'
 import Post14Content from './content/post14'
+import Post15Content from './content/post15'
 
 export const posts = [
   {
@@ -139,5 +140,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube monetization', 'make money youtube', '2026 guide'],
     content: <Post14Content />,
+  },
+  {
+    slug: 'best-ai-tools-youtube-creators-2026',
+    title: 'Best AI Tools for YouTube Creators in 2026 (We Tested Them All)',
+    description: 'The 12 best AI tools for YouTubers in 2026: strategy, scripting, thumbnails, editing, voiceover, and trend research. Free and paid options with recommended stacks by channel size.',
+    date: '2026-04-11',
+    author: 'NEXORA Team',
+    tags: ['AI tools', 'youtube creator tools', '2026'],
+    content: <Post15Content />,
   },
 ]
