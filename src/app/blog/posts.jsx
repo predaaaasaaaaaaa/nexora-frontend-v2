@@ -12,8 +12,9 @@ import Post11Content from './content/post11'
 import Post12Content from './content/post12'
 import Post13Content from './content/post13'
 import Post14Content from './content/post14'
-import Post15Content from './content/post15'
-import Post16Content from './content/post16'
+import Post15Content from './content/post16'
+import Post16Content from './content/post15'
+import Post17Content from './content/post17'
 
 export const posts = [
   {
@@ -158,5 +159,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube titles', 'CTR', 'title formulas'],
     content: <Post16Content />,
+  },
+  {
+    slug: 'how-to-improve-youtube-audience-retention-2026',
+    title: 'How to Improve YouTube Audience Retention in 2026 (10 Proven Techniques)',
+    description: 'Retention is weighted 3x more than views in 2026. Learn the benchmarks, how to read your retention graph, and 10 techniques to keep viewers watching longer.',
+    date: '2026-04-13',
+    author: 'NEXORA Team',
+    tags: ['audience retention', 'watch time', 'youtube growth'],
+    content: <Post17Content />,
   },
 ]
