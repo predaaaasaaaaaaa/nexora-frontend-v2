@@ -15,6 +15,7 @@ import Post14Content from './content/post14'
 import Post15Content from './content/post16'
 import Post16Content from './content/post15'
 import Post17Content from './content/post17'
+import Post18Content from './content/post18'
 
 export const posts = [
   {
@@ -168,5 +169,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['audience retention', 'watch time', 'youtube growth'],
     content: <Post17Content />,
+  },
+  {
+    slug: 'ai-agent-for-youtube-channel-2026',
+    title: 'AI Agents for YouTube Creators: The Next Level of Channel Growth in 2026',
+    description: 'AI tools give generic advice. AI agents plug into your channel and give personalized data-driven strategy. Here is what YouTube AI agents can do and why they change everything.',
+    date: '2026-04-14',
+    author: 'NEXORA Team',
+    tags: ['AI agent', 'youtube AI', 'channel growth'],
+    content: <Post18Content />,
   },
 ]
