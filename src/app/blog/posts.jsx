@@ -16,6 +16,7 @@ import Post15Content from './content/post16'
 import Post16Content from './content/post15'
 import Post17Content from './content/post17'
 import Post18Content from './content/post18'
+import Post19Content from './content/post19'
 
 export const posts = [
   {
@@ -178,5 +179,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['AI agent', 'youtube AI', 'channel growth'],
     content: <Post18Content />,
+  },
+  {
+    slug: 'most-profitable-youtube-niches-2026',
+    title: 'Most Profitable YouTube Niches in 2026 (Real CPM & RPM Data)',
+    description: 'The real CPM and RPM data for every YouTube niche in 2026. Finance earns 10-20x more per view than gaming. Plus 5 untapped niches exploding right now.',
+    date: '2026-04-15',
+    author: 'NEXORA Team',
+    tags: ['youtube niches', 'most profitable', 'CPM data'],
+    content: <Post19Content />,
   },
 ]
