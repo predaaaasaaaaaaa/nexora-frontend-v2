@@ -17,6 +17,7 @@ import Post16Content from './content/post15'
 import Post17Content from './content/post17'
 import Post18Content from './content/post18'
 import Post19Content from './content/post19'
+import Post20Content from './content/post20'
 
 export const posts = [
   {
@@ -188,5 +189,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube niches', 'most profitable', 'CPM data'],
     content: <Post19Content />,
+  },
+  {
+    slug: 'how-to-start-faceless-youtube-channel-2026',
+    title: 'How to Start a Faceless YouTube Channel in 2026 (Complete AI Automation Guide)',
+    description: 'Launch a profitable faceless YouTube channel in 7 days using AI tools. The 8 highest-earning formats with real income data, the exact tool stack, and step-by-step launch plan.',
+    date: '2026-04-16',
+    author: 'NEXORA Team',
+    tags: ['faceless youtube', 'AI automation', 'youtube channel'],
+    content: <Post20Content />,
   },
 ]
