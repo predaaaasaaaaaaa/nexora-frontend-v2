@@ -18,6 +18,7 @@ import Post17Content from './content/post17'
 import Post18Content from './content/post18'
 import Post19Content from './content/post19'
 import Post20Content from './content/post20'
+import Post21Content from './content/post21'
 
 export const posts = [
   {
@@ -198,5 +199,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['faceless youtube', 'AI automation', 'youtube channel'],
     content: <Post20Content />,
+  },
+  {
+    slug: 'plug-ai-agent-into-youtube-channel-2026',
+    title: 'How to Plug an AI Agent Into Your YouTube Channel in 2026 (Step-by-Step)',
+    description: 'The smartest creators in 2026 are plugging AI agents into their YouTube channels. Here is what it means, what an agent can do, and how to connect one in 3 minutes with NEXORA.',
+    date: '2026-04-17',
+    author: 'NEXORA Team',
+    tags: ['AI agent', 'youtube automation', 'plug AI'],
+    content: <Post21Content />,
   },
 ]
