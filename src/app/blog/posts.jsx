@@ -19,6 +19,7 @@ import Post18Content from './content/post18'
 import Post19Content from './content/post19'
 import Post20Content from './content/post20'
 import Post21Content from './content/post21'
+import Post22Content from './content/post22'
 
 export const posts = [
   {
@@ -208,5 +209,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['AI agent', 'youtube automation', 'plug AI'],
     content: <Post21Content />,
+  },
+  {
+    slug: 'youtube-seo-complete-guide-2026',
+    title: 'YouTube SEO: The Complete Guide to Ranking Videos in 2026',
+    description: 'Rank higher on YouTube with the 6 actual ranking factors in 2026. Keyword research, on-page optimization, thumbnail strategy, and post-publish moves that move videos from page 3 to page 1.',
+    date: '2026-04-18',
+    author: 'NEXORA Team',
+    tags: ['youtube SEO', 'ranking factors', '2026 guide'],
+    content: <Post22Content />,
   },
 ]
