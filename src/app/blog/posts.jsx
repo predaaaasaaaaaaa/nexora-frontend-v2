@@ -20,6 +20,7 @@ import Post19Content from './content/post19'
 import Post20Content from './content/post20'
 import Post21Content from './content/post21'
 import Post22Content from './content/post22'
+import Post23Content from './content/post23'
 
 export const posts = [
   {
@@ -218,5 +219,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube SEO', 'ranking factors', '2026 guide'],
     content: <Post22Content />,
+  },
+  {
+    slug: 'how-to-get-youtube-sponsorships-2026',
+    title: 'How to Get YouTube Sponsorships in 2026: Complete Guide for Small Channels',
+    description: 'Land your first YouTube sponsorship even at 5K subscribers. Real 2026 rate cards by niche, the CPM pricing formula, cold outreach email template, and the negotiation moves that double your rate.',
+    date: '2026-04-19',
+    author: 'NEXORA Team',
+    tags: ['youtube sponsorships', 'brand deals', 'youtube monetization'],
+    content: <Post23Content />,
   },
 ]
