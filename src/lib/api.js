@@ -92,6 +92,10 @@ export async function getCombinedAnalytics() {
 // COACH API
 // ————————————————————————————————————————
 
+// Only message/platform/conversationId are sent. The backend builds
+// niche/analytics from the user's actual server-side context — earlier
+// versions of this client used to forward those fields from the page,
+// which let a tampered client lie to the AI about its own profile.
 export async function chatWithCoach(message, platform = 'youtube', conversationId = null) {
   return apiCall('/coach/chat', {
     method: 'POST',
