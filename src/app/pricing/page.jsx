@@ -73,6 +73,7 @@ export default function PricingPage() {
   const router = useRouter()
   const [currentPlan, setCurrentPlan] = useState(null)
   const [loading, setLoading] = useState(null)
+  const [checkoutError, setCheckoutError] = useState('')
   const [mobileTab, setMobileTab] = useState('pro')
 
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function PricingPage() {
   async function handleUpgrade(planId) {
     if (planId === 'free') return
     setLoading(planId)
+    setCheckoutError('')
 
     const priceIds = PADDLE_PRICE_IDS
 
@@ -102,7 +104,7 @@ export default function PricingPage() {
         token = r.token
       } catch (err) {
         console.error('Failed to mint checkout token:', err)
-        alert('Could not start checkout. Please sign in and try again.')
+        setCheckoutError('Could not start checkout. Please sign in and try again.')
         return
       }
 
@@ -196,6 +198,16 @@ export default function PricingPage() {
           Start free. Upgrade when you're ready. Cancel anytime.
         </p>
       </div>
+
+      {checkoutError && (
+        <div role="alert" style={{
+          maxWidth: 480, margin: '0 auto 20px', padding: '12px 16px',
+          background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.25)',
+          borderRadius: 10, color: '#FF6666', fontSize: 13, textAlign: 'center',
+        }}>
+          {checkoutError}
+        </div>
+      )}
 
       {/* ═══ DESKTOP: 3-column grid (unchanged) ═══ */}
       <div className="nx-price-grid-desktop" style={{

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signUp } from '@/lib/supabase'
+import { friendlyError } from '@/lib/errors'
 
 const NexoraLogo = ({ size = 32 }) => (
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
@@ -27,10 +28,10 @@ export default function SignupPage() {
     if (formData.password.length < 6) { setError('Password must be at least 6 characters'); setLoading(false); return }
     try {
       const { data, error } = await signUp(formData.email, formData.password, formData.username)
-      if (error) { setError(error.message || 'Failed to create account'); setLoading(false); return }
+      if (error) { setError(friendlyError(error, 'Failed to create account')); setLoading(false); return }
       setSuccess(true)
       setTimeout(() => router.push('/dashboard'), 2000)
-    } catch (err) { setError('Something went wrong. Please try again.'); setLoading(false) }
+    } catch (err) { setError(friendlyError(err)); setLoading(false) }
   }
 
   const inputStyle = {

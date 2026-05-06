@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from '@/lib/supabase'
+import { friendlyError } from '@/lib/errors'
 
 const NexoraLogo = ({ size = 32 }) => (
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
@@ -24,9 +25,9 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const { data, error } = await signIn(formData.email, formData.password)
-      if (error) { setError(error.message || 'Invalid email or password'); setLoading(false); return }
+      if (error) { setError(friendlyError(error, 'Invalid email or password')); setLoading(false); return }
       if (data.session) router.push('/dashboard')
-    } catch (err) { setError('Something went wrong. Please try again.'); setLoading(false) }
+    } catch (err) { setError(friendlyError(err)); setLoading(false) }
   }
 
   const inputStyle = {

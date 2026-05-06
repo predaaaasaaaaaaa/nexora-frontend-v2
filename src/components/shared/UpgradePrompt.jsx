@@ -6,6 +6,7 @@ import { PADDLE_PRICE_IDS } from '@/lib/plans'
 
 export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, onDismiss }) {
   const [loading, setLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
 
   const planDetails = {
     pro: {
@@ -38,6 +39,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
 
   async function handleUpgrade() {
     setLoading(true)
+    setCheckoutError('')
 
     const priceIds = PADDLE_PRICE_IDS
 
@@ -52,7 +54,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
         token = r.token
       } catch (err) {
         console.error('Failed to mint checkout token:', err)
-        alert('Could not start checkout. Please refresh and try again.')
+        setCheckoutError('Could not start checkout. Please refresh and try again.')
         return
       }
 
@@ -131,6 +133,10 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
       >
         {loading ? 'Opening checkout...' : `Upgrade to ${plan.name} — ${plan.price}`}
       </button>
+
+      {checkoutError && (
+        <p role="alert" className="mt-2 text-xs text-red-400 text-center">{checkoutError}</p>
+      )}
 
       {/* 14-day trial note */}
       <p className="text-center text-[10px] text-gray-500 mt-2">

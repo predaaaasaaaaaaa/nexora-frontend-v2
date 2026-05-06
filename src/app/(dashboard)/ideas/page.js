@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { generateIdeas, getYouTubeStatus, getCurrentPlan } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
+import { friendlyError } from '@/lib/errors'
 
 // ── Theme colors ──
 const themes = {
@@ -120,8 +121,7 @@ export default function IdeasPage() {
       setIdeas(data)
       await loadPlanInfo()
     } catch (err) {
-      console.error('Error generating ideas:', err)
-      setError(err.message || 'Failed to generate ideas')
+      setError(friendlyError(err, 'Failed to generate ideas'))
     } finally { setLoading(false) }
   }
 

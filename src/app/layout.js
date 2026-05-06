@@ -17,9 +17,23 @@ export const metadata = {
   },
 }
 
+// Apply the saved theme class before React hydrates so users don't see
+// a light flash on first paint when their preference is dark (or vice
+// versa). Has to run synchronously in <head> to be useful.
+const themeBootstrap = `
+  try {
+    var t = localStorage.getItem('nexora-theme');
+    if (t === 'light') document.documentElement.classList.remove('dark');
+    else document.documentElement.classList.add('dark');
+  } catch (_) { document.documentElement.classList.add('dark'); }
+`
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
       <body className={outfit.className}>
         <ThemeProvider>{children}</ThemeProvider>
         <Script src="https://cdn.paddle.com/paddle/v2/paddle.js" strategy="afterInteractive" />
