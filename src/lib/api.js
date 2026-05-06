@@ -274,10 +274,18 @@ export async function getTrackedCompetitors() {
   return apiCall('/competitors/tracked')
 }
 
-export async function trackCompetitor(channelData) {
+// Only channel_id is forwarded. The backend re-fetches name, handle,
+// thumbnail, subscriber/view/video counts directly from YouTube — this
+// stops a tampered client from persisting fake stats that would later
+// surface in the user's UI and feed the AI's competitor comparisons.
+export async function trackCompetitor(channelOrId) {
+  const channel_id = typeof channelOrId === 'string'
+    ? channelOrId
+    : (channelOrId?.channel_id || channelOrId?.channelId)
+  if (!channel_id) throw new Error('trackCompetitor: channel_id is required')
   return apiCall('/competitors/track', {
     method: 'POST',
-    body: JSON.stringify(channelData)
+    body: JSON.stringify({ channel_id })
   })
 }
 
