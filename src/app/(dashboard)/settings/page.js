@@ -84,8 +84,21 @@ export default function SettingsPage() {
     catch {} finally { setNotifLoading(false) }
   }
   async function handleConnectYouTube() {
-    try { setYoutubeAction('connecting'); const data = await connectYouTube(); if (data.authUrl) window.location.href = data.authUrl }
-    catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
+    try {
+      setYoutubeAction('connecting')
+      const data = await connectYouTube()
+      // Defensive allowlist: today the backend only ever returns a Google
+      // OAuth URL, but we don't want a future regression (or a backend
+      // compromise) turning this into a one-click open redirect.
+      if (data.authUrl) {
+        let parsed
+        try { parsed = new URL(data.authUrl) } catch { throw new Error('Bad authUrl') }
+        if (parsed.origin !== 'https://accounts.google.com') {
+          throw new Error('Unexpected authUrl host')
+        }
+        window.location.href = parsed.toString()
+      }
+    } catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
   }
   async function handleDisconnectYouTube() {
     if (!confirm('Disconnect your YouTube account?')) return
