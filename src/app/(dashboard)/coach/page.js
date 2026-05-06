@@ -118,13 +118,67 @@ export default function CoachPage() {
   function handleQuickPrompt(p) { setInput(p); setTimeout(() => document.getElementById('coach-form')?.requestSubmit(), 100) }
   function timeAgo(d) { const m = Math.floor((new Date()-new Date(d))/60000); if(m<1) return 'now'; if(m<60) return `${m}m`; const h=Math.floor(m/60); if(h<24) return `${h}h`; return `${Math.floor(h/24)}d` }
   function groupConversations(cs) { const t=[],w=[],o=[]; cs.forEach(c => { const d=Math.floor((new Date()-new Date(c.updated_at))/(864e5)); if(d<1)t.push(c);else if(d<7)w.push(c);else o.push(c) }); return {today:t,week:w,older:o} }
-  function formatMsg(t) {
-    let s = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    s = s.replace(/\*\*(.+?)\*\*/g, `<strong style="font-weight:600;color:${c.text}">$1</strong>`)
-    s = s.replace(/^(\d+)\.\s/gm, `<span style="font-weight:600;color:${c.red}">$1.</span> `)
-    s = s.replace(/^[-•]\s/gm, `<span style="color:${c.red};margin-right:4px">•</span> `)
-    s = s.replace(/@([\w.-]+)/g, `<span style="font-weight:600;color:#9b6dff">@$1</span>`)
-    return s
+  // Render an AI message as React elements (no HTML strings, no
+  // dangerouslySetInnerHTML). Each line is split into segments around
+  // **bold** and @handles; the line prefix (numbered list / bullet) is
+  // emitted as a styled span. Anything we don't recognize is rendered as
+  // plain text, so a future AI output containing < > & or HTML tags is
+  // shown literally instead of being parsed by the browser.
+  function renderMsg(text) {
+    if (!text) return null
+    const lines = String(text).split('\n')
+
+    return lines.map((line, li) => {
+      let prefix = null
+      let body = line
+
+      const numMatch = body.match(/^(\d+)\.\s/)
+      if (numMatch) {
+        prefix = <span style={{ fontWeight: 600, color: c.red }}>{numMatch[1]}.</span>
+        body = body.slice(numMatch[0].length)
+      } else {
+        const bulletMatch = body.match(/^[-•]\s/)
+        if (bulletMatch) {
+          prefix = <span style={{ color: c.red, marginRight: 4 }}>•</span>
+          body = body.slice(bulletMatch[0].length)
+        }
+      }
+
+      // Inline pass: split around **bold** segments first, then split each
+      // remaining run around @handle tokens.
+      const boldParts = body.split(/(\*\*[^*]+\*\*)/g)
+      const segments = []
+      boldParts.forEach((part, bi) => {
+        if (/^\*\*[^*]+\*\*$/.test(part)) {
+          segments.push(
+            <strong key={`b${bi}`} style={{ fontWeight: 600, color: c.text }}>
+              {part.slice(2, -2)}
+            </strong>
+          )
+          return
+        }
+        const handleParts = part.split(/(@[\w.-]+)/g)
+        handleParts.forEach((sub, hi) => {
+          if (/^@[\w.-]+$/.test(sub)) {
+            segments.push(
+              <span key={`b${bi}h${hi}`} style={{ fontWeight: 600, color: '#9b6dff' }}>
+                {sub}
+              </span>
+            )
+          } else if (sub) {
+            segments.push(<span key={`b${bi}t${hi}`}>{sub}</span>)
+          }
+        })
+      })
+
+      return (
+        <span key={li}>
+          {prefix}
+          {segments}
+          {li < lines.length - 1 && <br />}
+        </span>
+      )
+    })
   }
 
   const isFreePlan = !userPlan || userPlan?.subscription?.plan === 'free'
@@ -270,7 +324,7 @@ export default function CoachPage() {
                     border: msg.role === 'assistant' ? `1px solid ${msg.isGuard ? c.warnBorder : c.border}` : 'none',
                     fontSize: 14, lineHeight: 1.6,
                   }}>
-                    {msg.role === 'user' ? <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p> : <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: formatMsg(msg.content) }} />}
+                    {msg.role === 'user' ? <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p> : <div style={{ whiteSpace: 'pre-wrap' }}>{renderMsg(msg.content)}</div>}
                     {msg.isGuard && <a href="/settings" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10, padding: '6px 12px', borderRadius: 8, background: c.warnText, color: '#fff', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}><I.YouTube /> Connect YouTube</a>}
                   </div>
                 </div>
