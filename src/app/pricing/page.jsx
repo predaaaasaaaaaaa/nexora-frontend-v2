@@ -109,11 +109,15 @@ export default function PricingPage() {
       }
 
       if (window.Paddle) {
+        // Origin-relative successUrl so dev / preview / prod all return
+        // to the same host the user came from. Hardcoding the prod URL
+        // bounced sandbox-checkout users out of their dev session.
+        const origin = process.env.NEXT_PUBLIC_FRONTEND_URL || window.location.origin
         window.Paddle.Checkout.open({
           items: [{ priceId: priceIds[planId], quantity: 1 }],
           customData: { user_id_signed: token },
           settings: {
-            successUrl: 'https://nexora-ai.org/dashboard?upgraded=true',
+            successUrl: `${origin}/dashboard?upgraded=true`,
           },
         })
       }

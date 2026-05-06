@@ -59,11 +59,12 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
       }
 
       if (window.Paddle) {
+        const origin = process.env.NEXT_PUBLIC_FRONTEND_URL || window.location.origin
         window.Paddle.Checkout.open({
           items: [{ priceId: priceIds[upgradeTo], quantity: 1 }],
           customData: { user_id_signed: token },
           settings: {
-            successUrl: 'https://nexora-ai.org/dashboard?upgraded=true',
+            successUrl: `${origin}/dashboard?upgraded=true`,
           },
         })
       }
