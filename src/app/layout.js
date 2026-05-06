@@ -19,7 +19,9 @@ export const metadata = {
 
 // Apply the saved theme class before React hydrates so users don't see
 // a light flash on first paint when their preference is dark (or vice
-// versa). Has to run synchronously in <head> to be useful.
+// versa). Placed as the first child of <body> — App Router auto-manages
+// <head> via the metadata API, and adding a manual <head> to the root
+// layout breaks Turbopack route resolution in Next 16.
 const themeBootstrap = `
   try {
     var t = localStorage.getItem('nexora-theme');
@@ -31,10 +33,8 @@ const themeBootstrap = `
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
-      </head>
       <body className={outfit.className}>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <ThemeProvider>{children}</ThemeProvider>
         <Script src="https://cdn.paddle.com/paddle/v2/paddle.js" strategy="afterInteractive" />
         <Script id="paddle-init" strategy="lazyOnload">
