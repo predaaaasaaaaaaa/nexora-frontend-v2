@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { getCurrentUser } from '@/lib/supabase'
+import { getCurrentUser, signOut } from '@/lib/supabase'
 import { getYouTubeStatus, connectYouTube, disconnectYouTube, getNotificationPreferences, updateNotificationPreferences } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
-import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
 // ── Theme colors ──
@@ -98,7 +97,10 @@ export default function SettingsPage() {
     try { const updated = await updateNotificationPreferences({ ...notifPrefs, enabled: !notifPrefs.enabled }); setNotifPrefs(updated.preferences); setSuccess(updated.preferences.enabled ? 'Notifications enabled' : 'Notifications paused'); setTimeout(() => setSuccess(''), 3000) } catch {}
   }
   async function handleSignOut() {
-    if (!confirm('Sign out?')) return; await supabase.auth.signOut(); window.location.href = '/login'
+    if (!confirm('Sign out?')) return
+    // Use the helper so the backend revokes the JWT before we clear local state.
+    await signOut()
+    window.location.href = '/login'
   }
 
   const sectionStyle = { background: c.card, border: `1px solid ${c.border}`, borderRadius: 14, overflow: 'hidden', marginBottom: 20 }
