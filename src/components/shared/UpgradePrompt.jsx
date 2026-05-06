@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createCheckout, getCheckoutToken } from '@/lib/api'
+import { PADDLE_PRICE_IDS } from '@/lib/plans'
 
 export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, onDismiss }) {
   const [loading, setLoading] = useState(false)
@@ -38,10 +39,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
   async function handleUpgrade() {
     setLoading(true)
 
-    const priceIds = {
-      pro: 'pri_01kms1rwnahqaft4frraz3g7xq',
-      max: 'pri_01kms1p5vvzgq94pgdz453p0wn',
-    }
+    const priceIds = PADDLE_PRICE_IDS
 
     try {
       // The webhook only honors a signed user_id, so we must mint one

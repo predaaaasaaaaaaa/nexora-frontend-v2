@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createCheckout, getCurrentPlan, getCheckoutToken } from '@/lib/api'
+import { PADDLE_PRICE_IDS } from '@/lib/plans'
 
 const NexoraLogo = ({ size = 28 }) => (
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
@@ -86,10 +87,7 @@ export default function PricingPage() {
     if (planId === 'free') return
     setLoading(planId)
 
-    const priceIds = {
-      pro: 'pri_01kms1rwnahqaft4frraz3g7xq',
-      max: 'pri_01kms1p5vvzgq94pgdz453p0wn',
-    }
+    const priceIds = PADDLE_PRICE_IDS
 
     try {
       // Mint a server-signed user_id for this checkout. The webhook
