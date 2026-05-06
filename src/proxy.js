@@ -1,21 +1,22 @@
 // Edge proxy (renamed from middleware in Next 16).
 //
-// Today this only attempts a *cookie-based* auth gate on dashboard routes
-// and falls through if no Supabase auth cookie is present. With the
+// Today this is a soft cookie-based gate on dashboard routes. With the
 // current setup (@supabase/supabase-js, default localStorage storage)
-// the cookie is rarely there, so this is a soft hint, not a hard gate.
-// The real defense is still the per-API-call Bearer-token check on the
-// backend.
+// the cookie is rarely there, so this is a hint, not a hard gate. The
+// real defense is the per-API-call Bearer-token check on the backend.
 //
-// To make this a hard gate, migrate the auth flow to @supabase/ssr so
-// the session is mirrored into HttpOnly cookies that the proxy can
-// actually read. That's a bigger change and is tracked separately.
+// Migrate the auth flow to @supabase/ssr if you want this to be a
+// hard edge gate.
+//
+// Notes on this implementation:
+// - We DO NOT use the `config.matcher` regex. In Next 16 / Turbopack a
+//   complex matcher caused App Router to mis-route (every page returned
+//   404). Filter inside the function instead — it's a few microseconds
+//   per request and impossible to misconfigure.
 
 import { NextResponse } from 'next/server'
 
 const PROTECTED_PREFIXES = ['/dashboard', '/analytics', '/coach', '/scheduler', '/ideas', '/settings']
-// Any cookie prefix Supabase has used historically, so we don't break
-// when they shuffle naming conventions.
 const SUPABASE_COOKIE_RE = /^(sb-|supabase-)/
 
 function looksAuthenticated(req) {
@@ -25,14 +26,15 @@ function looksAuthenticated(req) {
   return false
 }
 
+function isProtected(pathname) {
+  return PROTECTED_PREFIXES.some(p => pathname === p || pathname.startsWith(`${p}/`))
+}
+
 export function proxy(req) {
   const { pathname } = req.nextUrl
-  const isProtected = PROTECTED_PREFIXES.some(p => pathname === p || pathname.startsWith(`${p}/`))
+  if (!isProtected(pathname)) return NextResponse.next()
 
-  if (isProtected && !looksAuthenticated(req)) {
-    // No Supabase cookie at all — almost certainly not signed in. Bounce
-    // to /login. The client-side guard in (dashboard)/layout.js still
-    // runs as backup for users whose session lives only in localStorage.
+  if (!looksAuthenticated(req)) {
     const url = req.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('next', pathname)
@@ -40,9 +42,4 @@ export function proxy(req) {
   }
 
   return NextResponse.next()
-}
-
-// Skip on Next internals and static assets.
-export const config = {
-  matcher: ['/((?!_next/|api/|favicon.ico|robots.txt|sitemap.*\\.xml|.*\\..*).*)'],
 }
