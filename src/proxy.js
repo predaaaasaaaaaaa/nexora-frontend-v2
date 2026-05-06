@@ -1,4 +1,4 @@
-// Edge middleware.
+// Edge proxy (renamed from middleware in Next 16).
 //
 // Today this only attempts a *cookie-based* auth gate on dashboard routes
 // and falls through if no Supabase auth cookie is present. With the
@@ -8,12 +8,8 @@
 // backend.
 //
 // To make this a hard gate, migrate the auth flow to @supabase/ssr so
-// the session is mirrored into HttpOnly cookies that middleware can
+// the session is mirrored into HttpOnly cookies that the proxy can
 // actually read. That's a bigger change and is tracked separately.
-//
-// We also use this to strip Origin from any unauthenticated cross-site
-// preflight to dashboard routes — useful belt-and-braces while the
-// backend rate-limits real abuse.
 
 import { NextResponse } from 'next/server'
 
@@ -29,7 +25,7 @@ function looksAuthenticated(req) {
   return false
 }
 
-export function middleware(req) {
+export function proxy(req) {
   const { pathname } = req.nextUrl
   const isProtected = PROTECTED_PREFIXES.some(p => pathname === p || pathname.startsWith(`${p}/`))
 
@@ -46,7 +42,7 @@ export function middleware(req) {
   return NextResponse.next()
 }
 
-// Skip middleware on Next internals and static assets.
+// Skip on Next internals and static assets.
 export const config = {
   matcher: ['/((?!_next/|api/|favicon.ico|robots.txt|sitemap.*\\.xml|.*\\..*).*)'],
 }

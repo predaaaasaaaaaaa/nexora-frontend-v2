@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 // API host the browser is allowed to reach. Defaults to the prod backend so
 // a missing env var doesn't silently produce a permissive '*' connect-src.
 const API_ORIGIN =
@@ -13,24 +15,48 @@ const SUPABASE_ORIGIN = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://*.supab
 // Notes / accepted relaxations:
 // - 'unsafe-inline' on script-src is needed for the Paddle init script and
 //   Next.js's runtime injection. We could move to nonces but that requires
-//   middleware-driven nonce minting on every response — pragmatic later.
+//   per-request nonce minting — pragmatic later.
+// - 'unsafe-eval' is added in DEV ONLY. Turbopack / react-server-dom-turbopack
+//   uses eval() to reconstruct source maps and stack frames from RSC payloads.
+//   Production builds never need it.
 // - 'unsafe-inline' on style-src is unavoidable today: nearly every component
 //   uses React `style={...}` props and `<style jsx>` blocks.
+// - DEV also needs ws:/wss: in connect-src for Turbopack HMR.
 // - frame-ancestors 'none' covers the same threat as X-Frame-Options DENY
 //   (clickjacking) for browsers that honor CSP.
+const scriptSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  isDev && "'unsafe-eval'",
+  'https://cdn.paddle.com',
+  'https://*.paddle.com',
+].filter(Boolean).join(' ');
+
+const connectSrc = [
+  "'self'",
+  API_ORIGIN,
+  SUPABASE_ORIGIN,
+  'https://*.supabase.co',
+  'https://*.paddle.com',
+  isDev && 'ws:',
+  isDev && 'wss:',
+  isDev && 'http://localhost:*',
+].filter(Boolean).join(' ');
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://cdn.paddle.com https://*.paddle.com",
+  `script-src ${scriptSrc}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
-  `connect-src 'self' ${API_ORIGIN} ${SUPABASE_ORIGIN} https://*.supabase.co https://*.paddle.com`,
+  `connect-src ${connectSrc}`,
   "frame-src 'self' https://*.paddle.com",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
   "object-src 'none'",
-  "upgrade-insecure-requests",
+  // Only force HTTPS upgrades in production — dev runs on http://localhost.
+  ...(!isDev ? ['upgrade-insecure-requests'] : []),
 ].join('; ');
 
 const securityHeaders = [
