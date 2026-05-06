@@ -1,6 +1,14 @@
 import { supabase } from './supabase'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || ''
+// Resolved at module load. If NEXT_PUBLIC_API_URL is missing the build
+// previously fell back to an empty string, so every API call quietly
+// hit /api/... on the frontend host and 404'd with no useful logs. Fail
+// loud at the first call so the misconfig is obvious.
+const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
+const API_URL = RAW_API_URL || ''
+if (!API_URL && typeof window !== 'undefined') {
+  console.error('NEXT_PUBLIC_API_URL is not set — API calls will fail.')
+}
 
 async function getAuthToken() {
   const { data: { session } } = await supabase.auth.getSession()
@@ -9,8 +17,14 @@ async function getAuthToken() {
 
 // Generic API call helper — now handles plan limit errors
 async function apiCall(endpoint, options = {}) {
+  // Throw at the first call rather than firing a same-origin /api/...
+  // request that 404s into the void.
+  if (!API_URL) {
+    throw new Error('API not configured: NEXT_PUBLIC_API_URL is missing')
+  }
+
   const token = await getAuthToken()
-  
+
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const url = `${API_URL}${normalizedEndpoint}`
   
