@@ -67,6 +67,15 @@ export async function getCustomerPortal() {
   return apiCall('/subscription/portal')
 }
 
+// Fetch the short-lived HMAC-signed user_id we pass to Paddle as
+// custom_data.user_id_signed. The webhook only honors a value that
+// verifies against CHECKOUT_USER_ID_SECRET, so any client tampering
+// (or a phishing attack that opens checkout for a different user)
+// won't cause a stranger's account to be upgraded.
+export async function getCheckoutToken() {
+  return apiCall('/subscription/checkout-token')
+}
+
 // ————————————————————————————————————————
 // ANALYTICS API
 // ————————————————————————————————————————

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createCheckout } from '@/lib/api'
+import { createCheckout, getCheckoutToken } from '@/lib/api'
 
 export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, onDismiss }) {
   const [loading, setLoading] = useState(false)
@@ -37,16 +37,31 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
 
   async function handleUpgrade() {
     setLoading(true)
-    
+
     const priceIds = {
       pro: 'pri_01kms1rwnahqaft4frraz3g7xq',
       max: 'pri_01kms1p5vvzgq94pgdz453p0wn',
     }
-  
+
     try {
+      // The webhook only honors a signed user_id, so we must mint one
+      // before opening Paddle. If we can't, don't open checkout — an
+      // unsigned payment would be ignored by the backend anyway.
+      let token
+      try {
+        const r = await getCheckoutToken()
+        if (!r?.success || !r?.token) throw new Error('No checkout token')
+        token = r.token
+      } catch (err) {
+        console.error('Failed to mint checkout token:', err)
+        alert('Could not start checkout. Please refresh and try again.')
+        return
+      }
+
       if (window.Paddle) {
         window.Paddle.Checkout.open({
           items: [{ priceId: priceIds[upgradeTo], quantity: 1 }],
+          customData: { user_id_signed: token },
           settings: {
             successUrl: 'https://nexora-ai.org/dashboard?upgraded=true',
           },

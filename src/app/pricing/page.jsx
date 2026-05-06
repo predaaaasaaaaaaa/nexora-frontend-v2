@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createCheckout, getCurrentPlan } from '@/lib/api'
+import { createCheckout, getCurrentPlan, getCheckoutToken } from '@/lib/api'
 
 const NexoraLogo = ({ size = 28 }) => (
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
@@ -92,9 +92,26 @@ export default function PricingPage() {
     }
 
     try {
+      // Mint a server-signed user_id for this checkout. The webhook
+      // refuses to apply a subscription unless this token verifies, so
+      // we MUST get one before opening Paddle. If the call fails (user
+      // not signed in, network down, server misconfigured) bail out
+      // rather than open an unbillable checkout.
+      let token
+      try {
+        const r = await getCheckoutToken()
+        if (!r?.success || !r?.token) throw new Error('No checkout token')
+        token = r.token
+      } catch (err) {
+        console.error('Failed to mint checkout token:', err)
+        alert('Could not start checkout. Please sign in and try again.')
+        return
+      }
+
       if (window.Paddle) {
         window.Paddle.Checkout.open({
           items: [{ priceId: priceIds[planId], quantity: 1 }],
+          customData: { user_id_signed: token },
           settings: {
             successUrl: 'https://nexora-ai.org/dashboard?upgraded=true',
           },
