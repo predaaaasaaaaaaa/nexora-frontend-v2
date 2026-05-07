@@ -62,6 +62,7 @@ export default function SettingsPage() {
   const [youtubeLoading, setYoutubeLoading] = useState(true)
   const [youtubeAction, setYoutubeAction] = useState(null)
   const [youtubeError, setYoutubeError] = useState('')
+  const [connectionLabel, setConnectionLabel] = useState('')
   const [notifPrefs, setNotifPrefs] = useState(null)
   const [notifLoading, setNotifLoading] = useState(true)
   const { dark, toggle } = useTheme()
@@ -81,8 +82,13 @@ export default function SettingsPage() {
     loadUser(); loadYouTubeStatus(); loadNotifPrefs()
     const ytParam = searchParams.get('youtube')
     if (ytParam === 'connected') {
-      setSuccess('YouTube connected successfully!')
-      setTimeout(() => setSuccess(''), 5000)
+      const status = searchParams.get('status')
+      if (status === 'pending_channel') {
+        setSuccess('Google connected — create a YouTube channel to start tracking analytics.')
+      } else {
+        setSuccess('YouTube connected successfully!')
+      }
+      setTimeout(() => setSuccess(''), 8000)
       loadYouTubeStatus()
     } else if (ytParam === 'error') {
       const reason = searchParams.get('reason')
@@ -104,7 +110,10 @@ export default function SettingsPage() {
   async function handleConnectYouTube() {
     try {
       setYoutubeAction('connecting')
-      const data = await connectYouTube()
+      // Trim and clamp client-side too. Backend re-validates and the DB
+      // enforces 60 chars, so this is just UX.
+      const label = connectionLabel.trim().slice(0, 60) || null
+      const data = await connectYouTube(label)
       // Defensive allowlist: today the backend only ever returns a Google
       // OAuth URL, but we don't want a future regression (or a backend
       // compromise) turning this into a one-click open redirect.
@@ -255,9 +264,32 @@ export default function SettingsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: youtubeStatus?.connected ? c.redBg : c.chip, border: youtubeStatus?.connected ? `1px solid ${c.redBorder}` : `1px solid ${c.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: youtubeStatus?.connected ? c.red : c.textDim, fontSize: 16, flexShrink: 0 }}>▶</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: c.text }}>YouTube</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: c.text, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      YouTube
+                      {/* Status badge */}
+                      {!youtubeLoading && youtubeStatus?.connected && (() => {
+                        const s = youtubeStatus.status || (youtubeStatus.details?.status) || 'active'
+                        const badges = {
+                          active:          { label: 'Active',  bg: c.greenBg, color: c.green,    border: c.greenBorder },
+                          pending_channel: { label: 'No channel', bg: c.warnBg || c.redBg, color: c.warnText || c.red, border: c.warnBorder || c.redBorder },
+                          stale:           { label: 'Stale',   bg: c.warnBg || c.redBg, color: c.warnText || c.red, border: c.warnBorder || c.redBorder },
+                          revoked:         { label: 'Revoked — reconnect', bg: c.redBg, color: c.red, border: c.redBorder },
+                        }
+                        const b = badges[s] || badges.active
+                        return (
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: b.bg, color: b.color, border: `1px solid ${b.border}`, letterSpacing: 0.5 }}>
+                            {b.label}
+                          </span>
+                        )
+                      })()}
+                    </div>
                     {youtubeLoading ? <div style={{ fontSize: 12, color: c.textDim }}>Checking...</div> : youtubeStatus?.connected ? (
-                      <div style={{ fontSize: 12, fontWeight: 500, marginTop: 2, color: c.green, display: 'flex', alignItems: 'center', gap: 4 }}><I.Check /> Connected as {youtubeStatus.details?.platform_username}</div>
+                      <div style={{ fontSize: 12, fontWeight: 500, marginTop: 2, color: c.green, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <I.Check />
+                        {youtubeStatus.details?.connection_label
+                          ? `${youtubeStatus.details.connection_label} — ${youtubeStatus.details?.platform_username || 'pending channel'}`
+                          : `Connected as ${youtubeStatus.details?.platform_username || 'pending channel'}`}
+                      </div>
                     ) : <div style={{ fontSize: 12, color: c.textDim }}>Not connected</div>}
                   </div>
                 </div>
@@ -271,6 +303,47 @@ export default function SettingsPage() {
                   </button>
                 )}
               </div>
+
+              {/* Pre-flight: warning + optional label, only shown when not connected */}
+              {!youtubeLoading && !youtubeStatus?.connected && (
+                <div style={{ padding: '0 24px 16px' }}>
+                  <p style={{ fontSize: 12, color: c.textDim, marginBottom: 10, lineHeight: 1.5 }}>
+                    Pick a Google account that already owns a YouTube channel — if it doesn't, you can still connect, but you'll need to create a channel before analytics show up.
+                  </p>
+                  <input
+                    type="text"
+                    value={connectionLabel}
+                    onChange={(e) => setConnectionLabel(e.target.value)}
+                    placeholder="Optional label (e.g. Business channel)"
+                    maxLength={60}
+                    aria-label="Connection label"
+                    style={{
+                      width: '100%', padding: '9px 12px', borderRadius: 8,
+                      border: `1px solid ${c.border}`, background: c.card,
+                      color: c.text, fontSize: 13, fontFamily: 'inherit',
+                      boxSizing: 'border-box', outline: 'none',
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Pending-channel hint, only when actually in that state */}
+              {!youtubeLoading && youtubeStatus?.connected && (youtubeStatus.status === 'pending_channel' || youtubeStatus.details?.status === 'pending_channel') && (
+                <div style={{ padding: '0 24px 16px' }}>
+                  <p style={{ fontSize: 12, color: c.textSec, lineHeight: 1.5 }}>
+                    Google is connected but this account has no YouTube channel yet. <a href="https://www.youtube.com/create_channel" target="_blank" rel="noopener noreferrer" style={{ color: c.red, fontWeight: 600 }}>Create one on YouTube</a>, then refresh this page.
+                  </p>
+                </div>
+              )}
+
+              {/* Revoked-reconnect hint */}
+              {!youtubeLoading && youtubeStatus?.connected && (youtubeStatus.status === 'revoked' || youtubeStatus.details?.status === 'revoked') && (
+                <div style={{ padding: '0 24px 16px' }}>
+                  <p style={{ fontSize: 12, color: c.red, lineHeight: 1.5 }}>
+                    YouTube access was revoked (you removed Nexora from Google permissions, or the token expired). Disconnect and connect again to restore.
+                  </p>
+                </div>
+              )}
               {[{ name: 'Instagram', icon: '◎' }, { name: 'TikTok', icon: '♪' }, { name: 'Threads', icon: '@' }].map((p, i) => (
                 <div key={p.name} className="nx-set-platform-row" style={{ ...rowStyle(i === 2), opacity: 0.5 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>

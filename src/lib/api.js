@@ -225,8 +225,12 @@ export async function submitFeedback(rating, message, category = 'general') {
 // YOUTUBE API
 // ————————————————————————————————————————
 
-export async function connectYouTube() {
-  return apiCall('/youtube/connect')
+// `label` is an optional user-chosen name for this YouTube connection
+// (e.g. "Business channel"). The backend sanitizes and signs it into
+// the OAuth state so it survives the round-trip without tampering.
+export async function connectYouTube(label) {
+  const qs = label ? `?label=${encodeURIComponent(label)}` : ''
+  return apiCall(`/youtube/connect${qs}`)
 }
 
 export async function getYouTubeStatus() {
