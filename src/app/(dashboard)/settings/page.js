@@ -61,17 +61,35 @@ export default function SettingsPage() {
   const [youtubeStatus, setYoutubeStatus] = useState(null)
   const [youtubeLoading, setYoutubeLoading] = useState(true)
   const [youtubeAction, setYoutubeAction] = useState(null)
+  const [youtubeError, setYoutubeError] = useState('')
   const [notifPrefs, setNotifPrefs] = useState(null)
   const [notifLoading, setNotifLoading] = useState(true)
   const { dark, toggle } = useTheme()
   const c = dark ? themes.dark : themes.light
   const searchParams = useSearchParams()
 
+  // Map the typed reason from the OAuth callback to a friendly message.
+  const YT_ERROR_MESSAGES = {
+    no_channel: 'That Google account does not have a YouTube channel yet. Create one at youtube.com/create_channel and try again — or pick a different Google account.',
+    invalid_state: 'Connection request expired or was tampered with. Please click Connect again.',
+    missing_params: 'Google did not return a valid response. Please try again.',
+    token_exchange_failed: 'Could not finish the Google sign-in. Please try again.',
+    callback_failed: 'Could not connect your YouTube account. Please try again.',
+  }
+
   useEffect(() => {
     loadUser(); loadYouTubeStatus(); loadNotifPrefs()
     const ytParam = searchParams.get('youtube')
-    if (ytParam === 'connected') { setSuccess('YouTube connected successfully!'); setTimeout(() => setSuccess(''), 5000); loadYouTubeStatus() }
-    else if (ytParam === 'error') { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 5000) }
+    if (ytParam === 'connected') {
+      setSuccess('YouTube connected successfully!')
+      setTimeout(() => setSuccess(''), 5000)
+      loadYouTubeStatus()
+    } else if (ytParam === 'error') {
+      const reason = searchParams.get('reason')
+      setYoutubeError(YT_ERROR_MESSAGES[reason] || YT_ERROR_MESSAGES.callback_failed)
+      setYoutubeAction('error')
+      setTimeout(() => { setYoutubeAction(null); setYoutubeError('') }, 10000)
+    }
   }, [])
 
   async function loadUser() { const { user } = await getCurrentUser(); setUser(user); setLoading(false) }
@@ -177,8 +195,10 @@ export default function SettingsPage() {
             </div>
           )}
           {youtubeAction === 'error' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 18px', marginBottom: 20, borderRadius: 12, background: c.redBg, border: `1px solid ${c.redBorder}` }}>
-              <span style={{ fontSize: 14, fontWeight: 500, color: c.red }}>Something went wrong. Please try again.</span>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 18px', marginBottom: 20, borderRadius: 12, background: c.redBg, border: `1px solid ${c.redBorder}` }}>
+              <span style={{ fontSize: 14, fontWeight: 500, color: c.red, lineHeight: 1.4 }}>
+                {youtubeError || 'Something went wrong. Please try again.'}
+              </span>
             </div>
           )}
 
