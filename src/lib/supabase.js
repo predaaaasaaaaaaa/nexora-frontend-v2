@@ -38,21 +38,23 @@ export function clearUserLocalStorage() {
 }
 
 // Auth helpers
-export async function signUp(email, password, username) {
+export async function signUp(email, password, username, captchaToken) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { username }
+      data: { username },
+      captchaToken,
     }
   })
   return { data, error }
 }
 
-export async function signIn(email, password) {
+export async function signIn(email, password, captchaToken) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
+    options: { captchaToken },
   })
   return { data, error }
 }
