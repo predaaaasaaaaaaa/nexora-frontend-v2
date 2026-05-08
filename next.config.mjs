@@ -34,6 +34,7 @@ const scriptSrc = [
   'https://public.profitwell.com',
   'https://*.stripe.com',
   'https://*.stripe.network',
+  'https://challenges.cloudflare.com',
 ].filter(Boolean).join(' ');
 
 const connectSrc = [
@@ -57,7 +58,7 @@ const csp = [
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   `connect-src ${connectSrc}`,
-  "frame-src 'self' https://*.paddle.com https://*.stripe.com https://*.stripe.network",
+  "frame-src 'self' https://*.paddle.com https://*.stripe.com https://*.stripe.network https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
