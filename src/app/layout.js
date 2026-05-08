@@ -1,6 +1,6 @@
 import { Outfit } from 'next/font/google'
-import Script from 'next/script'
 import ThemeProvider from '@/components/shared/ThemeProvider'
+import PaddleInit from '@/components/shared/PaddleInit'
 import './globals.css'
 
 const outfit = Outfit({ 
@@ -36,19 +36,7 @@ export default function RootLayout({ children }) {
       <body className={outfit.className}>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <ThemeProvider>{children}</ThemeProvider>
-        <Script src="https://cdn.paddle.com/paddle/v2/paddle.js" strategy="afterInteractive" />
-        <Script id="paddle-init" strategy="lazyOnload">
-          {`
-            function initPaddle() {
-              if (window.Paddle) {
-                window.Paddle.Initialize({ token: 'live_3c5100e719eb15b9336ffb8f405' });
-              } else {
-                setTimeout(initPaddle, 500);
-              }
-            }
-            initPaddle();
-          `}
-        </Script>
+        <PaddleInit />
       </body>
     </html>
   )
