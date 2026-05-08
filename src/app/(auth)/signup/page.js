@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { signUp } from '@/lib/supabase'
 import { friendlyError } from '@/lib/errors'
 
@@ -14,24 +13,72 @@ const NexoraLogo = ({ size = 32 }) => (
 )
 
 export default function SignupPage() {
-  const router = useRouter()
   const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState('')
+  const turnstileRef = useRef(null)
+
+  // Load Turnstile script and render widget
+  useEffect(() => {
+    const scriptId = 'turnstile-script'
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script')
+      script.id = scriptId
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+      script.async = true
+      script.defer = true
+      document.body.appendChild(script)
+    }
+
+    const renderWidget = () => {
+      if (window.turnstile && turnstileRef.current && !turnstileRef.current.dataset.rendered) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+          theme: 'dark',
+          callback: (token) => setCaptchaToken(token),
+          'expired-callback': () => setCaptchaToken(''),
+          'error-callback': () => setCaptchaToken(''),
+        })
+        turnstileRef.current.dataset.rendered = 'true'
+      }
+    }
+
+    const interval = setInterval(() => {
+      if (window.turnstile) {
+        renderWidget()
+        clearInterval(interval)
+      }
+    }, 200)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); return }
+    if (formData.password.length < 6) { setError('Password must be at least 6 characters'); return }
+    if (!captchaToken) { setError('Please complete the captcha'); return }
+
     setLoading(true)
-    if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); setLoading(false); return }
-    if (formData.password.length < 6) { setError('Password must be at least 6 characters'); setLoading(false); return }
     try {
-      const { data, error } = await signUp(formData.email, formData.password, formData.username)
-      if (error) { setError(friendlyError(error, 'Failed to create account')); setLoading(false); return }
+      const { data, error } = await signUp(formData.email, formData.password, formData.username, captchaToken)
+      if (error) {
+        setError(friendlyError(error, 'Failed to create account'))
+        setLoading(false)
+        if (window.turnstile) window.turnstile.reset()
+        setCaptchaToken('')
+        return
+      }
       setSuccess(true)
-      setTimeout(() => router.push('/dashboard'), 2000)
-    } catch (err) { setError(friendlyError(err)); setLoading(false) }
+    } catch (err) {
+      setError(friendlyError(err))
+      setLoading(false)
+      if (window.turnstile) window.turnstile.reset()
+      setCaptchaToken('')
+    }
   }
 
   const inputStyle = {
@@ -41,7 +88,7 @@ export default function SignupPage() {
     transition: 'border-color 0.2s ease', boxSizing: 'border-box',
   }
 
-  // Success state
+  // Success state — "Check your inbox" screen
   if (success) {
     return (
       <div style={{
@@ -49,12 +96,22 @@ export default function SignupPage() {
         display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
         fontFamily: "'Outfit', -apple-system, sans-serif",
       }}>
-        <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 40, textAlign: 'center', maxWidth: 400, width: '100%' }}>
-          <div style={{ width: 64, height: 64, borderRadius: 16, background: 'rgba(62,166,81,0.1)', border: '1px solid rgba(62,166,81,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3EA651" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 40, textAlign: 'center', maxWidth: 440, width: '100%' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF0000" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Account Created!</h2>
-          <p style={{ fontSize: 14, color: '#888' }}>Redirecting to your dashboard...</p>
+          <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>Check your inbox</h2>
+          <p style={{ fontSize: 14, color: '#888', lineHeight: 1.6, marginBottom: 24 }}>
+            We sent a confirmation link to <strong style={{ color: '#F1F1F1' }}>{formData.email}</strong>. Click the link to activate your account, then sign in.
+          </p>
+          <Link href="/login" style={{
+            display: 'inline-block', padding: '12px 28px', borderRadius: 12,
+            background: 'linear-gradient(135deg, #FF0000, #CC0000)', color: '#fff',
+            fontSize: 14, fontWeight: 700, textDecoration: 'none',
+          }}>Go to sign in</Link>
+          <p style={{ fontSize: 12, color: '#666', marginTop: 20 }}>
+            Didn't get the email? Check spam, or wait a minute and try signing up again.
+          </p>
         </div>
       </div>
     )
@@ -84,19 +141,16 @@ export default function SignupPage() {
         }
       `}</style>
 
-      {/* Background */}
       <div className="nx-auth-glow" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 70%)', animation: 'heroGlow 6s ease-in-out infinite', pointerEvents: 'none' }}/>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }}/>
 
       <div style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 2 }}>
-        {/* Logo */}
         <Link href="/" className="nx-auth-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 40, textDecoration: 'none', color: '#F1F1F1' }}>
           <NexoraLogo size={40} />
           <span className="nx-auth-logo-text" style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5 }}>NEXORA</span>
           <span style={{ fontSize: 9, fontWeight: 700, background: '#FF0000', color: '#fff', padding: '2px 7px', borderRadius: 4, letterSpacing: 0.8 }}>BETA</span>
         </Link>
 
-        {/* Card */}
         <div className="nx-auth-card" style={{ background: '#141414', border: '1px solid #222', borderRadius: 18, padding: 32, position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #FF0000, transparent)', opacity: 0.5 }}/>
 
@@ -113,7 +167,6 @@ export default function SignupPage() {
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Username */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#AAA', marginBottom: 6 }}>Username</label>
               <div style={{ position: 'relative' }}>
@@ -122,7 +175,6 @@ export default function SignupPage() {
               </div>
             </div>
 
-            {/* Email */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#AAA', marginBottom: 6 }}>Email</label>
               <div style={{ position: 'relative' }}>
@@ -131,7 +183,6 @@ export default function SignupPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#AAA', marginBottom: 6 }}>Password</label>
               <div style={{ position: 'relative' }}>
@@ -141,7 +192,6 @@ export default function SignupPage() {
               <p style={{ fontSize: 11, color: '#666', marginTop: 4 }}>At least 6 characters</p>
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#AAA', marginBottom: 6 }}>Confirm Password</label>
               <div style={{ position: 'relative' }}>
@@ -149,6 +199,9 @@ export default function SignupPage() {
                 <input type="password" required placeholder="••••••••" className="auth-input" value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} style={inputStyle} />
               </div>
             </div>
+
+            {/* Turnstile Captcha */}
+            <div ref={turnstileRef} style={{ display: 'flex', justifyContent: 'center', minHeight: 65 }} />
 
             <button type="submit" disabled={loading} className="auth-btn" style={{
               width: '100%', padding: '14px', borderRadius: 12, border: 'none',
