@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Sun, Moon, LogOut, Menu, X } from 'lucide-react'
-import { getCurrentUser, signOut } from '@/lib/supabase'
+import { getCurrentUser, signOut, supabase, isUserSignOutInProgress } from '@/lib/supabase'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
@@ -70,6 +70,21 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => { checkAuth() }, [])
   useEffect(() => { checkYouTubeStatus(); loadUserPlan() }, [pathname])
+
+  // Cross-tab sign-out / natural session expiry: kick the user back to
+  // /login the moment Supabase emits SIGNED_OUT, instead of waiting for
+  // the next API call to 401. We skip the redirect when the sign-out is
+  // user-initiated (the Sign Out button has its own router.push('/')).
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT' && !isUserSignOutInProgress()) {
+        if (typeof window !== 'undefined') {
+          window.location.replace('/login?reason=session_expired')
+        }
+      }
+    })
+    return () => data.subscription.unsubscribe()
+  }, [])
 
   useEffect(() => {
     const section = pathname.split('/').pop()
