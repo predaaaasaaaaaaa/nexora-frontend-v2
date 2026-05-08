@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 const themes = {
@@ -81,6 +82,7 @@ export default function CoachPage() {
   const { plan: userPlan, refreshPlan } = useUserPlan()
   const { ytStatus, ytLoaded } = useYouTubeStatus()
   const ytConnected = ytLoaded ? (ytStatus?.connected === true) : null
+  const confirm = useConfirm()
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   useEffect(() => { scrollToBottom() }, [messages])
@@ -99,7 +101,14 @@ export default function CoachPage() {
   }
   function handleNewChat() { setMessages([]); setActiveConversationId(null); setUpgradePrompt(null); setHistoryOpen(false); inputRef.current?.focus() }
   async function handleDeleteConversation(e, id) {
-    e.stopPropagation(); if (!confirm('Delete?')) return
+    e.stopPropagation()
+    const ok = await confirm({
+      title: 'Delete this conversation?',
+      body: 'This conversation and its messages will be permanently removed.',
+      confirmLabel: 'Delete',
+      danger: true,
+    })
+    if (!ok) return
     try { await deleteCoachConversation(id); setConversations(p => p.filter(c => c.id !== id)); if (activeConversationId === id) handleNewChat() } catch {}
   }
   async function handleSubmit(e) {

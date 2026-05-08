@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { getCurrentUser, signOut } from '@/lib/supabase'
 import { getYouTubeStatus, connectYouTube, disconnectYouTube, getNotificationPreferences, updateNotificationPreferences } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Link from 'next/link'
 
 // ── Theme colors ──
@@ -68,6 +69,7 @@ export default function SettingsPage() {
   const { dark, toggle } = useTheme()
   const c = dark ? themes.dark : themes.light
   const searchParams = useSearchParams()
+  const confirm = useConfirm()
 
   // Map the typed reason from the OAuth callback to a friendly message.
   const YT_ERROR_MESSAGES = {
@@ -128,7 +130,13 @@ export default function SettingsPage() {
     } catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
   }
   async function handleDisconnectYouTube() {
-    if (!confirm('Disconnect your YouTube account?')) return
+    const ok = await confirm({
+      title: 'Disconnect YouTube?',
+      body: 'Your analytics will stop updating and the AI coach will lose access to your channel data until you reconnect.',
+      confirmLabel: 'Disconnect',
+      danger: true,
+    })
+    if (!ok) return
     try { setYoutubeAction('disconnecting'); await disconnectYouTube(); setYoutubeStatus({ connected: false }); setSuccess('YouTube disconnected.'); setYoutubeAction(null); setTimeout(() => setSuccess(''), 3000) }
     catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
   }
@@ -137,7 +145,13 @@ export default function SettingsPage() {
     try { const updated = await updateNotificationPreferences({ ...notifPrefs, enabled: !notifPrefs.enabled }); setNotifPrefs(updated.preferences); setSuccess(updated.preferences.enabled ? 'Notifications enabled' : 'Notifications paused'); setTimeout(() => setSuccess(''), 3000) } catch {}
   }
   async function handleSignOut() {
-    if (!confirm('Sign out?')) return
+    const ok = await confirm({
+      title: 'Sign out?',
+      body: "You'll need to sign in again to access your dashboard.",
+      confirmLabel: 'Sign out',
+      danger: true,
+    })
+    if (!ok) return
     // Use the helper so the backend revokes the JWT before we clear local state.
     await signOut()
     window.location.href = '/login'

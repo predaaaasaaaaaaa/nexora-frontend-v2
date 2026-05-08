@@ -11,6 +11,7 @@ import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
 import PlanBadge from '@/components/shared/PlanBadge'
 import DashboardDataProvider, { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
+import ConfirmProvider from '@/components/shared/ConfirmDialog'
 
 // ── Theme color system ──
 const themes = {
@@ -122,11 +123,15 @@ export default function DashboardLayout({ children }) {
 
   // Provider only fetches once `enabled` flips true (after auth), so
   // unauthenticated users never trigger a 401 storm before redirect.
+  // ConfirmProvider lives here so any dashboard page can call
+  // useConfirm() for destructive actions (replaces native confirm()).
   return (
     <DashboardDataProvider enabled={!!user}>
-      <DashboardChrome user={user} router={router} pathname={pathname}>
-        {children}
-      </DashboardChrome>
+      <ConfirmProvider>
+        <DashboardChrome user={user} router={router} pathname={pathname}>
+          {children}
+        </DashboardChrome>
+      </ConfirmProvider>
     </DashboardDataProvider>
   )
 }
