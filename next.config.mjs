@@ -30,6 +30,10 @@ const scriptSrc = [
   isDev && "'unsafe-eval'",
   'https://cdn.paddle.com',
   'https://*.paddle.com',
+  'https://*.profitwell.com',
+  'https://public.profitwell.com',
+  'https://*.stripe.com',
+  'https://*.stripe.network',
 ].filter(Boolean).join(' ');
 
 const connectSrc = [
@@ -38,6 +42,9 @@ const connectSrc = [
   SUPABASE_ORIGIN,
   'https://*.supabase.co',
   'https://*.paddle.com',
+  'https://*.profitwell.com',
+  'https://*.stripe.com',
+  'https://*.stripe.network',
   isDev && 'ws:',
   isDev && 'wss:',
   isDev && 'http://localhost:*',
@@ -46,11 +53,11 @@ const connectSrc = [
 const csp = [
   "default-src 'self'",
   `script-src ${scriptSrc}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.paddle.com https://*.paddle.com https://*.stripe.com https://*.stripe.network",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   `connect-src ${connectSrc}`,
-  "frame-src 'self' https://*.paddle.com",
+  "frame-src 'self' https://*.paddle.com https://*.stripe.com https://*.stripe.network",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
