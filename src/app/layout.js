@@ -46,7 +46,7 @@ const themeBootstrap = `
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={outfit.variable} suppressHydrationWarning>
+    <html lang="en" className={outfit.variable} suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={outfit.className}>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <ThemeProvider>{children}</ThemeProvider>
