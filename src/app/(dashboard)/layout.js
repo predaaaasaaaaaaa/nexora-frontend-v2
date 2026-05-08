@@ -12,6 +12,7 @@ import FeedbackPopup from '@/components/shared/FeedbackPopup'
 import PlanBadge from '@/components/shared/PlanBadge'
 import DashboardDataProvider, { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
 import ConfirmProvider from '@/components/shared/ConfirmDialog'
+import { STORAGE_KEYS, getItem, setItem } from '@/lib/storage'
 
 // ── Theme color system ──
 const themes = {
@@ -89,11 +90,14 @@ export default function DashboardLayout({ children }) {
   useEffect(() => {
     const section = pathname.split('/').pop()
     if (section) {
-      const visited = JSON.parse(localStorage.getItem('visitedSections') || '[]')
-      if (!visited.includes(section)) {
-        visited.push(section)
-        localStorage.setItem('visitedSections', JSON.stringify(visited))
-      }
+      try {
+        const raw = getItem(STORAGE_KEYS.VISITED_SECTIONS) || '[]'
+        const visited = JSON.parse(raw)
+        if (!visited.includes(section)) {
+          visited.push(section)
+          setItem(STORAGE_KEYS.VISITED_SECTIONS, JSON.stringify(visited))
+        }
+      } catch {}
     }
   }, [pathname])
 

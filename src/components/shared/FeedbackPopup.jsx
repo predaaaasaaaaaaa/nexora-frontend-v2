@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { submitFeedback } from '@/lib/api'
+import { STORAGE_KEYS, getItem, setItem } from '@/lib/storage'
 
 export default function FeedbackPopup() {
   const [isOpen, setIsOpen] = useState(false)
@@ -12,10 +13,11 @@ export default function FeedbackPopup() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const visitedSections = JSON.parse(localStorage.getItem('visitedSections') || '[]')
+    let visitedSections = []
+    try { visitedSections = JSON.parse(getItem(STORAGE_KEYS.VISITED_SECTIONS) || '[]') } catch {}
     const allSections = ['dashboard', 'coach', 'scheduler', 'ideas', 'settings']
     const hasVisitedAll = allSections.every(section => visitedSections.includes(section))
-    const hasGivenFeedback = localStorage.getItem('feedbackGiven') === 'true'
+    const hasGivenFeedback = getItem(STORAGE_KEYS.FEEDBACK_GIVEN) === 'true'
     if (hasVisitedAll && !hasGivenFeedback) {
       setTimeout(() => setIsOpen(true), 1000)
     }
@@ -28,7 +30,7 @@ export default function FeedbackPopup() {
     try {
       await submitFeedback(rating, message)
       setSubmitted(true)
-      localStorage.setItem('feedbackGiven', 'true')
+      setItem(STORAGE_KEYS.FEEDBACK_GIVEN, 'true')
       setTimeout(() => setIsOpen(false), 2500)
     } catch (error) {
       alert('Failed to submit feedback. Please try again.')
@@ -39,7 +41,7 @@ export default function FeedbackPopup() {
 
   function handleClose() {
     setIsOpen(false)
-    localStorage.setItem('feedbackDismissed', Date.now().toString())
+    setItem(STORAGE_KEYS.FEEDBACK_DISMISSED, Date.now().toString())
   }
 
   if (!isOpen) return null

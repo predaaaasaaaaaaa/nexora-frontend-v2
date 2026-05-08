@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+import { STORAGE_KEYS, getItem, setItem } from '@/lib/storage'
 
 const ThemeContext = createContext({
   dark: true,
@@ -14,8 +15,9 @@ export default function ThemeProvider({ children }) {
   const [dark, setDark] = useState(true)
 
   useEffect(() => {
-    // Check if user has a saved preference
-    const saved = localStorage.getItem('nexora-theme')
+    // Check if user has a saved preference (migrates from legacy
+    // 'nexora-theme' on first read).
+    const saved = getItem(STORAGE_KEYS.THEME)
     if (saved !== null) {
       setDark(saved === 'dark')
     }
@@ -23,7 +25,7 @@ export default function ThemeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('nexora-theme', dark ? 'dark' : 'light')
+    setItem(STORAGE_KEYS.THEME, dark ? 'dark' : 'light')
   }, [dark])
 
   return (

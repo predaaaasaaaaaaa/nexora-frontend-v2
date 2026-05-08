@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { USER_KEYS_WITH_LEGACY } from './storage'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -16,21 +17,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 let _userInitiatedSignOut = false
 export function isUserSignOutInProgress() { return _userInitiatedSignOut }
 
-// Keys we set in localStorage that are tied to a specific user account
-// (not device preferences). On sign-out we wipe these so signing in as
-// a different user on the same browser doesn't inherit the previous
-// user's "feedback already given" or "visited all dashboard tabs"
-// state — both of which suppress UI the new user should see.
+// Per-user app state we wipe on sign-out so signing in as a different
+// user on the same browser doesn't inherit "feedback already given"
+// or "visited all dashboard tabs" state. List comes from lib/storage
+// and includes both the namespaced (nx:*) keys and the legacy
+// unprefixed names — the migration is silent, so a user signing out
+// before they hit the migration code path should still get cleared.
 //
-// We deliberately do NOT clear nexora-theme here — that's a device-
-// level preference, not user data, and clearing it would force a
-// reset of dark/light mode after every sign-out.
-const USER_LOCAL_STORAGE_KEYS = ['visitedSections', 'feedbackGiven', 'feedbackDismissed']
-
+// nexora-theme / nx:theme is intentionally NOT in that list — it's a
+// device-level preference, not user data.
 export function clearUserLocalStorage() {
   if (typeof window === 'undefined') return
   try {
-    for (const k of USER_LOCAL_STORAGE_KEYS) localStorage.removeItem(k)
+    for (const k of USER_KEYS_WITH_LEGACY) localStorage.removeItem(k)
   } catch {
     // localStorage can throw in private mode / disabled storage —
     // failing here would block sign-out, which is worse than leaving
