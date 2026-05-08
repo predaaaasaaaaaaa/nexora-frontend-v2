@@ -21,6 +21,7 @@ import Post20Content from './content/post20'
 import Post21Content from './content/post21'
 import Post22Content from './content/post22'
 import Post23Content from './content/post23'
+import Post24Content from './content/post24'
 
 export const posts = [
   {
@@ -228,5 +229,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube sponsorships', 'brand deals', 'youtube monetization'],
     content: <Post23Content />,
+  },
+  {
+    slug: 'youtube-ai-slop-crackdown-2026',
+    title: 'YouTube Just Killed the Faceless Playbook: AI Slop Crackdown Explained (2026)',
+    description: '4.7B views wiped. $30K/month channels demonetized overnight. The faceless YouTube playbook every guru sold you in 2024 is now a liability. Here are the 5 patterns YouTube detects, the 10-rule survival checklist, and the rescue plan if you got hit.',
+    date: '2026-04-20',
+    author: 'NEXORA Team',
+    tags: ['youtube ai policy', 'inauthentic content', 'faceless youtube'],
+    content: <Post24Content />,
   },
 ]
