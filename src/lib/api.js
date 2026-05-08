@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { log } from './log'
 
 // Resolved at module load. If NEXT_PUBLIC_API_URL is missing the build
 // previously fell back to an empty string, so every API call quietly
@@ -7,7 +8,7 @@ import { supabase } from './supabase'
 const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
 const API_URL = RAW_API_URL || ''
 if (!API_URL && typeof window !== 'undefined') {
-  console.error('NEXT_PUBLIC_API_URL is not set — API calls will fail.')
+  log.error('NEXT_PUBLIC_API_URL is not set — API calls will fail.')
 }
 
 async function getAuthToken() {
@@ -15,7 +16,28 @@ async function getAuthToken() {
   return session?.access_token
 }
 
-// Generic API call helper — now handles plan limit errors
+// Single-flight protection so a wave of parallel 401s on session
+// expiry only triggers ONE signOut + redirect, not N concurrent ones
+// (which causes weird race conditions and double-firing of the
+// /auth/signout backend call).
+let unauthorizedRedirectInFlight = false
+
+async function handleUnauthorized() {
+  if (unauthorizedRedirectInFlight) return
+  if (typeof window === 'undefined') return // SSR, nothing to do
+  unauthorizedRedirectInFlight = true
+  try {
+    // Best-effort local clear. We don't await the backend signout call
+    // because the user is already in a "your session is dead" state —
+    // we want them on /login as fast as possible.
+    await supabase.auth.signOut().catch(() => {})
+  } finally {
+    // Use replace so the broken page doesn't show up in browser history.
+    window.location.replace('/login?reason=session_expired')
+  }
+}
+
+// Generic API call helper — now handles plan limit errors and 401s.
 async function apiCall(endpoint, options = {}) {
   // Throw at the first call rather than firing a same-origin /api/...
   // request that 404s into the void.
@@ -27,7 +49,7 @@ async function apiCall(endpoint, options = {}) {
 
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const url = `${API_URL}${normalizedEndpoint}`
-  
+
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -36,10 +58,20 @@ async function apiCall(endpoint, options = {}) {
       ...options.headers,
     },
   })
-  
+
   if (!response.ok) {
+    // Session expired / token revoked / never had one. Clear local
+    // state and bounce to /login. We don't bother parsing the response
+    // body — the only safe action on 401 is to re-auth.
+    if (response.status === 401) {
+      await handleUnauthorized()
+      // Throw so the caller's `.catch` runs and they don't try to
+      // render with stale data while the redirect is still loading.
+      throw new Error('Session expired')
+    }
+
     const error = await response.json().catch(() => ({ error: response.statusText }))
-    
+
     // Plan limit or feature lock — return structured error instead of throwing
     if (response.status === 403 && (error.error === 'limit_reached' || error.error === 'feature_locked')) {
       return {
@@ -51,10 +83,10 @@ async function apiCall(endpoint, options = {}) {
         upgradeTo: error.upgradeTo,
       }
     }
-    
+
     throw new Error(error.error || `API Error: ${response.statusText}`)
   }
-  
+
   return response.json()
 }
 

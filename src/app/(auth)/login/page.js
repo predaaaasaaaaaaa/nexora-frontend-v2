@@ -1,10 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from '@/lib/supabase'
 import { friendlyError } from '@/lib/errors'
+
+// Reasons the dashboard's 401 handler may bounce users here. Keep the
+// list small — anything we don't recognize falls through to the
+// generic "please sign in" copy.
+const SESSION_REASON_MESSAGES = {
+  session_expired: 'Your session expired. Please sign in again.',
+}
 
 const NexoraLogo = ({ size = 32 }) => (
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
@@ -15,9 +22,18 @@ const NexoraLogo = ({ size = 32 }) => (
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [notice, setNotice] = useState('')
+
+  useEffect(() => {
+    const reason = searchParams.get('reason')
+    if (reason && SESSION_REASON_MESSAGES[reason]) {
+      setNotice(SESSION_REASON_MESSAGES[reason])
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -81,6 +97,13 @@ export default function LoginPage() {
             <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>Welcome Back</h1>
             <p style={{ fontSize: 14, color: '#888' }}>Sign in to continue to your dashboard</p>
           </div>
+
+          {notice && !error && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', marginBottom: 20, background: 'rgba(255,140,0,0.08)', border: '1px solid rgba(255,140,0,0.25)', borderRadius: 10, fontSize: 13, color: '#FFB060' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              {notice}
+            </div>
+          )}
 
           {error && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', marginBottom: 20, background: 'rgba(255,0,0,0.08)', border: '1px solid rgba(255,0,0,0.18)', borderRadius: 10, fontSize: 13, color: '#FF4444' }}>
