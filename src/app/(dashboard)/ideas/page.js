@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { generateIdeas } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
@@ -52,6 +52,11 @@ export default function IdeasPage() {
   const { ytStatus } = useYouTubeStatus()
   const { dark } = useTheme()
   const c = dark ? themes.dark : themes.light
+  // Synchronous guard against rapid double-clicks. The button's
+  // disabled={loading} prop is async (state-driven) so two clicks
+  // landing in the same React tick can both fire generateIdeas() and
+  // burn two quota slots + two Groq calls. The ref flips synchronously.
+  const generatingRef = useRef(false)
 
   const platforms = [
     { id: 'youtube', name: 'YouTube', available: true },
@@ -92,6 +97,8 @@ export default function IdeasPage() {
   }, [ytStatus])
 
   async function handleGenerate() {
+    if (generatingRef.current) return
+    generatingRef.current = true
     try {
       setLoading(true)
       setError(null)
@@ -116,7 +123,10 @@ export default function IdeasPage() {
       await refreshPlan()
     } catch (err) {
       setError(friendlyError(err, 'Failed to generate ideas'))
-    } finally { setLoading(false) }
+    } finally {
+      setLoading(false)
+      generatingRef.current = false
+    }
   }
 
   const currentPlatform = platforms.find(p => p.id === selectedPlatform)
