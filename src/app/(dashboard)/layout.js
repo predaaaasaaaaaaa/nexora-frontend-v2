@@ -131,9 +131,13 @@ function DashboardChrome({ user, router, pathname, children }) {
   const { dark, toggle } = useTheme()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [hoverNav, setHoverNav] = useState(null)
-  const { plan } = useUserPlan()
+  const { plan, planLoaded } = useUserPlan()
   const { ytStatus } = useYouTubeStatus()
-  const userPlan = plan?.subscription?.plan || 'free'
+  // Only treat the user as "free" once we've actually loaded a plan.
+  // Without this gate, a Pro user briefly sees the Upgrade CTA on cold
+  // load (and on any transient API blip after) because the default
+  // would be "free" — exactly the FM2 finding.
+  const userPlan = plan?.subscription?.plan || (planLoaded ? 'free' : null)
   const ytConnected = ytStatus?.connected === true
 
   const c = dark ? themes.dark : themes.light
