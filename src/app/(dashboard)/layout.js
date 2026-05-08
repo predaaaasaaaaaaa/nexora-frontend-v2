@@ -156,6 +156,28 @@ function DashboardChrome({ user, router, pathname, children }) {
     setSidebarOpen(false)
   }, [pathname])
 
+  // Scrub Supabase OAuth-style fragments from the URL (and browser
+  // history) on first mount. Today we only do email/password sign-in,
+  // but if we ever wire up OAuth providers (Google, GitHub, etc.) the
+  // callback returns the access_token in the URL hash. Without a
+  // replaceState the token sits in browser history and leaks via the
+  // Referer header on the next outgoing navigation. Defensive only —
+  // we deliberately match only token-shaped fragments so legit hashes
+  // (anchor links, "#section") are left alone.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const h = window.location.hash || ''
+    if (/(?:^|[#&])(?:access_token|refresh_token|provider_token)=/.test(h)) {
+      try {
+        window.history.replaceState(
+          null,
+          '',
+          window.location.pathname + window.location.search
+        )
+      } catch {}
+    }
+  }, [])
+
   async function handleSignOut() {
     await signOut()
     router.push('/')
