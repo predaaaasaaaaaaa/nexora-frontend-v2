@@ -5,6 +5,7 @@ import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachCon
 import { useTheme } from '@/components/shared/ThemeProvider'
 import { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import { log } from '@/lib/log'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 const themes = {
@@ -91,13 +92,15 @@ export default function CoachPage() {
 
   async function loadConversations() {
     try { setLoadingHistory(true); const d = await listCoachConversations(); setConversations(d.limitReached ? [] : d.conversations || []) }
-    catch {} finally { setLoadingHistory(false) }
+    catch (err) { log.warn('[coach] list conversations failed', err?.message || err) }
+    finally { setLoadingHistory(false) }
   }
   async function loadMessages(id) {
     try { setLoading(true); const d = await getCoachMessages(id); if (d.limitReached) return
       setMessages((d.messages||[]).map(m => ({ role: m.role, content: m.content, timestamp: new Date(m.created_at) })))
       setActiveConversationId(id); setHistoryOpen(false)
-    } catch {} finally { setLoading(false) }
+    } catch (err) { log.warn('[coach] load messages failed', err?.message || err) }
+    finally { setLoading(false) }
   }
   function handleNewChat() { setMessages([]); setActiveConversationId(null); setUpgradePrompt(null); setHistoryOpen(false); inputRef.current?.focus() }
   async function handleDeleteConversation(e, id) {
@@ -109,7 +112,8 @@ export default function CoachPage() {
       danger: true,
     })
     if (!ok) return
-    try { await deleteCoachConversation(id); setConversations(p => p.filter(c => c.id !== id)); if (activeConversationId === id) handleNewChat() } catch {}
+    try { await deleteCoachConversation(id); setConversations(p => p.filter(c => c.id !== id)); if (activeConversationId === id) handleNewChat() }
+    catch (err) { log.warn('[coach] delete conversation failed', err?.message || err) }
   }
   async function handleSubmit(e) {
     e.preventDefault(); if (!input.trim() || loading) return
@@ -125,7 +129,7 @@ export default function CoachPage() {
       setMessages(p => [...p, { role: 'assistant', content: r.response, timestamp: new Date() }])
       if (r.conversationId) setActiveConversationId(r.conversationId)
       await loadConversations(); await refreshPlan()
-    } catch { setMessages(p => [...p, { role: 'assistant', content: "Sorry, something went wrong. Try again.", timestamp: new Date(), error: true }]) }
+    } catch (err) { log.warn('[coach] chat send failed', err?.message || err); setMessages(p => [...p, { role: 'assistant', content: "Sorry, something went wrong. Try again.", timestamp: new Date(), error: true }]) }
     finally { setLoading(false); inputRef.current?.focus() }
   }
   function handleQuickPrompt(p) { setInput(p); setTimeout(() => document.getElementById('coach-form')?.requestSubmit(), 100) }

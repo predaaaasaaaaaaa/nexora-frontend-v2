@@ -6,6 +6,7 @@ import { getCurrentUser, signOut } from '@/lib/supabase'
 import { getYouTubeStatus, connectYouTube, disconnectYouTube, getNotificationPreferences, updateNotificationPreferences } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import { log } from '@/lib/log'
 import Link from 'next/link'
 
 // ── Theme colors ──
@@ -103,11 +104,13 @@ export default function SettingsPage() {
   async function loadUser() { const { user } = await getCurrentUser(); setUser(user); setLoading(false) }
   async function loadYouTubeStatus() {
     try { setYoutubeLoading(true); const data = await getYouTubeStatus(); setYoutubeStatus(data) }
-    catch { setYoutubeStatus({ connected: false }) } finally { setYoutubeLoading(false) }
+    catch (err) { log.warn('[settings] yt status load failed', err?.message || err); setYoutubeStatus({ connected: false }) }
+    finally { setYoutubeLoading(false) }
   }
   async function loadNotifPrefs() {
     try { setNotifLoading(true); const data = await getNotificationPreferences(); setNotifPrefs(data.preferences) }
-    catch {} finally { setNotifLoading(false) }
+    catch (err) { log.warn('[settings] notif prefs load failed', err?.message || err) }
+    finally { setNotifLoading(false) }
   }
   async function handleConnectYouTube() {
     try {
@@ -127,7 +130,7 @@ export default function SettingsPage() {
         }
         window.location.href = parsed.toString()
       }
-    } catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
+    } catch (err) { log.warn('[settings] yt connect failed', err?.message || err); setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
   }
   async function handleDisconnectYouTube() {
     const ok = await confirm({
@@ -138,11 +141,12 @@ export default function SettingsPage() {
     })
     if (!ok) return
     try { setYoutubeAction('disconnecting'); await disconnectYouTube(); setYoutubeStatus({ connected: false }); setSuccess('YouTube disconnected.'); setYoutubeAction(null); setTimeout(() => setSuccess(''), 3000) }
-    catch { setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
+    catch (err) { log.warn('[settings] yt disconnect failed', err?.message || err); setYoutubeAction('error'); setTimeout(() => setYoutubeAction(null), 3000) }
   }
   async function toggleNotifications() {
     if (!notifPrefs) return
-    try { const updated = await updateNotificationPreferences({ ...notifPrefs, enabled: !notifPrefs.enabled }); setNotifPrefs(updated.preferences); setSuccess(updated.preferences.enabled ? 'Notifications enabled' : 'Notifications paused'); setTimeout(() => setSuccess(''), 3000) } catch {}
+    try { const updated = await updateNotificationPreferences({ ...notifPrefs, enabled: !notifPrefs.enabled }); setNotifPrefs(updated.preferences); setSuccess(updated.preferences.enabled ? 'Notifications enabled' : 'Notifications paused'); setTimeout(() => setSuccess(''), 3000) }
+    catch (err) { log.warn('[settings] toggle notifications failed', err?.message || err) }
   }
   async function handleSignOut() {
     const ok = await confirm({
