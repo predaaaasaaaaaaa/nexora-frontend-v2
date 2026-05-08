@@ -9,8 +9,8 @@ import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import FeedbackPopup from '@/components/shared/FeedbackPopup'
-import { getYouTubeStatus, getCurrentPlan } from '@/lib/api'
 import PlanBadge from '@/components/shared/PlanBadge'
+import DashboardDataProvider, { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
 
 // ── Theme color system ──
 const themes = {
@@ -58,18 +58,13 @@ const pageTitles = {
 export default function DashboardLayout({ children }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { dark, toggle } = useTheme()
+  const { dark } = useTheme()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [hoverNav, setHoverNav] = useState(null)
-  const [ytConnected, setYtConnected] = useState(false)
-  const [userPlan, setUserPlan] = useState('free')
 
   const c = dark ? themes.dark : themes.light
 
   useEffect(() => { checkAuth() }, [])
-  useEffect(() => { checkYouTubeStatus(); loadUserPlan() }, [pathname])
 
   // Cross-tab sign-out / natural session expiry: kick the user back to
   // /login the moment Supabase emits SIGNED_OUT, instead of waiting for
@@ -97,35 +92,11 @@ export default function DashboardLayout({ children }) {
     }
   }, [pathname])
 
-  // Close sidebar on route change (mobile)
-  useEffect(() => {
-    setSidebarOpen(false)
-  }, [pathname])
-
   async function checkAuth() {
     const { user, error } = await getCurrentUser()
     if (!user || error) { router.push('/login'); return }
     setUser(user)
     setLoading(false)
-  }
-
-  async function checkYouTubeStatus() {
-    try {
-      const data = await getYouTubeStatus()
-      setYtConnected(data?.connected === true)
-    } catch { setYtConnected(false) }
-  }
-
-  async function loadUserPlan() {
-    try {
-      const res = await getCurrentPlan()
-      if (res.success) setUserPlan(res.subscription?.plan || 'free')
-    } catch {}
-  }
-
-  async function handleSignOut() {
-    await signOut()
-    router.push('/')
   }
 
   if (loading) {
@@ -143,6 +114,38 @@ export default function DashboardLayout({ children }) {
         </div>
       </div>
     )
+  }
+
+  // Provider only fetches once `enabled` flips true (after auth), so
+  // unauthenticated users never trigger a 401 storm before redirect.
+  return (
+    <DashboardDataProvider enabled={!!user}>
+      <DashboardChrome user={user} router={router} pathname={pathname}>
+        {children}
+      </DashboardChrome>
+    </DashboardDataProvider>
+  )
+}
+
+function DashboardChrome({ user, router, pathname, children }) {
+  const { dark, toggle } = useTheme()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [hoverNav, setHoverNav] = useState(null)
+  const { plan } = useUserPlan()
+  const { ytStatus } = useYouTubeStatus()
+  const userPlan = plan?.subscription?.plan || 'free'
+  const ytConnected = ytStatus?.connected === true
+
+  const c = dark ? themes.dark : themes.light
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pathname])
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/')
   }
 
   const navigation = [

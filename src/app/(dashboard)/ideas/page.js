@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { generateIdeas, getYouTubeStatus, getCurrentPlan } from '@/lib/api'
+import { generateIdeas } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 import { friendlyError } from '@/lib/errors'
 
@@ -47,7 +48,8 @@ export default function IdeasPage() {
   const [userNiche, setUserNiche] = useState(null)
   const [nicheLoading, setNicheLoading] = useState(true)
   const [upgradePrompt, setUpgradePrompt] = useState(null)
-  const [userPlan, setUserPlan] = useState(null)
+  const { plan: userPlan, refreshPlan } = useUserPlan()
+  const { ytStatus } = useYouTubeStatus()
   const { dark } = useTheme()
   const c = dark ? themes.dark : themes.light
 
@@ -79,25 +81,15 @@ export default function IdeasPage() {
 
   const niches = Object.keys(nicheMapping)
 
-  useEffect(() => { detectUserNiche(); loadPlanInfo() }, [])
-
-  async function loadPlanInfo() {
-    try {
-      const res = await getCurrentPlan()
-      if (res.success) setUserPlan(res)
-    } catch {}
-  }
-
-  async function detectUserNiche() {
-    try {
-      setNicheLoading(true)
-      const status = await getYouTubeStatus()
-      if (status?.connected) {
-        setUserNiche('Gaming')
-      }
-    } catch (err) { console.error('Error detecting niche:', err) }
-    finally { setNicheLoading(false) }
-  }
+  // Niche detection now reads from the shared YouTube status (one fetch
+  // for the whole dashboard) instead of firing a duplicate call.
+  useEffect(() => {
+    setNicheLoading(true)
+    if (ytStatus?.connected) {
+      setUserNiche('Gaming')
+    }
+    setNicheLoading(false)
+  }, [ytStatus])
 
   async function handleGenerate() {
     try {
@@ -119,7 +111,9 @@ export default function IdeasPage() {
       }
 
       setIdeas(data)
-      await loadPlanInfo()
+      // Generation consumed a quota slot — refresh the cached plan so
+      // the "X/Y ideas remaining this week" counter updates.
+      await refreshPlan()
     } catch (err) {
       setError(friendlyError(err, 'Failed to generate ideas'))
     } finally { setLoading(false) }

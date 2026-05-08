@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation, getYouTubeStatus, getCurrentPlan } from '@/lib/api'
+import { chatWithCoach, listCoachConversations, getCoachMessages, deleteCoachConversation } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import { useUserPlan, useYouTubeStatus } from '@/components/shared/DashboardDataProvider'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 const themes = {
@@ -68,21 +69,24 @@ export default function CoachPage() {
   const [activeConversationId, setActiveConversationId] = useState(null)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [loadingHistory, setLoadingHistory] = useState(true)
-  const [ytConnected, setYtConnected] = useState(null)
-  const [userPlan, setUserPlan] = useState(null)
   const [upgradePrompt, setUpgradePrompt] = useState(null)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const { dark } = useTheme()
   const c = dark ? themes.dark : themes.light
 
+  // Plan + YouTube status now come from the shared provider — no
+  // per-page fetches and no re-fetch on every nav. We still call
+  // refreshPlan() after each chat so the usage counter stays accurate.
+  const { plan: userPlan, refreshPlan } = useUserPlan()
+  const { ytStatus, ytLoaded } = useYouTubeStatus()
+  const ytConnected = ytLoaded ? (ytStatus?.connected === true) : null
+
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   useEffect(() => { scrollToBottom() }, [messages])
-  useEffect(() => { loadConversations(); checkYouTubeStatus(); loadPlanInfo() }, [])
+  useEffect(() => { loadConversations() }, [])
   useEffect(() => { if (!loadingHistory) inputRef.current?.focus() }, [loadingHistory, activeConversationId])
 
-  async function loadPlanInfo() { try { const r = await getCurrentPlan(); if (r.success) setUserPlan(r) } catch {} }
-  async function checkYouTubeStatus() { try { setYtConnected((await getYouTubeStatus()).connected === true) } catch { setYtConnected(false) } }
   async function loadConversations() {
     try { setLoadingHistory(true); const d = await listCoachConversations(); setConversations(d.limitReached ? [] : d.conversations || []) }
     catch {} finally { setLoadingHistory(false) }
@@ -111,7 +115,7 @@ export default function CoachPage() {
       if (r.limitReached) { setUpgradePrompt({ message: r.message, currentPlan: r.currentPlan, upgradeTo: r.upgradeTo, usage: r.usage }); setMessages(p => p.slice(0,-1)); setLoading(false); return }
       setMessages(p => [...p, { role: 'assistant', content: r.response, timestamp: new Date() }])
       if (r.conversationId) setActiveConversationId(r.conversationId)
-      await loadConversations(); await loadPlanInfo()
+      await loadConversations(); await refreshPlan()
     } catch { setMessages(p => [...p, { role: 'assistant', content: "Sorry, something went wrong. Try again.", timestamp: new Date(), error: true }]) }
     finally { setLoading(false); inputRef.current?.focus() }
   }

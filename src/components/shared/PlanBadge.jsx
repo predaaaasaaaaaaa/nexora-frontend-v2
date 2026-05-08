@@ -1,18 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getCurrentPlan } from '@/lib/api'
+import { useUserPlan } from '@/components/shared/DashboardDataProvider'
 
 export default function PlanBadge() {
-  const [plan, setPlan] = useState(null)
-
-  useEffect(() => {
-    getCurrentPlan()
-      .then(res => {
-        if (res.success) setPlan(res.subscription)
-      })
-      .catch(() => {})
-  }, [])
+  // Subscribes to the shared provider — no extra API call. If used
+  // outside DashboardDataProvider (none today, but defensive) the hook
+  // returns plan=null and we render nothing.
+  const { plan: planResp } = useUserPlan()
+  const plan = planResp?.subscription
 
   if (!plan) return null
 
