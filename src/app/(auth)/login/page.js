@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from '@/lib/supabase'
@@ -20,7 +20,7 @@ const NexoraLogo = ({ size = 32 }) => (
   </svg>
 )
 
-export default function LoginPage() {
+function LoginPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -152,5 +152,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0A0A0A' }} />}>
+      <LoginPageInner />
+    </Suspense>
   )
 }
