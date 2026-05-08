@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getAnalytics } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
+import { log } from '@/lib/log'
 import Link from 'next/link'
 
 // ── Theme colors ──
@@ -90,7 +91,7 @@ export default function AnalyticsPage() {
       const data = await getAnalytics(selectedPlatform)
       setAnalyticsData(data.data); setSource(data.source)
     } catch (err) {
-      console.error('Error loading analytics:', err)
+      log.error('[analytics] load failed', err?.message || err)
       setError(err.message || 'Failed to load analytics')
     } finally { setLoading(false) }
   }

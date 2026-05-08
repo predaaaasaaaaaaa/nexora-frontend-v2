@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createCheckout, getCheckoutToken } from '@/lib/api'
 import { PADDLE_PRICE_IDS } from '@/lib/plans'
+import { log } from '@/lib/log'
 
 export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, onDismiss }) {
   const [loading, setLoading] = useState(false)
@@ -53,7 +54,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
         if (!r?.success || !r?.token) throw new Error('No checkout token')
         token = r.token
       } catch (err) {
-        console.error('Failed to mint checkout token:', err)
+        log.error('[checkout] mint token failed', err?.message || err)
         setCheckoutError('Could not start checkout. Please refresh and try again.')
         return
       }
@@ -69,7 +70,7 @@ export default function UpgradePrompt({ message, currentPlan, upgradeTo, usage, 
         })
       }
     } catch (error) {
-      console.error('Checkout error:', error)
+      log.error('[checkout] open failed', error?.message || error)
     } finally {
       setLoading(false)
     }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { getYouTubeAnalytics, getYouTubeStatus } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
+import { log } from '@/lib/log'
 import Link from 'next/link'
 
 // ── Theme colors ──
@@ -67,7 +68,7 @@ export default function DashboardPage() {
         }
       }
     } catch (err) {
-      console.error('Error loading dashboard:', err)
+      log.error('[dashboard] load failed', err?.message || err)
     } finally {
       setLoading(false)
     }

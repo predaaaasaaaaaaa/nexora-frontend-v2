@@ -5,6 +5,8 @@
 // constraint name). This wrapper keeps the original on the console for
 // debugging while showing the user something actionable.
 
+import { log } from './log'
+
 const KNOWN = [
   { match: /Invalid login credentials/i,   msg: 'Invalid email or password.' },
   { match: /Email not confirmed/i,         msg: 'Please confirm your email first — check your inbox.' },
@@ -29,7 +31,7 @@ const KNOWN = [
 export function friendlyError(err, fallback = 'Something went wrong. Please try again.') {
   if (!err) return fallback
   const raw = typeof err === 'string' ? err : (err.message || err.error || '')
-  if (typeof window !== 'undefined') console.error('[error]', err)
+  if (typeof window !== 'undefined') log.error('[error]', err)
   for (const k of KNOWN) {
     if (k.match.test(raw)) return k.msg
   }

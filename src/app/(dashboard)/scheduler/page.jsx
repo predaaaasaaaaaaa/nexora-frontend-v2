@@ -13,6 +13,7 @@ import {
   getCurrentPlan,
 } from '@/lib/api'
 import { useTheme } from '@/components/shared/ThemeProvider'
+import { log } from '@/lib/log'
 import UpgradePrompt from '@/components/shared/UpgradePrompt'
 
 // ── Theme colors ──
@@ -151,7 +152,7 @@ export default function SchedulerPage() {
       const data = await getScheduledPosts(month, year)
       if (data.limitReached) { setFeatureLocked(true); return }
       setScheduledPosts(data.posts || [])
-    } catch (err) { console.error('Failed to load posts:', err) }
+    } catch (err) { log.error('[scheduler] load posts failed', err?.message || err) }
     finally { setPostsLoading(false) }
   }
 
@@ -162,7 +163,7 @@ export default function SchedulerPage() {
       if (data.limitReached) return
       setRecommendations(data.recommendations || 'No recommendations available yet.')
     } catch (err) {
-      console.error('Failed to load recommendations:', err)
+      log.error('[scheduler] load recommendations failed', err?.message || err)
       setRecommendations('Unable to load recommendations right now.')
     } finally { setRecsLoading(false) }
   }
@@ -175,7 +176,7 @@ export default function SchedulerPage() {
         setNotifPrefs(data.preferences)
         setNotifForm({ notification_email: data.preferences.notification_email, reminder_minutes: data.preferences.reminder_minutes, enabled: data.preferences.enabled })
       }
-    } catch (err) { console.error('Failed to load notification prefs:', err) }
+    } catch (err) { log.error('[scheduler] load notif prefs failed', err?.message || err) }
   }
 
   async function fetchReactiveRecs(action, post) {
@@ -183,7 +184,7 @@ export default function SchedulerPage() {
       setRecsLoading(true)
       const data = await getReactiveRecommendations(action, post)
       if (!data.limitReached) setRecommendations(data.recommendations || recommendations)
-    } catch (err) { console.error('Failed to get reactive recommendations:', err) }
+    } catch (err) { log.error('[scheduler] reactive recs failed', err?.message || err) }
     finally { setRecsLoading(false) }
   }
 
@@ -216,7 +217,7 @@ export default function SchedulerPage() {
       await deleteScheduledPost(post.id)
       setScheduledPosts(prev => prev.filter(p => p.id !== post.id))
       fetchReactiveRecs('removed', post)
-    } catch (err) { console.error('Failed to delete post:', err) }
+    } catch (err) { log.error('[scheduler] delete post failed', err?.message || err) }
   }
 
   function startEditPost(post) {
@@ -264,7 +265,7 @@ export default function SchedulerPage() {
       setNotifPrefs(data.preferences)
       setNotifSaved(true)
       setTimeout(() => setNotifSaved(false), 2000)
-    } catch (err) { console.error('Failed to save notification prefs:', err) }
+    } catch (err) { log.error('[scheduler] save notif prefs failed', err?.message || err) }
     finally { setNotifSaving(false) }
   }
 
