@@ -127,8 +127,27 @@ export default function CoachPage() {
       const r = await chatWithCoach(ci, selectedPlatform, activeConversationId)
       if (r.limitReached) { setUpgradePrompt({ message: r.message, currentPlan: r.currentPlan, upgradeTo: r.upgradeTo, usage: r.usage }); setMessages(p => p.slice(0,-1)); setLoading(false); return }
       setMessages(p => [...p, { role: 'assistant', content: r.response, timestamp: new Date() }])
-      if (r.conversationId) setActiveConversationId(r.conversationId)
-      await loadConversations(); await refreshPlan()
+      if (r.conversationId) {
+        setActiveConversationId(r.conversationId)
+        // FL6: update the single conversation in place instead of
+        // refetching the whole list after every message. For users
+        // with 50+ saved conversations the whole-list refetch was
+        // dominating perceived chat latency.
+        const existed = conversations.some(c => c.id === r.conversationId)
+        if (existed) {
+          setConversations(prev => {
+            const others = prev.filter(c => c.id !== r.conversationId)
+            const current = prev.find(c => c.id === r.conversationId)
+            return [{ ...current, updated_at: new Date().toISOString() }, ...others]
+          })
+        } else {
+          // First message of a brand-new conversation — fall back to a
+          // refetch so the backend-generated title shows up in the
+          // history list. Rare path (once per new chat).
+          await loadConversations()
+        }
+      }
+      await refreshPlan()
     } catch (err) { log.warn('[coach] chat send failed', err?.message || err); setMessages(p => [...p, { role: 'assistant', content: "Sorry, something went wrong. Try again.", timestamp: new Date(), error: true }]) }
     finally { setLoading(false); inputRef.current?.focus() }
   }
