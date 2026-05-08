@@ -27,6 +27,15 @@ export const metadata = {
 // the legacy unprefixed key for users who haven't yet hit a code path
 // that triggers the storage helper's migration. ThemeProvider does
 // the actual migration on mount.
+//
+// ⚠️ XSS GUARDRAIL — DO NOT interpolate runtime / user / request data
+// into this string. It's emitted via dangerouslySetInnerHTML below
+// and runs as inline script in the document. Anything that comes
+// from outside this file (req headers, cookies, URL, env vars set by
+// users, DB rows) MUST NOT be templated in here. If you need
+// per-request behavior, do it inside a client component that runs
+// AFTER hydration, never in this bootstrap. The string is a frozen
+// constant on purpose.
 const themeBootstrap = `
   try {
     var t = localStorage.getItem('nx:theme') || localStorage.getItem('nexora-theme');
