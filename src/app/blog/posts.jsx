@@ -22,6 +22,7 @@ import Post21Content from './content/post21'
 import Post22Content from './content/post22'
 import Post23Content from './content/post23'
 import Post24Content from './content/post24'
+import Post25Content from './content/post25'
 
 export const posts = [
   {
@@ -238,5 +239,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube ai policy', 'inauthentic content', 'faceless youtube'],
     content: <Post24Content />,
+  },
+  {
+    slug: 'youtube-auto-dubbing-2026',
+    title: 'The Free YouTube Setting That Tripled Jamie Oliver\'s Views (And 90% of Creators Haven\'t Enabled It)',
+    description: 'YouTube auto-dubbing went universal in Feb 2026. 27 languages. 6M daily viewers already watching dubbed content. Mark Rober: 30+ languages per video. Jamie Oliver: 3x views. Here\'s the math, the priority language list, and the trifecta strategy that compounds for years.',
+    date: '2026-04-21',
+    author: 'NEXORA Team',
+    tags: ['youtube auto dubbing', 'global youtube growth', 'youtube ai features'],
+    content: <Post25Content />,
   },
 ]
