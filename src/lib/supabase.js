@@ -16,6 +16,28 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 let _userInitiatedSignOut = false
 export function isUserSignOutInProgress() { return _userInitiatedSignOut }
 
+// Keys we set in localStorage that are tied to a specific user account
+// (not device preferences). On sign-out we wipe these so signing in as
+// a different user on the same browser doesn't inherit the previous
+// user's "feedback already given" or "visited all dashboard tabs"
+// state — both of which suppress UI the new user should see.
+//
+// We deliberately do NOT clear nexora-theme here — that's a device-
+// level preference, not user data, and clearing it would force a
+// reset of dark/light mode after every sign-out.
+const USER_LOCAL_STORAGE_KEYS = ['visitedSections', 'feedbackGiven', 'feedbackDismissed']
+
+export function clearUserLocalStorage() {
+  if (typeof window === 'undefined') return
+  try {
+    for (const k of USER_LOCAL_STORAGE_KEYS) localStorage.removeItem(k)
+  } catch {
+    // localStorage can throw in private mode / disabled storage —
+    // failing here would block sign-out, which is worse than leaving
+    // the cached UI flags around.
+  }
+}
+
 // Auth helpers
 export async function signUp(email, password, username) {
   const { data, error } = await supabase.auth.signUp({
@@ -64,6 +86,10 @@ export async function signOut() {
   }
 
   const { error } = await supabase.auth.signOut()
+  // Wipe per-user app state so a second account on the same browser
+  // doesn't inherit the previous user's flags. Centralized so the
+  // cross-tab onAuthStateChange listener can call the same helper.
+  clearUserLocalStorage()
   // Clear the flag after a tick so any listener that reacts on the same
   // event-loop turn still sees it as user-initiated, but a later expiry
   // in the same session is treated as a real expiry.

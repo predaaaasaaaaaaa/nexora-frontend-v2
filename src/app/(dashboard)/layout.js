@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Sun, Moon, LogOut, Menu, X } from 'lucide-react'
-import { getCurrentUser, signOut, supabase, isUserSignOutInProgress } from '@/lib/supabase'
+import { getCurrentUser, signOut, supabase, isUserSignOutInProgress, clearUserLocalStorage } from '@/lib/supabase'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
@@ -72,8 +72,12 @@ export default function DashboardLayout({ children }) {
   // user-initiated (the Sign Out button has its own router.push('/')).
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT' && !isUserSignOutInProgress()) {
-        if (typeof window !== 'undefined') {
+      if (event === 'SIGNED_OUT') {
+        // Cross-tab sign-out path: this tab's signOut() helper never
+        // ran, so wipe per-user localStorage here too. Idempotent with
+        // the helper's call when sign-out originated locally.
+        clearUserLocalStorage()
+        if (!isUserSignOutInProgress() && typeof window !== 'undefined') {
           window.location.replace('/login?reason=session_expired')
         }
       }
