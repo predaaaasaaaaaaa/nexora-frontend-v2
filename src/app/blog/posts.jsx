@@ -23,6 +23,7 @@ import Post22Content from './content/post22'
 import Post23Content from './content/post23'
 import Post24Content from './content/post24'
 import Post25Content from './content/post25'
+import Post26Content from './content/post26'
 
 export const posts = [
   {
@@ -248,5 +249,13 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube auto dubbing', 'global youtube growth', 'youtube ai features'],
     content: <Post25Content />,
+  },{
+    slug: 'youtube-updates-week-may-2026',
+    title: '7 YouTube Features That Dropped This Week (May 2026): What Actually Matters',
+    description: 'YouTube shipped 7 features in one week — the profanity monetization clarification, free Veo 3 Fast for Shorts, Edit with AI expansion, Ask Studio AI chatbot, audio-to-video for podcasts, native A/B title testing, and likeness detection. Here\'s the no-fluff verdict on each.',
+    date: '2026-04-22',
+    author: 'NEXORA Team',
+    tags: ['youtube updates', 'youtube news 2026', 'creator features'],
+    content: <Post26Content />,
   },
 ]
