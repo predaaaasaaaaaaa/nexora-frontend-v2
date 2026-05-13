@@ -25,6 +25,7 @@ import Post24Content from './content/post24'
 import Post25Content from './content/post25'
 import Post26Content from './content/post26'
 import Post27Content from './content/post27'
+import Post28Content from './content/post28'
 
 export const posts = [
   {
@@ -266,5 +267,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['creator tools', 'youtube studio', 'creator economy 2026'],
     content: <Post27Content />,
+  },
+  {
+    slug: 'how-to-use-ai-for-youtube-without-getting-demonetized-2026',
+    title: 'How to Use AI for YouTube Without Getting Demonetized in 2026 (The Safe Workflow)',
+    description: '16 channels with 4.7B views terminated in January. The wrong question is "should I stop using AI?" — the right question is how to use it safely. The 7-stage safe AI workflow, the voiceover decision framework, disclosure rules, and the 30-video audit to run before your next upload.',
+    date: '2026-04-24',
+    author: 'NEXORA Team',
+    tags: ['ai for youtube', 'youtube ai policy', 'creator workflow'],
+    content: <Post28Content />,
   },
 ]
