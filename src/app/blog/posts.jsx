@@ -26,6 +26,7 @@ import Post25Content from './content/post25'
 import Post26Content from './content/post26'
 import Post27Content from './content/post27'
 import Post28Content from './content/post28'
+import Post29Content from './content/post29'
 
 export const posts = [
   {
@@ -276,5 +277,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['ai for youtube', 'youtube ai policy', 'creator workflow'],
     content: <Post28Content />,
+  },
+  {
+    slug: 'youtube-hook-formulas-first-30-seconds-2026',
+    title: 'First 30 Seconds: The YouTube Hook Formulas That Stop the Scroll in 2026',
+    description: '70% of viewers who click away do so in the first 30 seconds. The hook is the #1 determinant of distribution in 2026. The 4 hook layers, the 7 specific formulas that consistently win, the 5 mistakes that kill hooks, and the hook-thumbnail-title trifecta.',
+    date: '2026-04-25',
+    author: 'NEXORA Team',
+    tags: ['youtube retention', 'youtube hooks', 'audience retention'],
+    content: <Post29Content />,
   },
 ]
