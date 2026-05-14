@@ -27,6 +27,7 @@ import Post26Content from './content/post26'
 import Post27Content from './content/post27'
 import Post28Content from './content/post28'
 import Post29Content from './content/post29'
+import Post30Content from './content/post30'
 
 export const posts = [
   {
@@ -286,5 +287,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube retention', 'youtube hooks', 'audience retention'],
     content: <Post29Content />,
+  },
+  {
+    slug: 'youtube-brandcast-2026-creator-economy-shift',
+    title: 'YouTube Just Killed Network TV at Brandcast 2026: What This Means for Creators',
+    description: 'Last night YouTube announced its first-ever slate of Creator Shows at Brandcast 2026 — Trevor Noah hosting, Chappell Roan performing, Dude Perfect, Alex Cooper, Jesser, Kareem Rahma on the slate. Plus 5 underlying product changes that matter more for small creators than the headlines. The 90-day playbook regardless of channel size.',
+    date: '2026-04-26',
+    author: 'NEXORA Team',
+    tags: ['youtube brandcast', 'creator economy 2026', 'youtube news'],
+    content: <Post30Content />,
   },
 ]
