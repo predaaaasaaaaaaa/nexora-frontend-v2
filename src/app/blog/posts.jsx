@@ -28,6 +28,7 @@ import Post27Content from './content/post27'
 import Post28Content from './content/post28'
 import Post29Content from './content/post29'
 import Post30Content from './content/post30'
+import Post31Content from './content/post31'
 
 export const posts = [
   {
@@ -296,5 +297,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube brandcast', 'creator economy 2026', 'youtube news'],
     content: <Post30Content />,
+  },
+  {
+    slug: 'youtube-shopping-2026-complete-guide',
+    title: 'YouTube Shopping in 2026: How 500K Creators Are Making Real Money (Complete Guide)',
+    description: '500,000+ creators are now on YouTube Shopping. Some are making millions. The threshold is 500 subscribers — lower than YPP. A 50K-view video earns $50 from AdSense or $300+ from Shopping done right. The real revenue math, 4 product paths, the workflow that converts, and the 5 mistakes leaving most creators with a fraction of what they should earn.',
+    date: '2026-04-27',
+    author: 'NEXORA Team',
+    tags: ['youtube shopping', 'creator monetization', 'youtube affiliate'],
+    content: <Post31Content />,
   },
 ]
