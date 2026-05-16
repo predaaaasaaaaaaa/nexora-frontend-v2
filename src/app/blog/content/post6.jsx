@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post6Content() {
     const h2 = {
       fontSize: 26,
@@ -146,7 +148,7 @@ export default function Post6Content() {
         <h2 style={h2}>Step 2: What to Analyze (The Competitor Audit Framework)</h2>
   
         <p style={p}>
-          Once you've identified 3-5 competitors, here's exactly what to look at for each one. This framework works whether you're doing it manually or using tools.
+          Once you've identified 3-5 competitors, here's exactly what to look at for each one. This framework works whether you're doing it manually or using tools. When evaluating a competitor's channel, use <Link href="/blog/youtube-studio-analytics-explained-every-metric-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the same metrics framework we use across the analytics cluster</Link> — CTR, AVD, retention curve shape, traffic source mix.
         </p>
   
         <div style={stepCard}>
