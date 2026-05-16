@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post4Content() {
     const h2 = {
       fontSize: 26,
@@ -87,7 +89,7 @@ export default function Post4Content() {
         </p>
   
         <p style={p}>
-          In this guide, we'll walk through a complete YouTube channel analysis — the same process used by professional YouTube strategists — step by step.
+          In this guide, we'll walk through a complete YouTube channel analysis — the same process used by professional YouTube strategists — step by step. For the full metric-by-metric definitions and the noise vs signal map, <Link href="/blog/youtube-studio-analytics-explained-every-metric-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>see our complete YouTube Studio analytics breakdown</Link>.
         </p>
   
         <h2 style={h2}>The 5 Metrics That Actually Matter</h2>
