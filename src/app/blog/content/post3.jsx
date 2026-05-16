@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post3Content() {
     const h2 = {
       fontSize: 26,
@@ -257,7 +259,11 @@ export default function Post3Content() {
         <p style={p}>
           Or, if you'd rather skip the manual testing and let AI figure it out: connect your channel to NEXORA and check the scheduler. It runs this analysis automatically using your full upload history and current audience data. It's free during beta and takes about two minutes to set up.
         </p>
-  
+
+        <p style={p}>
+          Posting time is one piece of the broader analytics picture — every metric that matters in 2026 is <Link href="/blog/youtube-studio-analytics-explained-every-metric-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>decoded in our complete analytics guide</Link>.
+        </p>
+
         <h2 style={h2}>Key Takeaways</h2>
   
         <div style={sectionCard}>
