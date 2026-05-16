@@ -30,6 +30,7 @@ import Post29Content from './content/post29'
 import Post30Content from './content/post30'
 import Post31Content from './content/post31'
 import Post32Content from './content/post32'
+import Post33Content from './content/post33'
 
 export const posts = [
   {
@@ -316,5 +317,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube analytics', 'youtube studio', 'creator metrics'],
     content: <Post32Content />,
+  },
+  {
+    slug: 'youtube-channel-memberships-2026-complete-guide',
+    title: 'YouTube Channel Memberships in 2026: Setup, Pricing, and What Actually Converts',
+    description: 'Channel Memberships pay 8-15x more revenue per super-fan than ads. A 25K-sub channel can earn $437-$2,184/month in pure recurring revenue. The 500-sub threshold, the optimal tier framework, the perks that drive renewals (vs the ones that don\'t), the 5 mistakes that kill membership revenue, and the YouTube vs Patreon decision.',
+    date: '2026-04-29',
+    author: 'NEXORA Team',
+    tags: ['channel memberships', 'youtube monetization', 'recurring revenue'],
+    content: <Post33Content />,
   },
 ]
