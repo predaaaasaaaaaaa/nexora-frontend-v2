@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post17Content() {
     const h2 = {
       fontSize: 26,
@@ -115,7 +117,7 @@ export default function Post17Content() {
         </p>
   
         <p style={p}>
-          This guide covers the benchmarks, the retention graph analysis, and the 10 proven techniques to keep viewers watching longer.
+          This guide covers the benchmarks, the retention graph analysis, and the 10 proven techniques to keep viewers watching longer. Retention is one diagnostic chart inside a larger analytics surface — for the full breakdown of every metric YouTube Studio exposes, see <Link href="/blog/youtube-studio-analytics-explained-every-metric-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete YouTube Studio analytics guide</Link>.
         </p>
   
         <h2 style={h2}>Retention Benchmarks: What's Actually Good?</h2>
