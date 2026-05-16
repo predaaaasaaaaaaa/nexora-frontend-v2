@@ -29,6 +29,7 @@ import Post28Content from './content/post28'
 import Post29Content from './content/post29'
 import Post30Content from './content/post30'
 import Post31Content from './content/post31'
+import Post32Content from './content/post32'
 
 export const posts = [
   {
@@ -306,5 +307,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube shopping', 'creator monetization', 'youtube affiliate'],
     content: <Post31Content />,
+  },
+  {
+    slug: 'youtube-studio-analytics-explained-every-metric-2026',
+    title: 'YouTube Studio Analytics Explained: Every Metric Decoded for 2026 (Complete Guide)',
+    description: 'YouTube Studio shows 80+ metrics. Only 10 are signal. The definitive 2026 guide to YouTube analytics — the 5 categories (Reach, Engagement, Conversion, Revenue, Discovery), every metric that matters, the metric pairings that reveal what single numbers can\'t, the 7-question weekly audit framework, and what to ignore entirely.',
+    date: '2026-04-28',
+    author: 'NEXORA Team',
+    tags: ['youtube analytics', 'youtube studio', 'creator metrics'],
+    content: <Post32Content />,
   },
 ]
