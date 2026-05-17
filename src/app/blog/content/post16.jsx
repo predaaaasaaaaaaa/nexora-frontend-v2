@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post15Content() {
     const h2 = {
       fontSize: 26,
@@ -121,7 +123,7 @@ export default function Post15Content() {
         </p>
   
         <p style={p}>
-          Here are the 12 best AI tools for YouTube creators in 2026, organized by what stage of the creator workflow they solve.
+          Here are the 12 best AI tools for YouTube creators in 2026, organized by what stage of the creator workflow they solve. This post focuses on specific tools — for the strategic framework behind which AI categories actually compound channel growth, see <Link href="/blog/ai-for-youtube-creators-complete-guide-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete AI for YouTube creators framework</Link>.
         </p>
   
         <h2 style={h2}>Strategy & Analytics</h2>
