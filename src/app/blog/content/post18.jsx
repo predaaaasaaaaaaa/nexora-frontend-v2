@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post18Content() {
     const h2 = {
       fontSize: 26,
@@ -121,7 +123,7 @@ export default function Post18Content() {
         </p>
   
         <p style={p}>
-          This is one of the most important shifts happening in the creator economy right now — and most YouTubers don't know it exists yet.
+          This is one of the most important shifts happening in the creator economy right now — and most YouTubers don't know it exists yet. AI agents are one of <Link href="/blog/ai-for-youtube-creators-complete-guide-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the four pillars of AI for creators</Link> — specifically the strategic discovery layer that contextualizes data against your category.
         </p>
   
         <h2 style={h2}>AI Tools vs AI Agents: What's the Difference?</h2>
