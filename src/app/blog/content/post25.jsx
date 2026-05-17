@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post25Content() {
     const h2 = {
       fontSize: 26,
@@ -367,7 +369,7 @@ export default function Post25Content() {
         </p>
   
         <p style={p}>
-          That window doesn't stay open. Within 12-18 months, every serious creator will have auto-dubbing enabled by default, and the international markets will look as competitive as English already does. The creators who move now lock in audience-building advantages that compound for years.
+          That window doesn't stay open. Within 12-18 months, every serious creator will have auto-dubbing enabled by default, and the international markets will look as competitive as English already does. The creators who move now lock in audience-building advantages that compound for years. Auto-dubbing is the distribution pillar of <Link href="/blog/ai-for-youtube-creators-complete-guide-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete AI for YouTube creators guide</Link> — one of four functional categories where AI now reshapes how creators work.
         </p>
   
         <div style={tipBox}>
