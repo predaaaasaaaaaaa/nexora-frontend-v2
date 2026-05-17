@@ -32,6 +32,7 @@ import Post31Content from './content/post31'
 import Post32Content from './content/post32'
 import Post33Content from './content/post33'
 import Post34Content from './content/post34'
+import Post35Content from './content/post35'
 
 export const posts = [
   {
@@ -336,5 +337,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['ai for youtube', 'creator ai tools', 'youtube ai 2026'],
     content: <Post34Content />,
+  },
+  {
+    slug: 'youtube-end-screens-cards-session-watch-time-2026',
+    title: 'YouTube End Screens & Cards: The Session Watch Time Guide for 2026',
+    description: 'End screens generate 15-30% more session watch time per video when configured right — one of the strongest distribution signals in the 2026 algorithm. The 4 end screen templates that consistently win, card strategy (when to use, when to skip), the placement framework, the 5 mistakes that cost you watch time, and the compounding math across a channel.',
+    date: '2026-05-01',
+    author: 'NEXORA Team',
+    tags: ['youtube end screens', 'session watch time', 'youtube retention'],
+    content: <Post35Content />,
   },
 ]
