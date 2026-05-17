@@ -31,6 +31,7 @@ import Post30Content from './content/post30'
 import Post31Content from './content/post31'
 import Post32Content from './content/post32'
 import Post33Content from './content/post33'
+import Post34Content from './content/post34'
 
 export const posts = [
   {
@@ -326,5 +327,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['channel memberships', 'youtube monetization', 'recurring revenue'],
     content: <Post33Content />,
+  },
+  {
+    slug: 'ai-for-youtube-creators-complete-guide-2026',
+    title: 'AI for YouTube Creators: The Complete 2026 Guide (Tools, Workflow, and What Survives)',
+    description: 'The definitive 2026 guide to AI for YouTube creators. The 4 pillars (Discovery, Creation, Optimization, Distribution), which tools are free native vs paid, the demonetization risk map, the AI-augmented workflow that compounds, rational spend allocation, and the 2026-2027 roadmap.',
+    date: '2026-04-30',
+    author: 'NEXORA Team',
+    tags: ['ai for youtube', 'creator ai tools', 'youtube ai 2026'],
+    content: <Post34Content />,
   },
 ]
