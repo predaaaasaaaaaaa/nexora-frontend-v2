@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post5Content() {
     const h2 = {
       fontSize: 26,
@@ -82,7 +84,7 @@ export default function Post5Content() {
         </p>
   
         <p style={p}>
-          In 2026, AI tools are changing this equation. Instead of guessing what might work, creators can now use AI to analyze what's actually performing — both on their channel and across their niche — and generate ideas backed by real data. Here's how.
+          In 2026, AI tools are changing this equation. Instead of guessing what might work, creators can now use AI to analyze what's actually performing — both on their channel and across their niche — and generate ideas backed by real data. Content ideation is one slice of the broader AI toolkit available to creators in 2026 — for the full landscape, see <Link href="/blog/ai-for-youtube-creators-complete-guide-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete AI for YouTube creators guide</Link>. Here's how.
         </p>
   
         <h2 style={h2}>Why Most Content Ideas Fail</h2>
