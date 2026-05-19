@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post22Content() {
     const h2 = {
       fontSize: 26,
@@ -263,7 +265,7 @@ export default function Post22Content() {
           <span style={stepNumber}>DESCRIPTION OPTIMIZATION</span>
           <div style={stepTitle}>Underused by most creators</div>
           <p style={p}>
-            The description is more important than most creators think. The first 150 characters appear in search results and impact click decisions. The full description (up to 5000 characters) provides keyword signals to YouTube's algorithm.
+            The description is more important than most creators think. The first 150 characters appear in search results and impact click decisions. The full description (up to 5000 characters) provides keyword signals to YouTube's algorithm. For a full breakdown of the 7-section description anatomy, the chapters strategy, and the 6 mistakes that hurt SEO, see <Link href="/blog/youtube-description-seo-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete description SEO breakdown</Link>.
           </p>
           <div style={checkBox}>
             <span style={checkLabel}>STRUCTURE</span>
