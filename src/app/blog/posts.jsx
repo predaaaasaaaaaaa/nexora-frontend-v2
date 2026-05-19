@@ -34,6 +34,7 @@ import Post33Content from './content/post33'
 import Post34Content from './content/post34'
 import Post35Content from './content/post35'
 import Post36Content from './content/post36'
+import Post37Content from './content/post37'
 
 export const posts = [
   {
@@ -356,5 +357,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['generative shorts', 'youtube ai features', 'youtube shorts 2026'],
     content: <Post36Content />,
+  },
+  {
+    slug: 'youtube-description-seo-2026',
+    title: 'YouTube Description SEO: What Actually Matters in 2026',
+    description: 'Most creators waste the 5,000-character description box. The 2026 algorithm changed the rules — keyword stuffing is now actively harmful, viewer-intent clustering rewards semantic depth. The above-the-fold 200 characters, the 7-section anatomy, the keyword strategy that works, chapters + internal links, the 7-paragraph template, and the 6 mistakes quietly killing your SEO.',
+    date: '2026-05-03',
+    author: 'NEXORA Team',
+    tags: ['youtube seo', 'youtube descriptions', 'video metadata'],
+    content: <Post37Content />,
   },
 ]
