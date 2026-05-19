@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post26Content() {
     const h2 = {
       fontSize: 26,
@@ -232,7 +234,7 @@ export default function Post26Content() {
         <h2 style={h2}>The Meta-Pattern: YouTube Studio Is Becoming an AI Production Suite</h2>
   
         <p style={p}>
-          Step back and look at what shipped this week alongside everything from Q1 2026: Veo 3 in Shorts, Edit with AI, audio-to-video, Ask Studio, native A/B testing for titles and thumbnails, auto-dubbing across 27 languages, Lyria 2 song generation, Expressive Speech.
+          Step back and look at what shipped this week alongside everything from Q1 2026: Veo 3 in Shorts, Edit with AI, audio-to-video, Ask Studio, native A/B testing for titles and thumbnails, auto-dubbing across 27 languages, Lyria 2 song generation, Expressive Speech. These features combined form a new content category — <Link href="/blog/generative-shorts-new-youtube-format-may-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the Generative Shorts deep dive</Link> covers how creators are using them strategically.
         </p>
   
         <p style={p}>
