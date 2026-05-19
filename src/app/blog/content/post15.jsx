@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post16Content() {
     const h2 = {
       fontSize: 26,
@@ -125,7 +127,7 @@ export default function Post16Content() {
         </p>
   
         <p style={p}>
-          This guide breaks down the 10 title formulas that consistently outperform generic titles in 2026 — with real examples, the psychology behind why they work, and rules for combining them with SEO.
+          This guide breaks down the 10 title formulas that consistently outperform generic titles in 2026 — with real examples, the psychology behind why they work, and rules for combining them with SEO. Titles are one half of the metadata system — <Link href="/blog/youtube-description-seo-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the companion description SEO guide</Link> covers what to do in the 5,000-character box below the title.
         </p>
   
         <h2 style={h2}>The Rules Before the Formulas</h2>
