@@ -200,7 +200,7 @@ export default function Post34Content() {
           <span style={strong}>What it covers:</span> Script drafting, voiceover generation, AI video generation, music generation, B-roll generation, ideation prompts.
         </p>
         <p style={p}>
-          <span style={strong}>The 2026 reality:</span> Creation AI is partially commoditized (free Veo 3 Fast for Shorts, native Lyria 2 music, Edit with AI). Quality tools for long-form production still require investment (Runway, Pika for premium video gen, ElevenLabs for high-end voice).
+          <span style={strong}>The 2026 reality:</span> Creation AI is partially commoditized (free Veo 3 Fast for Shorts, native Lyria 2 music, Edit with AI). The newest expression of this pillar in mid-2026 is <Link href="/blog/generative-shorts-new-youtube-format-may-2026" style={inlineLink}>the Generative Shorts wave</Link> — creators blending real footage with AI overlays using the six new Studio features. Quality tools for long-form production still require investment (Runway, Pika for premium video gen, ElevenLabs for high-end voice).
         </p>
         <p style={p}>
           <span style={strong}>Notable tools:</span> Veo 3 Fast (free native), Edit with AI (free native), Lyria 2 (free native), Runway Gen-3, Pika 2.0, ElevenLabs, Murf, ChatGPT/Claude/Gemini for scripts, Adobe Firefly.
