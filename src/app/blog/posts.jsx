@@ -33,6 +33,7 @@ import Post32Content from './content/post32'
 import Post33Content from './content/post33'
 import Post34Content from './content/post34'
 import Post35Content from './content/post35'
+import Post36Content from './content/post36'
 
 export const posts = [
   {
@@ -346,5 +347,14 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube end screens', 'session watch time', 'youtube retention'],
     content: <Post35Content />,
+  },
+  {
+    slug: 'generative-shorts-new-youtube-format-may-2026',
+    title: 'Generative Shorts: The New YouTube Format Reshaping Feeds in May 2026',
+    description: 'YouTube just shipped 6 new AI Shorts features in 30 days — Make me move, Reimagine, video stylization, AI object insertion, auto-highlights from livestreams, simultaneous horizontal+vertical streaming. Together they form a new content category Trend Hunter flagged as dominating feeds. The 5 winning formulas, the 5-step workflow, and the demonetization line you need to stay on.',
+    date: '2026-05-02',
+    author: 'NEXORA Team',
+    tags: ['generative shorts', 'youtube ai features', 'youtube shorts 2026'],
+    content: <Post36Content />,
   },
 ]
