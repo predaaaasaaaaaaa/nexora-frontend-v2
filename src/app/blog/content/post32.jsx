@@ -413,7 +413,7 @@ export default function Post32Content() {
       <h2 style={h2}>Metric Pairings That Reveal More Than Single Metrics</h2>
 
       <p style={p}>
-        Single metrics lie. Metric pairs tell the truth. The 5 pairings every creator should learn:
+        Single metrics lie. Metric pairs tell the truth. If you're deciding where to focus, we break down <Link href="/blog/youtube-watch-time-vs-ctr-vs-apv-2026" style={inlineLink}>which of these three metrics matters most</Link> and how they chain together in a dedicated guide. The 5 pairings every creator should learn:
       </p>
 
       <div style={sectionCard}>
