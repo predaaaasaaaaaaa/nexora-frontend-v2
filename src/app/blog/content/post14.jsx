@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post14Content() {
     const h2 = {
       fontSize: 26,
@@ -222,7 +224,7 @@ export default function Post14Content() {
             You recommend products in your videos and include affiliate links in the description. When viewers purchase through your link, you earn a commission (typically 3-15% depending on the program). Amazon Associates, Impact, ShareASale, and direct brand affiliate programs are the most common.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
-            <span style={strong}>Best for:</span> Review channels, tech channels, and any niche where viewers make purchasing decisions based on your recommendations. A well-placed affiliate link on a popular review video can generate passive income for months or years.
+            <span style={strong}>Best for:</span> Review channels, tech channels, and any niche where viewers make purchasing decisions based on your recommendations. A well-placed affiliate link on a popular review video can generate passive income for months or years. Affiliate income deserves its own deep dive — <Link href="/blog/affiliate-marketing-youtube-2026-playbook" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the complete affiliate marketing playbook</Link> covers programs, placement, and realistic revenue math.
           </p>
         </div>
   
