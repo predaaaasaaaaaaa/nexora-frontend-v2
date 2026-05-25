@@ -113,7 +113,7 @@ export default function Post17Content() {
         </p>
   
         <p style={p}>
-          In 2026, YouTube weighs average view duration at roughly 3x the importance of total views when deciding how widely to distribute content. Channels with 60%+ retention rates are getting 4-5x more impressions than those hovering around the platform average. The difference between a video that dies at 3,000 views and one that climbs to 300,000 is often not the thumbnail or the topic — it's how long people watch.
+          In 2026, YouTube weighs average view duration at roughly 3x the importance of total views when deciding how widely to distribute content. Channels with 60%+ retention rates are getting 4-5x more impressions than those hovering around the platform average. The difference between a video that dies at 3,000 views and one that climbs to 300,000 is often not the thumbnail or the topic — it's how long people watch. Retention is one piece of a larger system — understanding <Link href="/blog/youtube-watch-time-vs-ctr-vs-apv-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how watch time, CTR, and APV work together</Link> shows where retention fits in the chain.
         </p>
   
         <p style={p}>
