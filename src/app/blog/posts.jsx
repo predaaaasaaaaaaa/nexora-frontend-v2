@@ -36,6 +36,7 @@ import Post35Content from './content/post35'
 import Post36Content from './content/post36'
 import Post37Content from './content/post37'
 import Post38Content from './content/post38'
+import Post39Content from './content/post39'
 
 export const posts = [
   {
@@ -410,5 +411,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube metrics', 'watch time', 'youtube ctr'],
     content: <Post38Content />,
+  },
+  {
+    slug: 'affiliate-marketing-youtube-2026-playbook',
+    title: 'Affiliate Marketing on YouTube: The Complete 2026 Playbook',
+    seoTitle: 'YouTube Affiliate Marketing: 2026 Playbook',
+    description: 'Affiliate is the most accessible YouTube income stream — no subscriber threshold, no negotiation. How it works in 2026, the best programs by category, FTC disclosure, link placement, content types that convert, and realistic revenue math.',
+    seoDescription: 'YouTube affiliate marketing in 2026: best programs, where to place links, the content that converts, and real revenue math. Complete step-by-step playbook.',
+    date: '2026-05-05',
+    author: 'NEXORA Team',
+    tags: ['youtube affiliate', 'affiliate marketing', 'creator monetization'],
+    content: <Post39Content />,
   },
 ]
