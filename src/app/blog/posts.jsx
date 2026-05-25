@@ -35,6 +35,7 @@ import Post34Content from './content/post34'
 import Post35Content from './content/post35'
 import Post36Content from './content/post36'
 import Post37Content from './content/post37'
+import Post38Content from './content/post38'
 
 export const posts = [
   {
@@ -398,5 +399,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube seo', 'youtube descriptions', 'video metadata'],
     content: <Post37Content />,
+  },
+  {
+    slug: 'youtube-watch-time-vs-ctr-vs-apv-2026',
+    title: 'YouTube Watch Time vs CTR vs APV: Which Metric Actually Matters Most in 2026',
+    seoTitle: 'Watch Time vs CTR vs APV: What Matters Most',
+    description: 'CTR, APV, and Watch Time are a sequential chain, not separate metrics — and optimizing the wrong one at the wrong stage is why channels plateau. The full hierarchy, channel-stage priorities, the interplay traps, and the weekly 3-metric diagnosis.',
+    seoDescription: 'YouTube watch time vs CTR vs APV in 2026: which metric matters most, how they connect, and how to find your channel\u2019s real bottleneck. Clear guide.',
+    date: '2026-05-04',
+    author: 'NEXORA Team',
+    tags: ['youtube metrics', 'watch time', 'youtube ctr'],
+    content: <Post38Content />,
   },
 ]
