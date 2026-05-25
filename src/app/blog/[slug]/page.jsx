@@ -11,11 +11,11 @@ export async function generateMetadata({ params }) {
   const post = posts.find((p) => p.slug === slug)
   if (!post) return {}
   return {
-    title: `${post.title} | NEXORA Blog`,
-    description: post.description,
+    title: `${post.seoTitle || post.title} | NEXORA Blog`,
+    description: post.seoDescription || post.description,
     openGraph: {
-      title: post.title,
-      description: post.description,
+      title: post.seoTitle || post.title,
+      description: post.seoDescription || post.description,
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
