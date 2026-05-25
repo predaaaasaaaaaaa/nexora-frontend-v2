@@ -215,7 +215,7 @@ export default function Post31Content() {
       <div style={stepCard}>
         <span style={stepNumber}>PATH 1 — AFFILIATE COMMISSION FROM PARTNER BRANDS</span>
         <p style={p}>
-          The default path. You tag products from YouTube's network of affiliate-enabled brands. When a viewer clicks through and purchases, you earn a commission (typically 4-15% depending on category).
+          The default path. You tag products from YouTube's network of affiliate-enabled brands. When a viewer clicks through and purchases, you earn a commission (typically 4-15% depending on category). YouTube Shopping is essentially native affiliate tagging — for products outside the Shopping catalog, <Link href="/blog/affiliate-marketing-youtube-2026-playbook" style={inlineLink}>traditional affiliate marketing</Link> fills the gap and the two stack together.
         </p>
         <p style={{ ...p, marginBottom: 0 }}>
           Best for: review channels, comparison channels, lifestyle, tech, beauty, fashion, home goods. Any niche where audiences are research-oriented and your video influences purchase decisions.
