@@ -38,6 +38,7 @@ import Post37Content from './content/post37'
 import Post38Content from './content/post38'
 import Post39Content from './content/post39'
 import Post40Content from './content/post40'
+import Post41Content from './content/post41'
 
 export const posts = [
   {
@@ -434,5 +435,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['ask youtube', 'youtube search', 'youtube discovery'],
     content: <Post40Content />,
+  },
+  {
+    slug: 'youtube-gemini-omni-shorts-remix-2026',
+    title: 'YouTube Gemini Omni: The Shorts Remix AI Everyone\u2019s About to Use',
+    seoTitle: 'YouTube Gemini Omni: Shorts Remix AI Explained',
+    description: 'YouTube announced Gemini Omni at Google I/O 2026 — AI that remixes any eligible Short with text prompts and images. The creative opportunity, the concern about others remixing your content, the safeguards (watermarks, opt-out, likeness detection), and how to play offense and defense.',
+    seoDescription: 'YouTube Gemini Omni lets anyone remix Shorts with AI in 2026. How to use it, how to protect your content, and what the safeguards mean. Complete creator guide.',
+    date: '2026-05-21',
+    author: 'NEXORA Team',
+    tags: ['gemini omni', 'youtube shorts remix', 'youtube ai'],
+    content: <Post41Content />,
   },
 ]
