@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post7Content() {
     const h2 = {
       fontSize: 26,
@@ -148,7 +150,7 @@ export default function Post7Content() {
             <span style={strong}>How it works:</span> YouTube matches videos to search queries using title, description, tags, and spoken content (via auto-captions). In 2026, YouTube's natural language processing understands semantic meaning — exact keyword matches are less important than topical relevance. After relevance, it ranks by performance: videos that satisfy the search intent (viewers watch most of the video rather than bouncing back to search) rank higher.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
-            <span style={strong}>What matters:</span> Keyword relevance in your title and description, plus intent satisfaction. A smaller channel can outrank a larger one in search if their video better answers the query. This is why SEO matters, especially for channels under 10K subscribers where search is often the primary traffic source.
+            <span style={strong}>What matters:</span> Keyword relevance in your title and description, plus intent satisfaction. A smaller channel can outrank a larger one in search if their video better answers the query. This is why SEO matters, especially for channels under 10K subscribers where search is often the primary traffic source. The search half of discovery is changing fast — <Link href="/blog/ask-youtube-conversational-search-creators-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>Ask YouTube and conversational search</Link> is reshaping how viewers find videos in 2026.
           </p>
         </div>
   
