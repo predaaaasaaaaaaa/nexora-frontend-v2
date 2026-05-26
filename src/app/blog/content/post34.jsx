@@ -197,7 +197,7 @@ export default function Post34Content() {
       <div style={pillarCard}>
         <span style={{ ...pillarBadge, background: 'rgba(77,158,255,0.1)', color: '#4D9EFF' }}>PILLAR 2 — CREATION</span>
         <p style={p}>
-          <span style={strong}>What it covers:</span> Script drafting, voiceover generation, AI video generation, music generation, B-roll generation, ideation prompts.
+          <span style={strong}>What it covers:</span> Script drafting, voiceover generation, AI video generation, music generation, B-roll generation, ideation prompts. The newest addition to this category is <Link href="/blog/youtube-gemini-omni-shorts-remix-2026" style={inlineLink}>Gemini Omni for Shorts remixing</Link>, which lets creators transform existing Shorts with text prompts.
         </p>
         <p style={p}>
           <span style={strong}>The 2026 reality:</span> Creation AI is partially commoditized (free Veo 3 Fast for Shorts, native Lyria 2 music, Edit with AI). The newest expression of this pillar in mid-2026 is <Link href="/blog/generative-shorts-new-youtube-format-may-2026" style={inlineLink}>the Generative Shorts wave</Link> — creators blending real footage with AI overlays using the six new Studio features. Quality tools for long-form production still require investment (Runway, Pika for premium video gen, ElevenLabs for high-end voice).
