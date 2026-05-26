@@ -37,6 +37,7 @@ import Post36Content from './content/post36'
 import Post37Content from './content/post37'
 import Post38Content from './content/post38'
 import Post39Content from './content/post39'
+import Post40Content from './content/post40'
 
 export const posts = [
   {
@@ -422,5 +423,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube affiliate', 'affiliate marketing', 'creator monetization'],
     content: <Post39Content />,
+  },
+  {
+    slug: 'ask-youtube-conversational-search-creators-2026',
+    title: 'Ask YouTube Is Here: How Conversational Search Changes Discovery for Creators',
+    seoTitle: 'Ask YouTube: Conversational Search Explained',
+    description: 'YouTube announced Ask YouTube at Google I/O 2026 — conversational search that answers complex questions with structured video results. The biggest discovery shift in years, the AEO parallel, what changes for creators, and how to optimize for it now.',
+    seoDescription: 'Ask YouTube brings conversational search to YouTube in 2026. What it means for creator discovery, and how to optimize your videos to be the answer. Full guide.',
+    date: '2026-05-20',
+    author: 'NEXORA Team',
+    tags: ['ask youtube', 'youtube search', 'youtube discovery'],
+    content: <Post40Content />,
   },
 ]
