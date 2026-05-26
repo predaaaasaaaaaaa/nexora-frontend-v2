@@ -157,7 +157,7 @@ export default function Post36Content() {
       </p>
 
       <p style={p}>
-        The category is exploding because YouTube just shipped six new AI Shorts features in rapid succession — most of them in the past 30 days. "Make me move," "Reimagine," video stylization, AI object insertion, auto-highlights from livestreams, and simultaneous horizontal-plus-vertical streaming. Together they form the toolkit for a new format that didn't exist three months ago.
+        The category is exploding because YouTube just shipped six new AI Shorts features in rapid succession — most of them in the past 30 days. "Make me move," "Reimagine," video stylization, AI object insertion, auto-highlights from livestreams, and simultaneous horizontal-plus-vertical streaming. Together they form the toolkit for a new format that didn't exist three months ago. This wave keeps accelerating — <Link href="/blog/youtube-gemini-omni-shorts-remix-2026" style={inlineLink}>Gemini Omni's remix capability</Link> is the newest tool letting creators transform eligible Shorts with prompts and images.
       </p>
 
       <p style={p}>
