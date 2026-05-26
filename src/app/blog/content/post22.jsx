@@ -146,7 +146,7 @@ export default function Post22Content() {
             Relevance is determined by your title, description, captions, spoken content, and historical channel topics. Performance is determined by CTR, retention rate, watch time, and engagement signals from real viewers.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
-            The 2026 evolution: YouTube's AI now indexes your spoken audio and visual content alongside your metadata. You can rank for queries you didn't explicitly target if your video clearly covers the topic. This shifted the game away from keyword stuffing toward genuine topical relevance.
+            The 2026 evolution: YouTube's AI now indexes your spoken audio and visual content alongside your metadata. You can rank for queries you didn't explicitly target if your video clearly covers the topic. This shifted the game away from keyword stuffing toward genuine topical relevance. The fundamentals here still apply, but <Link href="/blog/ask-youtube-conversational-search-creators-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the shift to conversational search</Link> with Ask YouTube is changing how discovery works — worth understanding alongside classic SEO.
           </p>
         </div>
   
