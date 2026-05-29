@@ -202,7 +202,7 @@ export default function Post14Content() {
             Viewers can send paid messages during live streams (Super Chat), send animated stickers (Super Stickers), or tip on any video (Super Thanks). YouTube takes 30% of these payments.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
-            <span style={strong}>Best for:</span> Creators who live stream regularly or have highly engaged audiences. Some gaming and music creators earn more from Super Chats than from ads, especially during live events. Super Thanks is underrated — it lets any viewer tip on any video, not just live streams.
+            <span style={strong}>Best for:</span> Creators who live stream regularly or have highly engaged audiences. Some gaming and music creators earn more from Super Chats than from ads, especially during live events. Super Thanks is underrated — it lets any viewer tip on any video, not just live streams. Direct audience support deserves its own look — <Link href="/blog/youtube-super-thanks-super-chat-fan-funding-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>fan funding with Super Thanks and Super Chat</Link> is one of the highest-margin revenue streams available.
           </p>
         </div>
   
