@@ -269,7 +269,7 @@ export default function Post28Content() {
       <h2 style={h2}>The Disclosure Rules</h2>
 
       <p style={p}>
-        YouTube's Altered Content toggle is mandatory in specific cases. Failing to disclose when required is itself a policy violation, even if everything else about your video is safe.
+        YouTube's Altered Content toggle is mandatory in specific cases. Failing to disclose when required is itself a policy violation, even if everything else about your video is safe. Disclosure matters more than ever now that <Link href="/blog/youtube-auto-ai-labels-2026" style={inlineLink}>the new automatic AI-labeling system</Link> can apply labels automatically when it detects undisclosed photorealistic AI.
       </p>
 
       <table style={dataTable}>
