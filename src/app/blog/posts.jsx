@@ -39,6 +39,7 @@ import Post38Content from './content/post38'
 import Post39Content from './content/post39'
 import Post40Content from './content/post40'
 import Post41Content from './content/post41'
+import Post42Content from './content/post42'
 
 export const posts = [
   {
@@ -446,5 +447,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['gemini omni', 'youtube shorts remix', 'youtube ai'],
     content: <Post41Content />,
+  },
+  {
+    slug: 'youtube-auto-ai-labels-2026',
+    title: 'YouTube\u2019s Auto AI-Labels Are Live: What Every Creator Needs to Know',
+    seoTitle: 'YouTube Auto AI-Labels: What Creators Must Know',
+    description: 'Starting May 2026, YouTube automatically labels undisclosed photorealistic AI content using internal detection. Where labels appear, the permanent-label cases you can\u2019t contest (Veo, Dream Screen, C2PA), how to contest false flags, and what to do now.',
+    seoDescription: 'YouTube now auto-labels undisclosed AI content in 2026. The permanent-label cases, how to contest, and what every creator should do now. Full breakdown.',
+    date: '2026-05-22',
+    author: 'NEXORA Team',
+    tags: ['youtube ai labels', 'ai disclosure', 'youtube policy 2026'],
+    content: <Post42Content />,
   },
 ]
