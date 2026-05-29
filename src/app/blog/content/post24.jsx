@@ -171,7 +171,7 @@ export default function Post24Content() {
   
           <h3 style={{ ...h3, marginBottom: 0 }}>The January 2026 wave</h3>
           <p style={{ ...p, marginBottom: 0 }}>
-            The biggest single mass-termination of AI-driven channels in YouTube's history. 16 large channels gone in days. CEO Neal Mohan used the term "AI slop" in his annual letter and pledged to combat it. The signal to creators was unmistakable: the old playbook is dead.
+            The biggest single mass-termination of AI-driven channels in YouTube's history. 16 large channels gone in days. CEO Neal Mohan used the term "AI slop" in his annual letter and pledged to combat it. The signal to creators was unmistakable: the old playbook is dead. The enforcement trajectory continued in May 2026 with <Link href="/blog/youtube-auto-ai-labels-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>YouTube's automatic AI-detection labels</Link> — the systematic, scalable version of this crackdown.
           </p>
         </div>
   
