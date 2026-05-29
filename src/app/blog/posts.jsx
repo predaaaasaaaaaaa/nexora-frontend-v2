@@ -40,6 +40,7 @@ import Post39Content from './content/post39'
 import Post40Content from './content/post40'
 import Post41Content from './content/post41'
 import Post42Content from './content/post42'
+import Post43Content from './content/post43'
 
 export const posts = [
   {
@@ -458,5 +459,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube ai labels', 'ai disclosure', 'youtube policy 2026'],
     content: <Post42Content />,
+  },
+  {
+    slug: 'youtube-super-thanks-super-chat-fan-funding-2026',
+    title: 'Super Thanks, Super Chat & Fan Funding: The Complete 2026 Guide',
+    seoTitle: 'Super Thanks & Super Chat: Fan Funding Guide',
+    description: 'YouTube\u2019s fan-funding tools are the most underused revenue lever for mid-size creators. Super Thanks, Super Chat, and Super Stickers explained — realistic earnings, the tactics that drive Supers, and the mistakes leaving easy money on the table.',
+    seoDescription: 'YouTube Super Thanks, Super Chat & fan funding in 2026: how each works, realistic earnings, and the tactics that actually drive tips. Complete guide.',
+    date: '2026-05-23',
+    author: 'NEXORA Team',
+    tags: ['super thanks', 'super chat', 'fan funding'],
+    content: <Post43Content />,
   },
 ]
