@@ -302,7 +302,7 @@ export default function Post22Content() {
           <span style={stepNumber}>TAGS (LOWER PRIORITY IN 2026)</span>
           <div style={stepTitle}>Still useful but de-emphasized</div>
           <p style={{ ...p, marginBottom: 0 }}>
-            YouTube has officially stated that tags carry minimal ranking weight in 2026 compared to title, description, and content. They're useful for clarifying topic ambiguity (helping YouTube understand whether your "Python" video is about coding or snakes) but they won't move rankings significantly. Add 5-10 relevant tags including your primary keyword and variations — but don't spend more than 2 minutes on tags. Your time is better invested in title and description optimization.
+            YouTube has officially stated that tags carry minimal ranking weight in 2026 compared to title, description, and content. They're useful for clarifying topic ambiguity (helping YouTube understand whether your "Python" video is about coding or snakes) but they won't move rankings significantly. Add 5-10 relevant tags including your primary keyword and variations — but don't spend more than 2 minutes on tags. Your time is better invested in title and description optimization. One common question deserves its own answer — <Link href="/blog/youtube-tags-2026-do-they-matter" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>whether YouTube tags still matter</Link> in 2026, and where to spend optimization time instead.
           </p>
         </div>
   
