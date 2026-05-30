@@ -243,7 +243,7 @@ export default function Post37Content() {
       <h2 style={h2}>Keyword Strategy Under Viewer-Intent Clustering</h2>
 
       <p style={p}>
-        The 2026 algorithm shift away from exact-match keywords changed keyword strategy fundamentally. The old playbook — "stuff your primary keyword 4-7 times in the description" — is now actively harmful. The system reads keyword stuffing as low-quality content and penalizes accordingly.
+        The 2026 algorithm shift away from exact-match keywords changed keyword strategy fundamentally. The old playbook — "stuff your primary keyword 4-7 times in the description" — is now actively harmful. The system reads keyword stuffing as low-quality content and penalizes accordingly. Descriptions carry real semantic weight, unlike tags — for the full picture on <Link href="/blog/youtube-tags-2026-do-they-matter" style={inlineLink}>how much YouTube tags actually matter</Link> in 2026, see the dedicated breakdown.
       </p>
 
       <div style={sectionCard}>
