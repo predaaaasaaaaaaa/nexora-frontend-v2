@@ -424,7 +424,7 @@ export default function Post34Content() {
 
         <h3 style={h3}>Stage 3 — Production (Mixed AI + human, per video, 1-3 hours)</h3>
         <p style={p}>
-          Record your voice. Use AI for B-roll generation where needed. Use Edit with AI for an initial cut, then review and adjust pacing. Generate music with Lyria 2 inside Studio. Time saved: 30-50% versus full manual.
+          Record your voice. Use AI for B-roll generation where needed. Use Edit with AI for an initial cut, then review and adjust pacing. Generate music with Lyria 2 inside Studio. A practical example of native AI in action is <Link href="/blog/youtube-ai-music-replacement-copyright-2026" style={inlineLink}>AI music replacement for copyright claims</Link>, which swaps a claimed track without losing watch history. Time saved: 30-50% versus full manual.
         </p>
 
         <h3 style={h3}>Stage 4 — Optimization (Native A/B + Strategic AI, per video, 10 min)</h3>
