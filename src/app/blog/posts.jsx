@@ -42,6 +42,7 @@ import Post41Content from './content/post41'
 import Post42Content from './content/post42'
 import Post43Content from './content/post43'
 import Post44Content from './content/post44'
+import Post45Content from './content/post45'
 
 export const posts = [
   {
@@ -482,5 +483,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube copyright', 'ai music', 'youtube studio'],
     content: <Post44Content />,
+  },
+  {
+    slug: 'youtube-tags-2026-do-they-matter',
+    title: 'YouTube Tags in 2026: Do They Still Matter? (What Actually Works Now)',
+    seoTitle: 'Do YouTube Tags Still Matter in 2026?',
+    description: 'Tags still exist and YouTube still uses them — but their role shrank to something minor and specific. Where tags rank against signals that actually drive discovery, the few cases they still help, and the 5-minute approach that captures the benefit without wasting time.',
+    seoDescription: 'Do YouTube tags still matter in 2026? What they actually do now, the few cases they help, and the 5-minute approach. Plus where to spend time instead.',
+    date: '2026-05-25',
+    author: 'NEXORA Team',
+    tags: ['youtube tags', 'youtube seo', 'video optimization'],
+    content: <Post45Content />,
   },
 ]
