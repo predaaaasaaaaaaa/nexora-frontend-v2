@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post27Content() {
     const h2 = {
       fontSize: 26,
@@ -156,7 +158,7 @@ export default function Post27Content() {
         </p>
   
         <p style={p}>
-          Every one of those gaps just closed. Native A/B testing makes external optimization tools redundant. Veo and Edit with AI make external generation/editing tools redundant for short-form. Ask Studio makes "AI analytics" pitches redundant. The auto-dubbing rollout makes manual translation services largely redundant for the long tail.
+          Every one of those gaps just closed. Native A/B testing makes external optimization tools redundant. Veo and Edit with AI make external generation/editing tools redundant for short-form. Ask Studio makes "AI analytics" pitches redundant. The auto-dubbing rollout makes manual translation services largely redundant for the long tail. The consolidation continues — <Link href="/blog/youtube-ai-music-replacement-copyright-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>native AI music replacement</Link> is the latest Studio feature replacing what used to require external tools and reuploads.
         </p>
   
         <p style={p}>
