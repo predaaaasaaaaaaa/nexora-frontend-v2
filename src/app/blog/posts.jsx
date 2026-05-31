@@ -56,6 +56,21 @@ export const posts = [
     date: '2026-03-21',
     author: 'NEXORA Team',
     tags: ['youtube analytics', 'tools', 'comparison'],
+    answer: 'The best YouTube analytics tool depends on your stage. YouTube Studio is the free baseline every channel should master first; TubeBuddy and vidIQ ($7.50-$8/mo) add keyword research and competitor tracking; and AI tools like NEXORA plug into your channel, read your real analytics, and tell you what to do next. Most creators only need Studio plus one paid tool.',
+    faqs: [
+      {
+        q: 'Is YouTube Studio enough on its own?',
+        a: 'For a lot of creators, honestly yes. Studio gives you real Google data, CTR, retention, traffic sources, even A/B thumbnail testing, and that covers everything you need under ~5,000 subscribers. Where it falls short is anything outside your own channel: no keyword research, no competitor data, and no one telling you what the numbers mean. That’s the moment a paid tool starts earning its keep.',
+      },
+      {
+        q: 'TubeBuddy or vidIQ — which one should I pick?',
+        a: 'Pick based on how you work, not the feature list. TubeBuddy lives inside YouTube Studio and shines at hands-on SEO: keyword research, tag tools, bulk edits. vidIQ leans into data and competitor tracking, views-per-hour, velocity, the tags rivals rank for. NEXORA is a different animal, an AI agent you plug in that reads your real analytics and tells you what to make next, rather than handing you more dashboards. Want SEO control? TubeBuddy. Want data? vidIQ. Want direction? NEXORA.',
+      },
+      {
+        q: 'Can you trust Social Blade’s earnings estimates?',
+        a: 'Treat them as a rough gauge, not gospel. Social Blade guesses earnings from public view counts and a generic CPM range, so its numbers can be off by 3-5x in either direction, especially for high-CPM niches like finance where it lowballs hard. What it’s genuinely good for is trend direction: is a channel growing or stalling? For that, and for quick competitor lookups, it’s free and fast. Just never quote its dollar figures as fact.',
+      },
+    ],
     content: <Post1Content />,
   },
   {
@@ -67,6 +82,21 @@ export const posts = [
     date: '2026-03-21',
     author: 'NEXORA Team',
     tags: ['tubebuddy', 'vidiq', 'comparison'],
+    answer: 'It comes down to what you need. TubeBuddy is the best pick for hands-on SEO and keyword research, vidIQ wins on analytics and competitor tracking, and NEXORA is the AI agent you plug into your channel that reads your real analytics and tells you what to do. Many creators pair a cheap SEO tool with NEXORA rather than choosing one.',
+    faqs: [
+      {
+        q: 'Can you use TubeBuddy, vidIQ, and NEXORA together?',
+        a: 'Yes, and stacking the free tiers is smarter than maxing out one subscription. A common setup: TubeBuddy’s free tier for keyword research, vidIQ’s free browser overlay for spying on competitors while you browse, and NEXORA for strategy and what to make next. You end up with SEO, competitive intel, and planning for next to nothing. The only real risk is tool overload, three dashboards you check obsessively and act on never.',
+      },
+      {
+        q: 'Is vidIQ’s AI Coach worth the $39 a month?',
+        a: 'Depends on what you’d compare it to. The AI Coach analyzes your last 30 videos and suggests patterns, which is genuinely useful, but $39 a month is a real line item if your channel isn’t earning yet. The honest math: if you’re already making $400+ a month, a tool that nudges performance up 10% pays for itself. If you’re pre-monetization, NEXORA is free during beta and covers similar strategic ground, so start there and upgrade when the revenue justifies it.',
+      },
+      {
+        q: 'Which of these YouTube tools is actually free?',
+        a: 'All three have a free tier, but they’re not equal. TubeBuddy’s free plan caps you at 25 keyword searches a day. vidIQ drops keyword research from its free version but keeps the browser overlay, which is the part actually worth having. NEXORA is currently free in full beta with every feature unlocked, though that pricing won’t last forever. If budget is the deciding factor, run all three free and pay only for the one you open every day.',
+      },
+    ],
     content: <Post2Content />,
   },
   {
@@ -76,6 +106,21 @@ export const posts = [
     date: '2026-03-22',
     author: 'NEXORA Team',
     tags: ['youtube scheduling', 'posting time', 'AI tools'],
+    answer: 'There is no universal best time, your ideal slot depends on your own audience. Find it in YouTube Studio under Audience, on the “When your viewers are on YouTube” heatmap, then upload one to two hours before peak so the video is ready when traffic arrives. Posting time is a 10-15% boost, not a fix for weak content.',
+    faqs: [
+      {
+        q: 'Does the time you post on YouTube actually matter?',
+        a: 'It matters, but less than the internet makes you think. A great video at a mediocre time still beats a weak video at the “perfect” time, every day of the week. Realistically, timing is a 10-15% edge: it stacks the first-hour engagement that tells YouTube to push the video wider. Worth optimizing once your thumbnails and hooks are solid, a waste of energy before then.',
+      },
+      {
+        q: 'Why upload before peak hours instead of right at peak?',
+        a: 'Because YouTube needs lead time. After you hit publish it has to transcode the file, generate captions, and run content checks, none of which is instant. Drop the video one to two hours ahead of your peak and it’s fully processed and ready to be served the moment your audience opens the app. Upload exactly at peak and you risk YouTube still chewing on it while your best window slips by.',
+      },
+      {
+        q: 'What if my audience is spread across different time zones?',
+        a: 'Then stop chasing one perfect time and play the percentages. Check Studio under Audience, Geography to see where viewers actually cluster, then aim for the slot that catches your single biggest region, usually US evenings if you’re English-language. You can’t satisfy everyone at once, and trying to average across zones just gives you a time that’s mediocre for all of them. Pick the biggest block and own it.',
+      },
+    ],
     content: <Post3Content />,
   },
   {
@@ -85,6 +130,21 @@ export const posts = [
     date: '2026-03-23',
     author: 'NEXORA Team',
     tags: ['youtube analytics', 'channel audit', 'growth strategy'],
+    answer: 'Start with the two metrics that drive distribution, click-through rate and average view duration, then work outward. Audit your last 90 days of views, watch time, and subscribers; study your top five videos for patterns and your bottom five for what to avoid; check traffic sources to see how people find you; and benchmark against similar-sized channels.',
+    faqs: [
+      {
+        q: 'What’s a good click-through rate on YouTube?',
+        a: 'For most channels, 4-10% is healthy, and where you land inside that depends heavily on your niche and how the video got distributed. Anything under 3% usually means the thumbnail and title aren’t pulling their weight. One catch people miss: CTR drops as a video reaches a broader, colder audience, so a 12% CTR on a small video isn’t directly comparable to 5% on one with a million impressions.',
+      },
+      {
+        q: 'Why did my YouTube views suddenly drop?',
+        a: 'Usually it’s one of three things: you uploaded less often, a video that was carrying your channel cooled off, or it’s just a normal seasonal dip, January is brutal across the board. Before you panic, compare the last 28 days to the previous 28 in Studio. A drop that tracks with fewer uploads or one video aging out is normal. A steady slide across every video is the one actually worth digging into.',
+      },
+      {
+        q: 'My video has lots of impressions but barely any views, what’s wrong?',
+        a: 'That’s a packaging problem, almost always. High impressions mean YouTube is showing your thumbnail to people, they’re just not clicking, which points straight at the thumbnail and title, not the content. Check the CTR: if it’s under 2-3% on a video with healthy impressions, rework the thumbnail before anything else. The video itself might be great; nobody’s getting far enough to find out.',
+      },
+    ],
     content: <Post4Content />,
   },
   {
@@ -94,6 +154,21 @@ export const posts = [
     date: '2026-03-24',
     author: 'NEXORA Team',
     tags: ['content ideas', 'AI tools', 'youtube strategy'],
+    answer: 'The most reliable video ideas come from data you already have, not brainstorming. Mine your own analytics for top performers worth a sequel and search terms already bringing people in; study competitors’ outlier videos for proven demand; and validate with YouTube autocomplete and Google Trends before you commit. Match the format to the topic, and you rarely run dry.',
+    faqs: [
+      {
+        q: 'Is it a good idea to just ask ChatGPT for video topics?',
+        a: 'It’s fine for a brainstorm, but don’t mistake it for strategy. ChatGPT doesn’t know your channel, so it can’t tell you that your tutorials pull 5x your vlogs or that your audience ignores Shorts. You’ll get generic, plausible-sounding topics with zero proof anyone’s searching for them. Use it to break a blank-page rut, then validate every idea against real demand with autocomplete or your own analytics before you film.',
+      },
+      {
+        q: 'How do I find video ideas that aren’t already saturated?',
+        a: 'Hunt for gaps, not trending topics, by the time something’s trending, the big channels own it. Read the comments under competitor videos: when people keep asking for something nobody’s made, that’s a validated idea handed to you. Look for topics everyone covers at a beginner level but no one takes deeper. And check YouTube autocomplete for long-tail phrases, “how to edit videos for Shorts” has far less competition than “how to edit videos.”',
+      },
+      {
+        q: 'How can I tell if a video idea will perform before I make it?',
+        a: 'You can’t know for sure, but you can stack the odds. Three quick checks: is there real search demand (type it into YouTube autocomplete and see if it appears), is the competition beatable at your size, and does it fit a format your audience already rewards? An idea that clears all three is a strong bet. The ones that flop usually fail the first test, you were the only person who wanted it.',
+      },
+    ],
     content: <Post5Content />,
   },
   {
@@ -105,6 +180,21 @@ export const posts = [
     date: '2026-03-25',
     author: 'NEXORA Team',
     tags: ['competitor analysis', 'youtube strategy', 'free tools'],
+    answer: 'Start by picking the right competitors, channels within two to three times your size, not the giants whose budgets you can’t match. Study each one’s last 20-30 videos for patterns, then hunt for outliers: videos that beat their own average point to proven demand you can tap. Free tools like Social Blade and the vidIQ extension cover most of it.',
+    faqs: [
+      {
+        q: 'How do I find out who my actual YouTube competitors are?',
+        a: 'Search your main topic on YouTube, filter to “This month,” and note which channels keep showing up, those are your real competitors, not whoever you assume. The other trick: watch the Suggested sidebar that appears next to your own videos. YouTube already decides which channels are related to yours and parks them right there. Focus on the ones near your size; the million-sub channels play a completely different game.',
+      },
+      {
+        q: 'How many competitors should I actually track?',
+        a: 'Three to five, and know them well. People think tracking 20 channels makes their analysis stronger; it just turns into a spreadsheet nobody acts on. A tight list of peers you genuinely understand, their formats, their outliers, what their comments are begging for, beats a sprawling list you skim. Refresh the list each quarter, because channels rise and fade and someone new is always emerging in your niche.',
+      },
+      {
+        q: 'Is copying what competitors do a bad idea?',
+        a: 'Copying the video is a mistake; copying the demand signal isn’t. If a competitor’s “mistakes beginners make” video did 10x their average, that tells you the topic is hungry, not that you should clone their script. Make your own version with different points, more depth, or a sharper take. The creators who straight-up rip off others stay invisible, your perspective is the only thing that builds your audience.',
+      },
+    ],
     content: <Post6Content />,
   },
   {
@@ -120,15 +210,15 @@ export const posts = [
     faqs: [
       {
         q: 'Does the YouTube algorithm favor new or established channels?',
-        a: 'The algorithm is largely channel-size-agnostic. It tests every video with a small relevant audience regardless of subscriber count, so a small channel can outperform a large one if it earns better click-through and retention. Performance on the test audience matters far more than channel size.',
+        a: 'It honestly doesn’t care how big you are. YouTube tests every upload on a small batch of relevant viewers first, and if your click-through and retention beat what it expected, it widens the net, whether you have 200 subscribers or 2 million. It’s exactly why brand-new channels sometimes land a video that blows past creators ten times their size. Your last video matters far more than your subscriber count.',
       },
       {
         q: 'How long does the YouTube algorithm take to push a video?',
-        a: 'The initial test phase usually happens within hours to days of upload, as YouTube shows the video to a small audience. If click-through and watch time are strong, distribution expands progressively over the following days and weeks. Videos can also resurface months later if interest grows.',
+        a: 'Usually you’ll see the first signal within a few hours to a couple of days. That’s the test phase, YouTube showing it to a small audience and watching what they do. If the numbers hold up, the push builds over the next one to three weeks. Don’t write a video off after a slow week, though: YouTube re-tests old uploads constantly, and it’s common for one to quietly take off a month or two later.',
       },
       {
         q: 'What matters most to the YouTube algorithm in 2026?',
-        a: 'Click-through rate and audience retention are the dominant signals, since they tell the algorithm whether viewers want to watch and keep watching. Session watch time also matters heavily. Tags and keywords play a minimal role compared to these engagement signals.',
+        a: 'Two things, above everything else: click-through rate and how long people actually watch. CTR tells YouTube the video is worth showing; retention proves it delivered once they clicked. Get both right and almost nothing else matters. Tags, posting time, hashtags, the stuff beginners obsess over, barely move the needle next to a thumbnail people can’t help clicking and an intro that won’t let them leave.',
       },
     ],
     content: <Post7Content />,
@@ -142,6 +232,21 @@ export const posts = [
     date: '2026-03-27',
     author: 'NEXORA Team',
     tags: ['youtube monetization', 'CPM rates', '2026 data'],
+    answer: 'YouTube CPM, what advertisers pay per 1,000 ad impressions, ranges from about $1-4 in gaming to $20-50 in finance, with most niches landing somewhere between. But you don’t keep the CPM: after YouTube’s 45% cut and unmonetized views, your actual take-home RPM is roughly half. Niche and audience country matter far more than raw view count.',
+    faqs: [
+      {
+        q: 'How much does YouTube pay for 1 million views?',
+        a: 'Anywhere from about $100 to $20,000, which is why the question has no clean answer. A gaming channel with a young global audience might see $1,500-2,000 for a million long-form views; a finance channel aimed at the US can clear $15,000+ on the same count. Shorts are their own world, a million Short views often pays $10-100. The niche and the audience’s country swing it far more than the view number.',
+      },
+      {
+        q: 'Why is my YouTube CPM so low?',
+        a: 'Three usual suspects: your niche, your audience’s location, and your video length. Entertainment and gaming pull low advertiser bids no matter what you do, and an audience concentrated in Tier 3 countries can drag a blended CPM to $2-4 even with great content. Videos under 8 minutes also miss mid-roll ads entirely. And if you’re checking in January, relax, Q1 CPMs sit 30-50% below the Q4 peak.',
+      },
+      {
+        q: 'Which YouTube niche has the highest CPM?',
+        a: 'Finance and investing top the list, routinely $20-50 CPM, because banks, fintech apps, and brokerages bid hard for viewers about to move money. Legal, B2B software, and real estate sit close behind for the same reason: one converted viewer is worth a fortune to those advertisers. The trade-off is obvious, those niches are harder to make and harder to grow in than gaming or vlogs. High CPM, smaller audience.',
+      },
+    ],
     content: <Post8Content />,
   },
   {
@@ -151,6 +256,21 @@ export const posts = [
     date: '2026-03-28',
     author: 'NEXORA Team',
     tags: ['free tools', 'youtube growth', '2026 guide'],
+    answer: 'You can build a complete YouTube toolkit for $0 in 2026. YouTube Studio covers analytics, A/B testing, and scheduling; YouTube autocomplete and Google Trends handle keyword and trend research; the vidIQ free extension overlays competitor data; and Canva or Photopea cover thumbnails. Free tools today are more capable than paid tools were five years ago.',
+    faqs: [
+      {
+        q: 'Can you actually grow a YouTube channel without paying for tools?',
+        a: 'Yes, comfortably, to your first 5,000-10,000 subscribers and often well past it. The free stack covers everything that matters: real analytics in Studio, keyword research through autocomplete, competitor data from the vidIQ overlay, trend checks in Google Trends, thumbnails in Canva. Paid tools mostly buy convenience and scale, not capability you can’t get free. Honestly, your content and consistency decide growth far more than any subscription ever will.',
+      },
+      {
+        q: 'When is it worth upgrading from free to paid YouTube tools?',
+        a: 'When a specific limit starts costing you time or money, not before. Concrete triggers: you’re publishing 3+ videos a week and TubeBuddy’s 25 free daily keyword searches aren’t enough, you have 100+ videos and need bulk metadata edits, or you want full title A/B testing. The cleanest rule is revenue-based, once your channel clears about $500 a month, a $40-80 tool that lifts performance 10% pays for itself.',
+      },
+      {
+        q: 'What’s the best free tool for making YouTube thumbnails?',
+        a: 'Canva for most people, Photopea if you’ve outgrown it. Canva’s free tier hands you 1280x720 templates, text tools, and background removal, enough to look professional without design skills. The catch: don’t ship a template as-is, every creator using it looks identical, so swap the colors, fonts, and images hard. Photopea is basically free browser Photoshop with layers and masks for when you want real control and no subscription.',
+      },
+    ],
     content: <Post9Content />,
   },
   {
@@ -175,15 +295,15 @@ export const posts = [
     faqs: [
       {
         q: 'Do YouTube Shorts pay less than long-form videos?',
-        a: 'Yes. Shorts monetize through a shared ad pool and typically earn a fraction of what long-form videos make per view. Long-form supports mid-roll ads, higher CPMs, and more revenue streams. The value of Shorts is reach and discovery, not direct income.',
+        a: 'Yes, and the gap is bigger than most people expect. Shorts get paid from a shared ad pool that works out to a few cents per thousand views, while a long-form video in a decent niche pulls a $4-$10 CPM with mid-rolls stacked in. That’s why creators who chase Shorts views alone often feel busy and broke. Treat Shorts as what gets you discovered, and long-form as what actually pays.',
       },
       {
         q: 'Can Shorts grow a channel that focuses on long-form content?',
-        a: 'Yes, and this is their best use. Shorts surface your channel to large new audiences quickly, and a portion of those viewers convert into long-form watchers and subscribers. Using Shorts as a top-of-funnel discovery tool that feeds long-form is one of the most effective 2026 growth strategies.',
+        a: 'This is the thing Shorts are genuinely best at. One Short can put you in front of hundreds of thousands of people who’d never have found your long-form work, and a slice of them click through and stick around. The catch: the Short has to connect to what you actually make. Random viral bait just trains the algorithm to show you to people who’ll never sit through a 12-minute video.',
       },
       {
         q: 'Should beginners start with Shorts or long-form in 2026?',
-        a: 'Beginners benefit from Shorts for fast initial reach and for learning what resonates, but should not rely on them alone. Building long-form alongside Shorts develops the watch time, loyalty, and revenue that sustain a channel. A hybrid approach beats committing to either format exclusively.',
+        a: 'Do both, but lean on Shorts early for one reason, speed of feedback. Long-form can take months to find its audience; Shorts tell you within days whether an idea lands. Use that to learn what your viewers actually want, then pour those lessons into long-form, where the loyalty and the money live. Going all-in on one format this early is how most new channels stall out.',
       },
     ],
     content: <Post11Content />,
@@ -414,15 +534,15 @@ export const posts = [
     faqs: [
       {
         q: 'Can you get demonetized on YouTube for using AI?',
-        a: 'Using AI is not banned, but risk depends on how you use it. Ideation, editing, B-roll, and thumbnail design with human review are low-risk. Generic text-to-speech across every video, fully automated script-to-upload pipelines, and AI thumbnails impersonating real people are high or critical risk. The deciding factor is meaningful human involvement between AI output and the published video.',
+        a: 'Not for using AI, only for how you use it. Run your ideas, edits, and B-roll through AI with your own hands on the wheel and you’re fine. Channels get hit for the hands-off stuff: the same robotic voiceover on every video, scripts pasted straight from a chatbot to upload, fake AI thumbnails of real people. The line YouTube actually polices is whether a human was meaningfully involved before you hit publish.',
       },
       {
         q: 'Will AI replace YouTube creators?',
-        a: 'No. The 2026 evidence points the other way: YouTube actively enforces against fully automated, faceless AI channels, terminating ones that remove human creativity. AI handles production tasks like drafting, editing, and dubbing, but editorial judgment, original perspective, and on-camera presence remain human work. AI shifts where creators spend effort rather than removing the need for the creator.',
+        a: 'No, and 2026 made that clear, it’s the year YouTube started terminating fully automated faceless channels, not rewarding them. AI is great at the grunt work: drafting, editing, dubbing, cleaning up audio. What it can’t fake is a real point of view, the judgment to know what’s worth making, and a person an audience wants to show up for. AI changes what you spend your time on; it doesn’t remove the reason people subscribe.',
       },
       {
         q: 'How much should a YouTube creator spend on AI tools in 2026?',
-        a: 'A practical budget is $50-200 per month. Commodity tasks — title and thumbnail testing, basic editing, captions, music, and Shorts generation — cost nothing because they are native in Studio. The spend that pays back goes to strategic AI ($30-80), professional creative tools ($15-30), multi-platform scheduling ($10-25), and occasional premium dubbing for top videos.',
+        a: 'Most creators land between $50 and $200 a month, and the surprising part is how little goes to the obvious stuff. Editing, captions, thumbnails, music, basic Shorts, all free inside YouTube Studio now. The money actually worth spending goes to strategy tools that tell you what to make next, a solid creative app or two, and maybe premium dubbing for your best videos. If you’re paying for AI editing in 2026, you’re probably wasting it.',
       },
     ],
     content: <Post34Content />,
