@@ -231,7 +231,7 @@ export default function Post32Content() {
           <span style={strong}>What it doesn't count:</span> Embeds on external sites, autoplay loops, your own views, or content shown to viewers who recently watched the same video.
         </p>
         <p style={{ ...p, marginBottom: 0 }}>
-          <span style={strong}>How to read it:</span> Impressions are the algorithm's "vote of confidence." Rising impressions across a 7-day window means the algorithm is testing your video with more audiences. Flat impressions means the algorithm has decided how to serve your video and is holding steady.
+          <span style={strong}>How to read it:</span> Impressions are the algorithm's "vote of confidence." Rising impressions across a 7-day window means the algorithm is testing your video with more audiences. Flat impressions means the algorithm has decided how to serve your video and is holding steady. Impressions are widely misread &mdash; for the full breakdown of <Link href="/blog/youtube-impressions-explained-2026" style={inlineLink}>what impressions really mean and how to earn more</Link>, see the dedicated guide.
         </p>
       </div>
 
