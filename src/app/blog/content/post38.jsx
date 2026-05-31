@@ -189,7 +189,7 @@ export default function Post38Content() {
           <span style={strong}>Impressions → CTR → Views → APV → Watch Time → More Impressions</span>
         </p>
         <p style={p}>
-          The algorithm shows your thumbnail (impressions). CTR determines how many clicks those impressions generate. Each click becomes a view. APV determines how much of the video each viewer watches. Views × APV = watch time. Strong watch time signals the algorithm to generate more impressions — and the loop repeats, wider each time.
+          The algorithm shows your thumbnail (impressions). CTR determines how many clicks those impressions generate. Each click becomes a view. APV determines how much of the video each viewer watches. Views × APV = watch time. Strong watch time signals the algorithm to generate more impressions — and the loop repeats, wider each time. Impressions are the first link in this chain and the most misunderstood — <Link href="/blog/youtube-impressions-explained-2026" style={inlineLink}>how impressions fit the chain</Link> is broken down in full in the dedicated guide.
         </p>
         <p style={{ ...p, marginBottom: 0 }}>
           This is why optimizing a single metric in isolation fails. A 15% CTR with 20% APV produces a video that gets clicked but abandoned — the algorithm reads the abandonment and stops serving it. A 60% APV with 1% CTR produces a great video almost nobody clicks. You need both gates open for watch time to compound.
