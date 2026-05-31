@@ -43,6 +43,7 @@ import Post42Content from './content/post42'
 import Post43Content from './content/post43'
 import Post44Content from './content/post44'
 import Post45Content from './content/post45'
+import Post46Content from './content/post46'
 
 export const posts = [
   {
@@ -494,5 +495,16 @@ export const posts = [
     author: 'NEXORA Team',
     tags: ['youtube tags', 'youtube seo', 'video optimization'],
     content: <Post45Content />,
+  },
+  {
+    slug: 'youtube-top-fans-mode-2026',
+    title: 'YouTube \u201CTop Fans\u201D Mode: The Controversial New Feature That Hides Videos From 99% of Your Audience',
+    seoTitle: 'YouTube Top Fans Mode: What It Is & Who It\u2019s For',
+    description: 'YouTube\u2019s new Top Fans mode lets you publish videos only your top 1% of viewers can watch — and creators are fighting about it. What it does, how the 1% is calculated, why it\u2019s controversial, and whether you should use it.',
+    seoDescription: 'YouTube Top Fans mode hides videos from 99% of your audience. What it does, why it\u2019s controversial, and whether you should use it. Full breakdown.',
+    date: '2026-05-26',
+    author: 'NEXORA Team',
+    tags: ['youtube top fans', 'youtube features 2026', 'creator strategy'],
+    content: <Post46Content />,
   },
 ]
