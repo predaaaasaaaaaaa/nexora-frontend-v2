@@ -116,6 +116,21 @@ export const posts = [
     date: '2026-03-26',
     author: 'NEXORA Team',
     tags: ['youtube algorithm', 'youtube growth', '2026 guide'],
+    answer: 'The 2026 YouTube algorithm does not promote videos, it matches each video to the viewers most likely to watch and enjoy it, based on click-through rate, watch time, and satisfaction signals. It tests every upload with a small audience first, then expands distribution if those viewers respond well. Discovery is viewer-intent matching, not keyword ranking.',
+    faqs: [
+      {
+        q: 'Does the YouTube algorithm favor new or established channels?',
+        a: 'The algorithm is largely channel-size-agnostic. It tests every video with a small relevant audience regardless of subscriber count, so a small channel can outperform a large one if it earns better click-through and retention. Performance on the test audience matters far more than channel size.',
+      },
+      {
+        q: 'How long does the YouTube algorithm take to push a video?',
+        a: 'The initial test phase usually happens within hours to days of upload, as YouTube shows the video to a small audience. If click-through and watch time are strong, distribution expands progressively over the following days and weeks. Videos can also resurface months later if interest grows.',
+      },
+      {
+        q: 'What matters most to the YouTube algorithm in 2026?',
+        a: 'Click-through rate and audience retention are the dominant signals, since they tell the algorithm whether viewers want to watch and keep watching. Session watch time also matters heavily. Tags and keywords play a minimal role compared to these engagement signals.',
+      },
+    ],
     content: <Post7Content />,
   },
   {
@@ -156,6 +171,21 @@ export const posts = [
     date: '2026-04-07',
     author: 'NEXORA Team',
     tags: ['youtube shorts', 'long form video', 'content strategy'],
+    answer: 'Neither wins outright. Shorts and long-form serve different goals: Shorts maximize reach and new-viewer discovery but earn far less per view and build weaker loyalty, while long-form drives watch time, deeper audience relationships, and higher revenue. The strongest 2026 strategy uses Shorts as a discovery funnel that feeds viewers into long-form content.',
+    faqs: [
+      {
+        q: 'Do YouTube Shorts pay less than long-form videos?',
+        a: 'Yes. Shorts monetize through a shared ad pool and typically earn a fraction of what long-form videos make per view. Long-form supports mid-roll ads, higher CPMs, and more revenue streams. The value of Shorts is reach and discovery, not direct income.',
+      },
+      {
+        q: 'Can Shorts grow a channel that focuses on long-form content?',
+        a: 'Yes, and this is their best use. Shorts surface your channel to large new audiences quickly, and a portion of those viewers convert into long-form watchers and subscribers. Using Shorts as a top-of-funnel discovery tool that feeds long-form is one of the most effective 2026 growth strategies.',
+      },
+      {
+        q: 'Should beginners start with Shorts or long-form in 2026?',
+        a: 'Beginners benefit from Shorts for fast initial reach and for learning what resonates, but should not rely on them alone. Building long-form alongside Shorts develops the watch time, loyalty, and revenue that sustain a channel. A hybrid approach beats committing to either format exclusively.',
+      },
+    ],
     content: <Post11Content />,
   },
   {
@@ -380,6 +410,21 @@ export const posts = [
     date: '2026-04-30',
     author: 'NEXORA Team',
     tags: ['ai for youtube', 'creator ai tools', 'youtube ai 2026'],
+    answer: 'AI is now essential for YouTube creators, but in 2026 its value is concentrated. Most tactical tasks — editing, captions, thumbnails, dubbing, and music — became free inside YouTube Studio, while strategic work like competitor analysis and content planning remains the highest-leverage paid category. The creators who win use AI to augment judgment, not replace it.',
+    faqs: [
+      {
+        q: 'Can you get demonetized on YouTube for using AI?',
+        a: 'Using AI is not banned, but risk depends on how you use it. Ideation, editing, B-roll, and thumbnail design with human review are low-risk. Generic text-to-speech across every video, fully automated script-to-upload pipelines, and AI thumbnails impersonating real people are high or critical risk. The deciding factor is meaningful human involvement between AI output and the published video.',
+      },
+      {
+        q: 'Will AI replace YouTube creators?',
+        a: 'No. The 2026 evidence points the other way: YouTube actively enforces against fully automated, faceless AI channels, terminating ones that remove human creativity. AI handles production tasks like drafting, editing, and dubbing, but editorial judgment, original perspective, and on-camera presence remain human work. AI shifts where creators spend effort rather than removing the need for the creator.',
+      },
+      {
+        q: 'How much should a YouTube creator spend on AI tools in 2026?',
+        a: 'A practical budget is $50-200 per month. Commodity tasks — title and thumbnail testing, basic editing, captions, music, and Shorts generation — cost nothing because they are native in Studio. The spend that pays back goes to strategic AI ($30-80), professional creative tools ($15-30), multi-platform scheduling ($10-25), and occasional premium dubbing for top videos.',
+      },
+    ],
     content: <Post34Content />,
   },
   {
