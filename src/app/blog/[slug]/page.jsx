@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { posts } from '../posts'
 import { notFound } from 'next/navigation'
 import JsonLd from '@/components/shared/JsonLd'
+import QuickAnswer from '@/components/shared/QuickAnswer'
+import FAQ from '@/components/shared/FAQ'
 
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }))
@@ -58,6 +60,18 @@ export default async function BlogPost({ params }) {
     keywords: post.tags.join(', '),
   }
 
+  // FAQPage structured data — only emitted when the post defines FAQs. Mirrors
+  // the visible FAQ section rendered below from the same post.faqs source.
+  const faqSchema = post.faqs && post.faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: post.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  } : null
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -66,6 +80,7 @@ export default async function BlogPost({ params }) {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     }}>
       <JsonLd data={articleSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
       <article style={{
         maxWidth: 720,
         margin: '0 auto',
@@ -131,6 +146,9 @@ export default async function BlogPost({ params }) {
           })}
         </div>
 
+        {/* Quick Answer */}
+        {post.answer && <QuickAnswer text={post.answer} />}
+
         {/* Content */}
         <div style={{
           fontSize: 16,
@@ -139,6 +157,9 @@ export default async function BlogPost({ params }) {
         }}>
           {post.content}
         </div>
+
+        {/* FAQ */}
+        <FAQ items={post.faqs} />
 
         {/* CTA */}
         <div style={{
