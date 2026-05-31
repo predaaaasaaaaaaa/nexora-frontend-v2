@@ -131,7 +131,7 @@ export default function Post43Content() {
       </p>
 
       <p style={p}>
-        Super Thanks, Super Chat, and Super Stickers let your audience pay you directly — a one-tap appreciation on a regular video, a highlighted message during a live stream, an animated sticker in chat. It's the purest form of audience-to-creator support: no middleman taking a cut beyond the platform, no campaign to run, no fulfillment to manage. And it stacks cleanly on top of every other revenue stream you run.
+        Super Thanks, Super Chat, and Super Stickers let your audience pay you directly — a one-tap appreciation on a regular video, a highlighted message during a live stream, an animated sticker in chat. It's the purest form of audience-to-creator support: no middleman taking a cut beyond the platform, no campaign to run, no fulfillment to manage. And it stacks cleanly on top of every other revenue stream you run. YouTube is experimenting with new ways to reward loyalty too &mdash; <Link href="/blog/youtube-top-fans-mode-2026" style={inlineLink}>the controversial Top Fans mode</Link> limits certain videos to your most engaged 1% of viewers.
       </p>
 
       <p style={p}>
