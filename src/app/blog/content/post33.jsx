@@ -148,8 +148,8 @@ export default function Post33Content() {
       </p>
 
       <p style={p}>
-        The math is striking: a Channel Member typically generates <span style={strong}>8-15x more revenue per super-fan</span> than the same person watching as a free viewer with ads. A channel with 200 paying members at $4.99/month earns roughly $1,000 in pure recurring revenue every single month — the equivalent of generating 200,000+ monetized views for the average creator.
-      </p>
+        The math is striking: a Channel Member typically generates <span style={strong}>8-15x more revenue per super-fan</span> than the same person watching as a free viewer with ads. A channel with 200 paying members at $4.99/month earns roughly $1,000 in pure recurring revenue every single month — the equivalent of generating 200,000+ monetized views for the average creator. There&rsquo;s now a no-paywall alternative for rewarding loyalty too &mdash; <Link href="/blog/youtube-top-fans-mode-2026" style={inlineLink}>YouTube&rsquo;s new Top Fans mode</Link> gates content to your top 1% of viewers based on engagement rather than payment.
+</p>
 
       <p style={p}>
         Yet most creators with 5K-100K subscribers haven't enabled memberships, or have enabled them and earn almost nothing because they set the program up wrong. This guide breaks down exactly how Channel Memberships work in 2026: eligibility, the pricing tiers that actually convert, the perks that drive renewals (versus the perks that don't), the workflow, and the choice between YouTube's native memberships and Patreon.
