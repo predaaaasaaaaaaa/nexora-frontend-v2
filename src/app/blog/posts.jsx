@@ -801,6 +801,21 @@ export const posts = [
     date: '2026-04-27',
     author: 'NEXORA Team',
     tags: ['youtube shopping', 'creator monetization', 'youtube affiliate'],
+    answer: 'YouTube Shopping lets you tag products in videos and earn commission, and it’s open at 500 subscribers, below the ad-revenue threshold. For research-oriented audiences it can out-earn AdSense several times over: a few well-fit tags with verbal callouts convert far better than a cluttered shelf. Tag 3-5 relevant products per video, anchor each to the moment you mention it.',
+    faqs: [
+      {
+        q: 'How many subscribers do you need for YouTube Shopping?',
+        a: 'Just 500 in most regions (1,000 in some), which is lower than the 1,000 you need for ad revenue. That means a lot of creators qualify to earn from Shopping before they can earn a cent from AdSense, a fact most growth advice hasn’t caught up to. You also need a monetized account in good standing. If you’re sitting between 500 and 1,000 subs, this is the revenue lever to turn on first.',
+      },
+      {
+        q: 'How much can you make with YouTube Shopping?',
+        a: 'More than ad revenue, if your audience trusts the picks. Run the math on a 50,000-view video: 1% click a tag, 5% of those buy a $50 product at 8% commission, that’s about $100 per product, or $300 across three tags, versus maybe $50-100 from AdSense on the same views. The catch is fit, spam-tagging unrelated products tanks conversion and trust. Relevance is the whole game.',
+      },
+      {
+        q: 'How do you actually make money from YouTube Shopping tags?',
+        a: 'Placement beats volume. The highest-converting setup pairs a verbal callout (‘here’s the mic I use’) with a product tag timestamped to that exact moment, tags without that anchoring convert at roughly a third of the rate. Keep it to 3-5 products per video, all genuinely relevant, and duplicate them as description links for mobile viewers. Then check Studio monthly and swap out the products that aren’t converting.',
+      },
+    ],
     content: <Post31Content />,
   },
   {
@@ -810,6 +825,21 @@ export const posts = [
     date: '2026-04-28',
     author: 'NEXORA Team',
     tags: ['youtube analytics', 'youtube studio', 'creator metrics'],
+    answer: 'YouTube Studio shows 80+ metrics, but only about 20 are signal. The ones that actually drive decisions cluster into five jobs: reach (impressions, CTR, traffic sources), engagement (watch time, average view duration, retention curve), conversion (subscribers, returning viewers), revenue (RPM), and discovery (your browse-plus-suggested mix). Read CTR and APV against your own baseline, not absolute benchmarks, and ignore the rest.',
+    faqs: [
+      {
+        q: 'Which YouTube analytics metrics actually matter?',
+        a: 'Out of 80-plus, roughly twenty. The decision-drivers are CTR and average view duration (do people click, then stay?), traffic sources (is the algorithm pushing you to new viewers?), and returning-viewer rate (are you building loyalty?). Total view count and subscriber count are mostly vanity, they feel good but rarely tell you what to change. If a metric doesn’t point to a specific action, it’s noise.',
+      },
+      {
+        q: 'What does the traffic source report tell you?',
+        a: 'Whether the algorithm is actually pushing your video or just showing it to people who already follow you. Browse and Suggested mean YouTube is testing you with new audiences; Direct and Channel-page traffic mean you’re mostly reaching existing fans. The signal to watch: a new upload should hit 40-50% Browse plus Suggested within 72 hours. Under 25% in week one means it got classified as audience-only.',
+      },
+      {
+        q: 'What’s the difference between AVD and APV on YouTube?',
+        a: 'AVD is the average watch time in minutes and seconds; APV is that same number as a percentage of the video. A 10-minute video with 4:30 AVD is 45% APV. Use APV to compare videos of different lengths on your channel, and AVD to compare videos of the same length. Most healthy videos sit at 35-55% APV; under 30% means you’re losing people early.',
+      },
+    ],
     content: <Post32Content />,
   },
   {
@@ -821,6 +851,21 @@ export const posts = [
     date: '2026-04-29',
     author: 'NEXORA Team',
     tags: ['channel memberships', 'youtube monetization', 'recurring revenue'],
+    answer: 'Channel Memberships are YouTube’s most predictable income, recurring monthly payments from your most loyal viewers, and they’re open at 500 subscribers with YouTube taking 30%. Conversion stays around 0.5-3% of subscribers, so income scales linearly: 200 members at $4.99 nets roughly $700 a month. Because fans pay you directly, memberships survive ad-policy and algorithm swings that hit AdSense.',
+    faqs: [
+      {
+        q: 'How much money can YouTube channel memberships make?',
+        a: 'It scales almost linearly with your audience, because conversion stays around 0.5-3% no matter your size. At 10,000 subscribers that’s roughly 50-200 members, about $175-700 a month net after YouTube’s 30% cut. At 100,000 subs it can be $1,700-10,000+. A single member is worth 8-15x what that person is worth as a free ad-supported viewer, which is why super-fans matter so much.',
+      },
+      {
+        q: 'Are YouTube memberships or Patreon better?',
+        a: 'Depends on what you value. YouTube memberships live where your audience already is, badges, perks, and members-only posts all surface natively, and the 30% cut is steep but the friction is near zero. Patreon takes a smaller cut and gives you more control and portability, but you’re dragging viewers off YouTube to a separate platform, which kills conversion. For most creators, native memberships convert better simply because nobody has to leave the app.',
+      },
+      {
+        q: 'What membership perks actually make people stay subscribed?',
+        a: 'Perks tied to ongoing value, not one-time novelty. Members-only posts, behind-the-scenes content, early access, and a real community space keep people renewing month after month. Custom badges and emoji are nice but won’t carry a membership on their own. The fastest way to bleed members is setting a tier and then never delivering anything new, the perk has to keep showing up, or the renewal won’t.',
+      },
+    ],
     content: <Post33Content />,
   },
   {
@@ -854,6 +899,21 @@ export const posts = [
     date: '2026-05-01',
     author: 'NEXORA Team',
     tags: ['youtube end screens', 'session watch time', 'youtube retention'],
+    answer: 'End screens are the most under-used retention feature in Studio: set up well, they add 15-30% more session watch time per video, one of the strongest 2026 distribution signals. They appear in the final 5-20 seconds and hold four elements. The strongest setup pairs a ‘Best for Viewer’ auto-pick with a hand-chosen next video that continues the topic.',
+    faqs: [
+      {
+        q: 'Do YouTube end screens actually help your channel?',
+        a: 'Yes, more than their effort suggests. A well-configured end screen converts exiting viewers into your-next-video viewers, adding roughly 15-30% more session watch time, and the 2026 algorithm rewards videos that keep people on the platform, not just on the one video. They’re free and take about 90 seconds per upload. The mistake is leaving them empty or stuffing them with a random video 30 seconds before you publish.',
+      },
+      {
+        q: 'What should you put on a YouTube end screen?',
+        a: 'For most channels, the ‘Binge’ setup wins: one ‘Best for Viewer’ slot (YouTube auto-picks the strongest video for that person), one video you choose that continues the current topic, a relevant playlist, and a subscribe button. If your content runs as a series, swap to a sequential next-episode pick instead. Match the end screen to where the viewer’s head is, give them the obvious next thing to watch.',
+      },
+      {
+        q: 'What’s the difference between YouTube end screens and cards?',
+        a: 'Timing and purpose. End screens appear in the last 5-20 seconds and exist to send viewers to your next video, that’s where session watch time is won. Cards pop up during the video as small top-right teasers, so they interrupt active watching. Use cards sparingly to cross-reference a specific moment, not to drive the next view. End screens continue the session; cards risk breaking it.',
+      },
+    ],
     content: <Post35Content />,
   },
   {
@@ -863,6 +923,21 @@ export const posts = [
     date: '2026-05-02',
     author: 'NEXORA Team',
     tags: ['generative shorts', 'youtube ai features', 'youtube shorts 2026'],
+    answer: 'Generative Shorts are a new format where creators blend real footage with AI-generated overlays, objects, and style transforms. YouTube just shipped six AI Shorts features in weeks, ‘Make me move’ photo animation, ‘Reimagine’ AI editing, video stylization, text-prompt object insertion, auto-highlights from livestreams, and simultaneous horizontal-plus-vertical streaming. The winning approach uses AI for specific moments inside otherwise-real Shorts.',
+    faqs: [
+      {
+        q: 'What are Generative Shorts on YouTube?',
+        a: 'They’re hybrid Shorts that mix real footage with AI-generated elements, an object dropped into your living room, a style transform on the climax, your photo animated into a movement. The category took off because YouTube shipped six AI Shorts tools in quick succession in mid-2026. The format that works isn’t fully AI; it’s real footage with AI used for punch at specific moments, which is also what keeps it on the safe side of policy.',
+      },
+      {
+        q: 'Do you have to disclose AI in YouTube Shorts?',
+        a: 'When the AI makes something look real that isn’t, yes. Features like ‘Make me move’, which animates a photo of you into actions you never filmed, require the Altered Content toggle because they’re a synthetic depiction of a real person. Pure aesthetic stuff, stylizing footage, AI editing cuts, generally doesn’t. When in doubt, disclose; YouTube can now auto-apply labels when it detects undisclosed photorealistic AI anyway.',
+      },
+      {
+        q: 'How can I make a Generative Short?',
+        a: 'Start from real footage, then add one AI layer for impact. Film a normal hook, use video stylization on just the 2-5 second climax, or drop in a text-prompt object for a comedy beat, the wilder the insert, the higher the share rate. ‘Reimagine’ can cut your raw clips into a draft in 2-3 minutes. If you livestream, the auto-highlights feature turns each stream into a Short for free.',
+      },
+    ],
     content: <Post36Content />,
   },
   {
@@ -872,6 +947,21 @@ export const posts = [
     date: '2026-05-03',
     author: 'NEXORA Team',
     tags: ['youtube seo', 'youtube descriptions', 'video metadata'],
+    answer: 'In 2026 the description is one of three signals YouTube uses to understand your video, and it’s the one with 5,000 characters to work with. Use the first ~200 characters, the part visible before ‘Show more’, for a keyword-rich hook and your top link. Then write 200-500 natural words with semantic coverage and timestamped chapters. Keyword-stuffing now actively hurts you.',
+    faqs: [
+      {
+        q: 'Does the YouTube description help with SEO in 2026?',
+        a: 'Yes, but not by stuffing keywords. The description feeds YouTube’s algorithm the semantic context it uses to slot your video into the right viewer-intent cluster, and its first 150 characters double as the snippet that wins (or loses) the click in search. A thin two-liner starves the system of signal. A rich, natural description gives it everything it needs, without a single repeated keyword.',
+      },
+      {
+        q: 'How long should a YouTube description be?',
+        a: 'For videos you care about ranking, 200-500 words. But length isn’t the point, structure is. Put a keyword-rich hook and your most important link in the first ~200 characters (all that shows before ‘Show more’), then a 2-4 sentence summary, timestamped chapters, internal links to related videos, and hashtags at the bottom. A short video with a clear single purpose can run shorter, just don’t leave it at two throwaway lines.',
+      },
+      {
+        q: 'Should you put timestamps and chapters in YouTube descriptions?',
+        a: 'Almost always, for anything over five minutes. Chapters improve navigation and retention, and each chapter title is a signal about a specific question that segment answers, so one video can surface for several different searches. Under the 2026 conversational-search shift, that matters even more. They take two minutes to add and there’s basically no downside. The only time to skip them is very short, single-point videos.',
+      },
+    ],
     content: <Post37Content />,
   },
   {
@@ -883,6 +973,21 @@ export const posts = [
     date: '2026-05-04',
     author: 'NEXORA Team',
     tags: ['youtube metrics', 'watch time', 'youtube ctr'],
+    answer: 'Watch time, CTR, and APV aren’t separate levers, they’re a chain: impressions → CTR → views → APV → watch time → more impressions. CTR decides if a video gets started, APV decides whether the algorithm rates it, and watch time is the output that drives distribution. Optimize whichever link is your current bottleneck; when everything’s mediocre, fix CTR first.',
+    faqs: [
+      {
+        q: 'Which is more important, CTR or watch time?',
+        a: 'Neither in isolation, they’re links in the same chain. CTR gets the video clicked; watch time is what you get when clicks and retention multiply across reach. A 15% CTR with 20% APV produces a video that’s clicked then abandoned, and the algorithm stops serving it. A 60% APV with 1% CTR is a great video nobody opens. You need both gates open, so fix whichever one is currently breaking.',
+      },
+      {
+        q: 'How do I figure out what’s holding my videos back?',
+        a: 'Find the broken link by symptom. High impressions but low views? That’s a CTR problem, fix the thumbnail and title. Good CTR but low APV? The hook, structure, or pacing is losing people. Good APV but little reach? You need more uploads or broader topics. High on everything but still flat? You’ve hit an impressions ceiling, go wider on topics and session strategy. Fix one link, then move to the next.',
+      },
+      {
+        q: 'What metric should a small YouTube channel focus on?',
+        a: 'Under 1,000 subscribers, prioritize APV, average percentage viewed. Your reach is small, so total watch time is tiny no matter what; the highest-leverage move is proving to the algorithm that your content holds attention. Nail the hook and tighten the structure, and YouTube starts widening your impressions. Once you’re past ~1,000 subs and impressions are flowing, shift your focus to CTR, that’s where the next growth unlock lives.',
+      },
+    ],
     content: <Post38Content />,
   },
   {
@@ -894,6 +999,21 @@ export const posts = [
     date: '2026-05-05',
     author: 'NEXORA Team',
     tags: ['youtube affiliate', 'affiliate marketing', 'creator monetization'],
+    answer: 'Affiliate marketing is YouTube’s most accessible income stream, no subscriber threshold, you just earn commission when a viewer buys through your link. In 2026 it stacks with YouTube Shopping’s native tags and even sponsorships, so you can get paid twice on one integration. Commissions range from 1-10% on Amazon to 20-50% recurring on software and courses.',
+    faqs: [
+      {
+        q: 'Do you need a certain number of subscribers to do affiliate marketing on YouTube?',
+        a: 'No, that’s the beauty of it, traditional affiliate links have zero subscriber requirement. You can drop an Amazon or software referral link in your description on your very first upload. The native YouTube Shopping version does need 500 subscribers, but that’s still below the 1,000 you need for ad revenue. Affiliate income is the one revenue stream you can literally start on day one.',
+      },
+      {
+        q: 'Which affiliate programs pay YouTubers the most?',
+        a: 'Software and SaaS, by a wide margin. Amazon Associates is easy but pays just 1-10%, while software programs run 20-40%, often recurring, so one referral can pay you every month the customer stays. Courses and digital products land around 30-50%. The pattern mirrors high-CPM niches: finance, B2B, and software pay most because their customer lifetime value is huge. One recurring SaaS referral can out-earn hundreds of Amazon physical-product clicks.',
+      },
+      {
+        q: 'Where should I put affiliate links on YouTube?',
+        a: 'Wherever the viewer is most ready to act, which means more than just the description. Pin the key link in a comment, drop it in the description near the top (not buried under housekeeping), and use a YouTube Shopping tag timestamped to the moment you mention the product. The biggest mistake is a single link buried at the bottom. And always disclose, the FTC requires it and audiences expect it anyway.',
+      },
+    ],
     content: <Post39Content />,
   },
   {
@@ -905,6 +1025,21 @@ export const posts = [
     date: '2026-05-20',
     author: 'NEXORA Team',
     tags: ['ask youtube', 'youtube search', 'youtube discovery'],
+    answer: 'Ask YouTube, announced May 19, 2026 at Google I/O, replaces the keyword search box with a conversational one: viewers ask full questions and get a curated, structured set of videos. It’s the biggest discovery shift in years, exact-match keywords matter less and genuinely answering the question matters more. It’s in limited US Premium release now, rolling out broadly soon.',
+    faqs: [
+      {
+        q: 'What is Ask YouTube?',
+        a: 'It’s a conversational search experience YouTube announced at Google I/O on May 19, 2026. Instead of typing keywords, you ask a full, multi-part question, ‘tips on how to teach your kid to ride a bike’, and get back a curated, structured set of videos pulled from across YouTube, including both long-form and Shorts. You can then ask follow-ups to refine, like a conversation rather than a results page.',
+      },
+      {
+        q: 'How does Ask YouTube change SEO for creators?',
+        a: 'It moves the game from keywords to questions. A single video can now surface for dozens of differently-phrased questions, so being the genuine answer beats ranking #4 for an exact keyword. Practically: write titles that clearly state the question your video answers, give descriptions real semantic depth instead of stuffed keywords, and chapter everything, each chapter becomes its own answerable unit. Clickbait that doesn’t deliver won’t survive a system optimizing for satisfaction.',
+      },
+      {
+        q: 'When is Ask YouTube available to everyone?',
+        a: 'Not yet, but it’s coming. As of the May 2026 announcement it’s in limited release, Premium members aged 18+ in the US, via youtube.com/new, with YouTube explicitly stating a broad rollout to all users soon. That early window is the opportunity: the creators who restructure around question-first titles, semantic descriptions, and chapters now will be positioned when conversational search reaches the whole audience. The shift compounds, like it did in web search.',
+      },
+    ],
     content: <Post40Content />,
   },
   {
