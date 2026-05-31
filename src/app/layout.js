@@ -1,6 +1,7 @@
 import { Outfit } from 'next/font/google'
 import ThemeProvider from '@/components/shared/ThemeProvider'
 import PaddleInit from '@/components/shared/PaddleInit'
+import JsonLd from '@/components/shared/JsonLd'
 import './globals.css'
 
 const outfit = Outfit({ 
@@ -15,6 +16,32 @@ export const metadata = {
   alternates: {
     canonical: 'https://nexora-ai.org',
   },
+}
+
+// Site-wide structured data (schema.org). These describe the NEXORA brand
+// entity and the website itself, and are intentionally rendered on every
+// page as global entity signals for search engines. Static, trusted content.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'NEXORA',
+  url: 'https://nexora-ai.org',
+  logo: 'https://nexora-ai.org/web-app-manifest-192x192.png',
+  description:
+    'NEXORA is an AI agent you plug into your YouTube channel to analyze your real analytics and guide content strategy.',
+  founder: { '@type': 'Person', name: 'Samy Metref' },
+  sameAs: [
+    'https://x.com/nexora_lab',
+    'https://www.linkedin.com/in/samy-metref-77744133b',
+    'https://github.com/predaaaasaaaaaaa',
+  ],
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'NEXORA',
+  url: 'https://nexora-ai.org',
 }
 
 // Apply the saved theme class before React hydrates so users don't see
@@ -49,6 +76,8 @@ export default function RootLayout({ children }) {
     <html lang="en" className={outfit.variable} suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={outfit.className}>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+        <JsonLd data={organizationSchema} />
+        <JsonLd data={websiteSchema} />
         <ThemeProvider>{children}</ThemeProvider>
         <PaddleInit />
       </body>
