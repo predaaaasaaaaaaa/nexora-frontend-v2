@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { posts } from '../posts'
 import { notFound } from 'next/navigation'
+import JsonLd from '@/components/shared/JsonLd'
 
 export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }))
@@ -28,6 +29,35 @@ export default async function BlogPost({ params }) {
   const post = posts.find((p) => p.slug === slug)
   if (!post) notFound()
 
+  // BlogPosting structured data, built dynamically from this post's fields.
+  // Invisible metadata — does not affect the rendered article. Falls back to
+  // `date` when no lastUpdated exists, and to the org logo when no post image
+  // exists (neither field is present on posts today, but the fallbacks make
+  // this future-proof if they're added later).
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.seoDescription || post.description,
+    datePublished: post.date,
+    dateModified: post.lastUpdated || post.date,
+    author: { '@type': 'Organization', name: 'NEXORA', url: 'https://nexora-ai.org' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'NEXORA',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://nexora-ai.org/web-app-manifest-192x192.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': 'https://nexora-ai.org/blog/' + post.slug,
+    },
+    image: post.ogImage || post.image || 'https://nexora-ai.org/web-app-manifest-192x192.png',
+    keywords: post.tags.join(', '),
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -35,6 +65,7 @@ export default async function BlogPost({ params }) {
       color: '#fff',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     }}>
+      <JsonLd data={articleSchema} />
       <article style={{
         maxWidth: 720,
         margin: '0 auto',
