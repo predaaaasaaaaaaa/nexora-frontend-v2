@@ -1051,6 +1051,21 @@ export const posts = [
     date: '2026-05-21',
     author: 'NEXORA Team',
     tags: ['gemini omni', 'youtube shorts remix', 'youtube ai'],
+    answer: 'Gemini Omni, announced May 19, 2026 at Google I/O, lets anyone remix an eligible Short with text prompts and images, change the scene, the style, even insert themselves, while the original’s context stays intact. It’s free in Shorts Remix and YouTube Create. The catch: others can now remix your content too, so YouTube added watermarks, link-backs, and a per-creator opt-out.',
+    faqs: [
+      {
+        q: 'Can people remix my YouTube Shorts with AI without permission?',
+        a: 'By default, yes, Omni works on eligible Shorts, so your content can become source material for someone else’s remix. But you control it: there’s a per-creator opt-out for visual remix you can flip anytime. If you leave it on, every remix carries a SynthID watermark and links back to your original, so it can actually send viewers your way. If that trade-off isn’t worth it to you, opt out.',
+      },
+      {
+        q: 'What is Gemini Omni on YouTube and is it free?',
+        a: 'It’s an AI model baked into YouTube Shorts Remix and the YouTube Create app, announced at Google I/O in May 2026, and yes, it’s free. You take an eligible Short, add prompts and images, and it transforms the scene or style while keeping the original’s context, handling the heavy video and audio work so you just supply the idea. Think of it as remix-of-existing-content, the next step in the Generative Shorts wave.',
+      },
+      {
+        q: 'How do I protect my content from AI remixes on YouTube?',
+        a: 'Three layers. First, the opt-out, flip off visual remix in your Shorts settings and your content stops being remixable, full stop. Second, likeness detection now covers all creators 18+, so you can flag unauthorized AI use of your face or voice. Third, every Omni remix is watermarked and metadata-tagged, so a remix can’t pass itself off as your original. Decide whether the free distribution is worth it; if not, opt out.',
+      },
+    ],
     content: <Post41Content />,
   },
   {
@@ -1062,6 +1077,21 @@ export const posts = [
     date: '2026-05-22',
     author: 'NEXORA Team',
     tags: ['youtube ai labels', 'ai disclosure', 'youtube policy 2026'],
+    answer: 'Starting May 2026, YouTube automatically detects photorealistic AI-generated content and applies a disclosure label when you don’t disclose it yourself. It targets footage meant to look real, not AI-assisted editing or stylized work. Most labels can be contested in Studio, but content made with YouTube’s own Veo or Dream Screen, or carrying C2PA ‘fully generative’ metadata, gets a permanent label.',
+    faqs: [
+      {
+        q: 'Does YouTube automatically label AI-generated content now?',
+        a: 'As of May 2026, yes. YouTube’s internal detection scans for substantial photorealistic AI and slaps on a disclosure label when you haven’t added one yourself. On long-form it sits under the player; on Shorts it overlays the video, harder to miss. The key word is photorealistic, content built to look like real footage. AI you used for editing, B-roll, or obviously stylized visuals generally isn’t the target.',
+      },
+      {
+        q: 'Can you remove an AI label on YouTube?',
+        a: 'Usually, but not always. If a label was applied to footage that isn’t actually AI, or that’s stylized rather than photorealistic, you can contest and update the disclosure in Studio. The exception that trips people up: content made with YouTube’s own Veo or Dream Screen, or carrying C2PA ‘fully generative’ metadata, gets a permanent label you can’t remove. Use those native tools knowing the label comes locked on.',
+      },
+      {
+        q: 'Will I get an AI label if I only use AI for editing?',
+        a: 'Almost certainly not. The detection targets photorealistic AI presented as real footage, not AI editing, B-roll, captions, or ideation, the stuff that doesn’t fool anyone into thinking it’s real. If your final video looks like genuine footage but was AI-generated, disclose it yourself; a self-applied label is cleaner than an auto-applied one and lets you frame it. If your AI use is invisible in the output, you’ve got nothing to flag.',
+      },
+    ],
     content: <Post42Content />,
   },
   {
@@ -1073,6 +1103,21 @@ export const posts = [
     date: '2026-05-23',
     author: 'NEXORA Team',
     tags: ['super thanks', 'super chat', 'fan funding'],
+    answer: 'YouTube’s fan-funding tools, Super Thanks, Super Chat, and Super Stickers, let your audience pay you directly: a one-tap tip on a normal video, a highlighted message during a live stream, an animated sticker in chat. They’re the highest-margin revenue stream you have. Most creators leave this money on the table simply by never mentioning the tools exist.',
+    faqs: [
+      {
+        q: 'What’s the difference between Super Thanks, Super Chat, and Super Stickers?',
+        a: 'They’re three flavors of the same thing, direct viewer payments, but they fire in different places. Super Thanks is a one-tap tip on any regular uploaded video, so even a six-month-old tutorial can earn one. Super Chat pins a paid, highlighted message during a live stream, the more they pay, the longer it stays up. Super Stickers are cheaper animated stickers in live chat that lower the entry price for fans who won’t drop $5.',
+      },
+      {
+        q: 'How much money can you make from Super Thanks and Super Chat?',
+        a: 'Realistically, a meaningful supplement, not your main income. Super Thanks on regular videos runs roughly $1-5 per 10,000 views for an engaged channel, more for emotional or educational content, and it compounds across your whole back catalog. A live stream with a few hundred concurrent viewers can pull $20-200+ in Super Chat depending on niche. The real value isn’t the size, it’s the margin, every dollar is nearly pure profit.',
+      },
+      {
+        q: 'How do I get viewers to send Super Thanks?',
+        a: 'Mostly, just tell them it exists. Most viewers have no idea Super Thanks is there, so a brief, genuine line, ‘if this helped, there’s a thanks button below’, lifts usage far more than silence does. Beyond that, it works best on content people feel grateful for: tutorials that saved them time, emotional or community-driven videos. Don’t beg; one honest acknowledgment per video is the whole tactic.',
+      },
+    ],
     content: <Post43Content />,
   },
   {
@@ -1084,6 +1129,21 @@ export const posts = [
     date: '2026-05-24',
     author: 'NEXORA Team',
     tags: ['youtube copyright', 'ai music', 'youtube studio'],
+    answer: 'In May 2026 YouTube added an AI music generator inside Studio that swaps a copyright-claimed track for a royalty-free one without re-uploading. That’s the breakthrough: the old fixes, surrendering revenue, muting the audio, or deleting and re-uploading, all cost you watch history and ranking. Now the claim resolves in two minutes and the video keeps its views and comments.',
+    faqs: [
+      {
+        q: 'Can you replace copyrighted music on YouTube without losing your video?',
+        a: 'Now you can. As of May 2026, Studio has an AI music generator that swaps a claimed track for a generated one on the existing video, no re-upload. That matters because re-uploading used to torch the views, comments, watch history, and ranking a video spent months building. The claim resolves, monetization stays with you instead of the claimant, and the video keeps everything, including its URL.',
+      },
+      {
+        q: 'Is YouTube’s AI replacement music any good?',
+        a: 'For its actual job, yes. AI replacement music in 2026 is solid for background, ambient, and mood-setting tracks, which is exactly the most common claim scenario: music a creator dropped in without realizing it was claimable. Where it falls short is anything where the specific song is the point, a music reaction, a cover, a beat-matched edit. It won’t recreate an iconic track, and a swap can break tightly synced visuals.',
+      },
+      {
+        q: 'How do I avoid copyright claims on YouTube music in the first place?',
+        a: 'Only three sources are genuinely safe: music you generate in Studio, tracks from the YouTube Audio Library, or music you’ve properly licensed. Everything else risks a Content ID match. And clear up the common myths, buying a song or crediting the artist doesn’t prevent a claim; Content ID matches the audio regardless of intent. Generate or pull from the library at upload time and you skip the whole problem.',
+      },
+    ],
     content: <Post44Content />,
   },
   {
@@ -1095,6 +1155,21 @@ export const posts = [
     date: '2026-05-25',
     author: 'NEXORA Team',
     tags: ['youtube tags', 'youtube seo', 'video optimization'],
+    answer: 'YouTube tags barely matter in 2026. YouTube itself says they play a minimal role, and the shift to viewer-intent clustering pushed them further to the margins since the algorithm now understands your video from its title, transcript, thumbnail, and viewer behavior. Spend five minutes max on tags; the real discovery levers are your thumbnail, title, hook, and retention.',
+    faqs: [
+      {
+        q: 'Do YouTube tags still matter in 2026?',
+        a: 'Barely, and that’s straight from YouTube. The platform says tags play a minimal role and are mainly for catching misspellings. Years ago, when search was literal, tags were a real ranking input; now the algorithm reads your title, transcript, thumbnail, and viewer behavior directly and doesn’t need a keyword list. They’re not worthless, just minor. Don’t treat them as a growth lever, because they aren’t one.',
+      },
+      {
+        q: 'How many tags should I put on a YouTube video?',
+        a: 'A handful, and don’t spend more than five minutes on it. Add your main keyword, a couple of close variations, and any common misspelling of your topic or channel name, that’s genuinely all the upside there is. Stuffing 30 tags won’t help and can read as spammy. The hour some creators sink into tag research is far better spent on the thumbnail and the first 30 seconds.',
+      },
+      {
+        q: 'If tags don’t matter, what should I optimize instead?',
+        a: 'The signals that actually move discovery, in order: thumbnail and title (your CTR), then retention, then real viewer engagement. After that, title keywords, a semantically rich description, clear speech for the transcript, and chapters. Tags sit dead last. So put your time where the leverage is, a thumbnail people can’t ignore and a hook that holds them, not a keyword list the algorithm mostly ignores.',
+      },
+    ],
     content: <Post45Content />,
   },
   {
@@ -1106,6 +1181,21 @@ export const posts = [
     date: '2026-05-26',
     author: 'NEXORA Team',
     tags: ['youtube top fans', 'youtube features 2026', 'creator strategy'],
+    answer: 'Top Fans mode (rolled out around May 22, 2026) lets you publish a video visible only to your most engaged ~1% of viewers. Even a direct-link holder outside that top 1% can’t watch. The math: at 100,000 subscribers that’s about 1,000 people, but at 2,000 it’s roughly 20. It’s built for large channels and music artists, not small ones.',
+    faqs: [
+      {
+        q: 'What is YouTube Top Fans mode?',
+        a: 'It’s a per-video setting that limits a video to roughly your top 1% of viewers by engagement, watch time, consistent viewing, likes, comments, not by payment. Everyone else, including regular subscribers, can’t see or play it, even with a direct link. YouTube first floated it in late 2025 as a way for music artists to drop exclusive content for their most dedicated fans, then it quietly appeared in upload settings in May 2026.',
+      },
+      {
+        q: 'Should small YouTube channels use Top Fans mode?',
+        a: 'Almost certainly not. The whole feature hinges on the size of your top 1%, and for a 2,000-subscriber channel that’s about 20 people, you’d be publishing to an empty room. When you’re still small, every ounce of effort should go to widening the top of your funnel, not gating content to a tiny inner circle. It’s genuinely useful only once your top 1% is a few hundred or thousand real people.',
+      },
+      {
+        q: 'Why is Top Fans mode controversial?',
+        a: 'Because it asks creators to deliberately limit reach on a platform built for reach. Skeptics put it bluntly, if you want to make videos nobody watches, there are other places for that, and for small channels it does nothing but distract from growth. Defenders see a real gap it fills: a no-paywall inner circle to test risky or personal content with your most forgiving fans before it goes wide. Both are right, for different channel sizes.',
+      },
+    ],
     content: <Post46Content />,
   },
   {
@@ -1117,6 +1207,21 @@ export const posts = [
     date: '2026-05-27',
     author: 'NEXORA Team',
     tags: ['youtube impressions', 'youtube analytics', 'youtube metrics'],
+    answer: 'Impressions count each time YouTube shows your thumbnail, they’re not views, and you don’t control them directly. They’re the algorithm’s vote: rising impressions mean it’s testing your video wider, flat means it’s settled, falling means weak CTR or retention made it pull back. You don’t chase impressions, you earn them by improving the click-through and watch time that generate them.',
+    faqs: [
+      {
+        q: 'What are impressions on YouTube?',
+        a: 'An impression is counted when your thumbnail is shown to someone on YouTube, at least 50% visible for at least one second, on the home feed, suggested, search, and similar surfaces. It’s not a view (that needs a click) and it doesn’t count embeds, autoplay, or sub-second flashes. Most importantly, you don’t generate impressions directly; the algorithm decides how many to give your video based on how it performs.',
+      },
+      {
+        q: 'Why are my YouTube impressions dropping?',
+        a: 'Usually because CTR or retention signaled the algorithm that the video isn’t satisfying the people it was shown to, so it pulls back distribution. Falling impressions after a peak are also just the normal lifecycle, the test audience gets saturated and the video settles. The mistake is trying to ‘get more impressions’ directly. You can’t. Fix the click-through rate and the retention, and the impressions follow.',
+      },
+      {
+        q: 'How do I get more impressions on YouTube?',
+        a: 'Indirectly, because impressions are earned, not made. The job is giving the algorithm reasons to test your video more widely, and that starts with the initial test: a strong thumbnail and title that win clicks, then retention that proves viewers stay. Nail those on the small first audience and YouTube widens the next test, which compounds. There’s no button for impressions; there’s only better CTR and watch time.',
+      },
+    ],
     content: <Post47Content />,
   },
 ]
