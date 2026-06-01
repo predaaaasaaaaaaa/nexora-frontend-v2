@@ -119,7 +119,7 @@ export default function Post16Content() {
     return (
       <>
         <p style={p}>
-          Your title is responsible for roughly 50% of your video's click-through rate. The thumbnail handles the other 50%. Together, they decide whether your video lives or dies — no matter how good the content is.
+          Your title is responsible for roughly 50% of your video's click-through rate. The thumbnail handles the other 50%. Together, they decide whether your video lives or dies — no matter how good the content is. If CTR is still a fuzzy number to you, start with <Link href="/blog/youtube-impressions-ctr-explained-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how impressions and CTR actually work</Link>.
         </p>
   
         <p style={p}>
