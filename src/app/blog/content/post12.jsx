@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post12Content() {
     const h2 = {
       fontSize: 26,
@@ -101,7 +103,9 @@ export default function Post12Content() {
       padding: '20px 24px',
       marginBottom: 12,
     }
-  
+
+    const inlineLink = { color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }
+
     return (
       <>
         <p style={p}>
@@ -109,7 +113,7 @@ export default function Post12Content() {
         </p>
   
         <p style={p}>
-          YouTube's own data confirms that half of all channels sit between 2-10% CTR (click-through rate). The difference between 3% and 8% CTR on a video with 100,000 impressions is 3,000 clicks vs 8,000 clicks — nearly 3x the views from the same number of people seeing your thumbnail. That's not a marginal improvement. That's a completely different growth trajectory.
+          YouTube's own data confirms that half of all channels sit between 2-10% CTR (click-through rate) — and understanding <Link href="/blog/youtube-impressions-ctr-explained-2026" style={inlineLink}>how impressions and CTR actually work</Link> is what turns that number into a decision. The difference between 3% and 8% CTR on a video with 100,000 impressions is 3,000 clicks vs 8,000 clicks — nearly 3x the views from the same number of people seeing your thumbnail. That's not a marginal improvement. That's a completely different growth trajectory.
         </p>
   
         <p style={p}>
