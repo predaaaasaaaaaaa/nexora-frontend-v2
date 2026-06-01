@@ -45,6 +45,7 @@ import Post44Content from './content/post44'
 import Post45Content from './content/post45'
 import Post46Content from './content/post46'
 import Post47Content from './content/post47'
+import Post48Content from './content/post48'
 
 export const posts = [
   {
@@ -1223,5 +1224,31 @@ export const posts = [
       },
     ],
     content: <Post47Content />,
+  },
+  {
+    slug: 'youtube-traffic-sources-explained-2026',
+    title: 'YouTube Traffic Sources Explained: Browse vs Suggested vs Search (2026)',
+    seoTitle: 'YouTube Traffic Sources Explained (2026)',
+    seoDescription: 'Browse vs Suggested vs Search, decoded. What each YouTube traffic source rewards, the 2026 Quality CTR change, and how to read your mix to diagnose a drop.',
+    description: 'Total views is a vanity number; the mix is the diagnosis. What Browse, Suggested, and Search each reward, the 2026 Quality CTR shift, and how to read your traffic mix like a diagnosis instead of a scoreboard.',
+    date: '2026-06-01',
+    author: 'NEXORA Team',
+    tags: ['youtube analytics', 'traffic sources', 'youtube reach'],
+    answer: 'YouTube traffic sources show where your views come from: Browse (the push home feed, top-of-funnel awareness), Suggested (algorithmic trust via co-visitation), and Search (the highest-intent pull source you most control). Read the mix, not the total, in Studio under Analytics then Reach.',
+    faqs: [
+      {
+        q: 'What is the difference between Browse and Suggested traffic on YouTube?',
+        a: "Browse is the home and subscriptions feed, where the algorithm pushes your video to someone who isn't searching for anything, based on their watch history. Suggested is the sidebar and Up Next slot beside a video they're already watching, driven by co-visitation, meaning videos the same people tend to watch together. Browse is top-of-funnel awareness; Suggested is a trust signal that you're firmly placed in your niche. They fail for different reasons, so never lump them together as one algorithm."
+      },
+      {
+        q: 'Which YouTube traffic source is best?',
+        a: "There's no single best source, but Search is the most controllable and the most durable. Search viewers actively typed a query and chose you, so it's the highest-intent traffic, and it keeps delivering views months after upload because it's driven by your title and description rather than a one-day algorithm push. Browse and Suggested can scale you faster, but they're more volatile. A healthy channel usually wants a real Search base plus Browse and Suggested reach on top, not 90 percent of one source."
+      },
+      {
+        q: 'Why did my YouTube traffic suddenly drop?',
+        a: "A drop is almost never a channel-wide penalty. Open the Reach tab and find the single traffic source that fell the most. If Browse or Suggested dropped, the cause is usually packaging or weak early retention, since those are algorithm-driven. If Search dropped, suspect SEO going stale, more competition for the keyword, or seasonality. Remember Studio data runs 48 to 72 hours behind, so don't judge a brand-new upload on day one."
+      }
+    ],
+    content: <Post48Content />,
   },
 ]
