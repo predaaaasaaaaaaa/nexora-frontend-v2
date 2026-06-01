@@ -109,7 +109,7 @@ export default function Post17Content() {
     return (
       <>
         <p style={p}>
-          Click-through rate gets your video seen. Audience retention determines whether YouTube keeps showing it. If viewers click your thumbnail but leave within 30 seconds, YouTube treats that as a negative signal and stops distributing the video — no matter how many people clicked it.
+          Click-through rate gets your video seen. Audience retention determines whether YouTube keeps showing it — it's the signal that decides <Link href="/blog/youtube-traffic-sources-explained-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how far your video travels across Browse and Suggested</Link>. If viewers click your thumbnail but leave within 30 seconds, YouTube treats that as a negative signal and stops distributing the video — no matter how many people clicked it.
         </p>
   
         <p style={p}>
