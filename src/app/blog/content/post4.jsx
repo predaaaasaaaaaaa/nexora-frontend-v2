@@ -101,7 +101,7 @@ export default function Post4Content() {
         <div style={metricCard}>
           <div style={metricName}>1. Click-Through Rate (CTR)</div>
           <div style={metricDesc}>
-            The percentage of people who see your thumbnail and click on it. This is the single most controllable metric that affects your reach. A video with a 2% CTR and a video with an 8% CTR can have a 4x difference in views, even with the same number of impressions. Find it in YouTube Studio → Analytics → any video → Reach tab. A healthy CTR is typically 4-10% depending on your niche and channel size. Below 3% means your thumbnails and titles need work.
+            The percentage of people who see your thumbnail and click on it. This is the single most controllable metric that affects your reach. A video with a 2% CTR and a video with an 8% CTR can have a 4x difference in views, even with the same number of impressions — here's <Link href="/blog/youtube-impressions-ctr-explained-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how impressions and CTR actually work</Link>. Find it in YouTube Studio → Analytics → any video → Reach tab. A healthy CTR is typically 4-10% depending on your niche and channel size. Below 3% means your thumbnails and titles need work.
           </div>
         </div>
   
@@ -178,7 +178,7 @@ export default function Post4Content() {
             <span style={strong}>What was the thumbnail and title strategy?</span> Did your top performers use faces? Bold text? Curiosity gaps? Questions? Compare the thumbnails and titles of your top 5 to your bottom 5.
           </p>
           <p style={p}>
-            <span style={strong}>Where did the traffic come from?</span> Click into each video → Analytics → Reach → Traffic sources. If your best video got 70% from Browse, it means the algorithm picked it up. If another got 60% from Search, it means the SEO was strong.
+            <span style={strong}>Where did the traffic come from?</span> Click into each video → Analytics → Reach → Traffic sources. If your best video got 70% from Browse, it means the algorithm picked it up. If another got 60% from Search, it means the SEO was strong. Knowing <Link href="/blog/youtube-traffic-sources-explained-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>what each YouTube traffic source rewards</Link> is what turns that mix into a diagnosis.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
             <span style={strong}>What was the retention curve?</span> Click into each video → Engagement → Audience retention. Look for the shape — a gradual decline is normal, but a steep cliff in the first 30 seconds means the hook failed. A spike means something in the video re-engaged viewers (replays).
