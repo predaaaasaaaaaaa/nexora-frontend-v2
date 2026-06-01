@@ -360,7 +360,7 @@ export default function Post29Content() {
       <h2 style={h2}>The Hook + Thumbnail + Title Trifecta</h2>
 
       <p style={p}>
-        A hook doesn't operate alone. It functions inside a system with the <Link href="/blog/youtube-thumbnail-guide-ctr-2026" style={inlineLink}>thumbnail</Link> and the <Link href="/blog/youtube-title-formulas-that-get-clicks-2026" style={inlineLink}>title</Link>. The three together form the first-impression system that decides whether a video gets clicked, kept watching, and eventually distributed.
+        A hook doesn't operate alone. It functions inside a system with the <Link href="/blog/youtube-thumbnail-guide-ctr-2026" style={inlineLink}>thumbnail</Link> and the <Link href="/blog/youtube-title-formulas-that-get-clicks-2026" style={inlineLink}>title</Link>. The three together form the first-impression system that decides whether a video gets clicked, kept watching, and eventually distributed — and the click half of that handoff is exactly <Link href="/blog/youtube-impressions-ctr-explained-2026" style={inlineLink}>how impressions and CTR actually work</Link>.
       </p>
 
       <div style={sectionCard}>
