@@ -215,8 +215,8 @@ export default function LandingPage() {
 
         {/* Desktop nav links */}
         <div className="nx-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {['Features', 'How it works', 'Pricing', 'FAQ', 'Blog'].map((item, i) => (
-            <a key={i} className="nav-link" href={item === 'Blog' ? '/blog' : `#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
+          {['Features', 'How it works', 'Pricing', 'FAQ', 'Blog', 'Compare'].map((item, i) => (
+            <a key={i} className="nav-link" href={item === 'Blog' ? '/blog' : item === 'Compare' ? '/compare' : `#${item.toLowerCase().replace(/ /g, '-')}`} style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>{item}</a>
           ))}
           <Link href="/login" className="nav-link" style={{ fontSize: 14, fontWeight: 500, color: '#AAA', textDecoration: 'none' }}>Login</Link>
           <Link href="/signup" className="cta-primary" style={{
@@ -251,8 +251,8 @@ export default function LandingPage() {
           borderBottom: '1px solid rgba(255,255,255,0.06)',
           flexDirection: 'column', padding: '12px 20px 20px', gap: 4,
         }}>
-          {['Features', 'How it works', 'Pricing', 'FAQ', 'Blog'].map((item, i) => (
-            <a key={i} href={item === 'Blog' ? '/blog' : `#${item.toLowerCase().replace(/ /g, '-')}`}
+          {['Features', 'How it works', 'Pricing', 'FAQ', 'Blog', 'Compare'].map((item, i) => (
+            <a key={i} href={item === 'Blog' ? '/blog' : item === 'Compare' ? '/compare' : `#${item.toLowerCase().replace(/ /g, '-')}`}
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 15, fontWeight: 500, color: '#AAA', textDecoration: 'none', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>{item}</a>
           ))}
@@ -677,6 +677,8 @@ export default function LandingPage() {
           <Link href="/terms" style={{ color: '#555', textDecoration: 'none' }}>Terms of Service</Link>
           <span>·</span>
           <Link href="/blog" style={{ color: '#555', textDecoration: 'none' }}>Blog</Link>
+          <span>·</span>
+          <Link href="/compare" style={{ color: '#555', textDecoration: 'none' }}>Compare</Link>
         </div>
       </footer>
     </div>
