@@ -174,7 +174,7 @@ export default function Post29Content() {
       </div>
 
       <p style={p}>
-        The difference between Pattern 1 and Pattern 3 is almost always the hook. Production quality matters less. Topic matters less. Channel size matters less. The opening 30 seconds set the curve, and the curve sets the distribution. For a deeper look at the broader retention math, see <Link href="/blog/improve-youtube-audience-retention-2026" style={inlineLink}>how to improve YouTube audience retention in 2026</Link>.
+        The difference between Pattern 1 and Pattern 3 is almost always the hook. Production quality matters less. Topic matters less. Channel size matters less. The opening 30 seconds set the curve, and the curve sets the distribution. For a deeper look at the broader retention math, see <Link href="/blog/how-to-improve-youtube-audience-retention-2026" style={inlineLink}>how to improve YouTube audience retention in 2026</Link>.
       </p>
 
       <h2 style={h2}>The 4 Hook Layers</h2>
@@ -440,7 +440,7 @@ export default function Post29Content() {
       </div>
 
       <p style={p}>
-        Combining hook discipline with the broader retention principles in <Link href="/blog/improve-youtube-audience-retention-2026" style={inlineLink}>our retention guide</Link> — and avoiding the structural traps in <Link href="/blog/10-youtube-mistakes-killing-your-channel" style={inlineLink}>the 10 mistakes killing your channel</Link> — is what compounds the work. Hooks are necessary but not sufficient; the rest of the video has to hold the curve they set.
+        Combining hook discipline with the broader retention principles in <Link href="/blog/how-to-improve-youtube-audience-retention-2026" style={inlineLink}>our retention guide</Link> — and avoiding the structural traps in <Link href="/blog/youtube-mistakes-killing-your-channel-2026" style={inlineLink}>the 10 mistakes killing your channel</Link> — is what compounds the work. Hooks are necessary but not sufficient; the rest of the video has to hold the curve they set.
       </p>
 
       <div style={tipBox}>
