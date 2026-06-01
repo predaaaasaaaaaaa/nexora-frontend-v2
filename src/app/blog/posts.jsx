@@ -46,6 +46,7 @@ import Post45Content from './content/post45'
 import Post46Content from './content/post46'
 import Post47Content from './content/post47'
 import Post48Content from './content/post48'
+import Post49Content from './content/post49'
 
 export const posts = [
   {
@@ -1250,5 +1251,31 @@ export const posts = [
       }
     ],
     content: <Post48Content />,
+  },
+  {
+    slug: 'youtube-impressions-ctr-explained-2026',
+    title: 'YouTube Impressions & CTR Explained: What Counts and How to Improve Them (2026)',
+    seoTitle: 'YouTube Impressions & CTR Explained (2026)',
+    seoDescription: 'What counts as an impression, how CTR is calculated, what a good CTR really is in 2026, and how to read CTR next to AVD to fix the right problem.',
+    description: 'The two most misread numbers in Studio, decoded. What actually counts as an impression, how CTR works, what a good CTR really means in 2026, and the CTR-plus-AVD pairing that tells you the truth.',
+    date: '2026-06-01',
+    author: 'NEXORA Team',
+    tags: ['youtube analytics', 'youtube ctr', 'impressions'],
+    answer: 'A YouTube impression is counted when YouTube shows your thumbnail on its own surfaces long enough to be a real chance to click. CTR is clicks divided by impressions. There is no universal good CTR; judge against your own baseline, and always read CTR next to average view duration.',
+    faqs: [
+      {
+        q: 'What is a good click-through rate on YouTube?',
+        a: "There's no universal number, which is why the question frustrates people. Judge CTR against your own baseline for similar content and traffic source. As a rough orientation, 4 to 10 percent is healthy for most channels, under 2 percent usually means packaging is the bottleneck, and B2B Browse traffic tends to sit around 3.5 to 4.5 percent with 7 percent as a strong goal. But a high CTR only counts if viewers stay; in 2026 a strong click rate with weak early retention gets throttled, not rewarded."
+      },
+      {
+        q: 'Why are my YouTube impressions so low?',
+        a: "Low impressions are usually a symptom, not the disease. Impressions are how widely YouTube chose to test your thumbnail, and that choice is downstream of how earlier viewers responded, your CTR and your early retention. If the clicks or the watch time didn't justify wider distribution, the system pulls back. You can't grow impressions directly. Improve the thumbnail, title, and first 30 seconds so the click-to-watch handoff gives the system a reason to serve you more, and impressions expand on their own."
+      },
+      {
+        q: 'My CTR is high but my views are still low. Why?',
+        a: "Read CTR next to average view duration. A high CTR with low AVD means the packaging overpromised, people clicked and then bounced, and the algorithm caps distribution because the clicks didn't turn into watch time. The opposite case, low CTR with high AVD, is the most fixable problem on the platform: you already made a good video and just hid it behind weak packaging, so a better thumbnail and title can give it a second life."
+      }
+    ],
+    content: <Post49Content />,
   },
 ]
