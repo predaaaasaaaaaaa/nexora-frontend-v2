@@ -125,7 +125,7 @@ export default function Post7Content() {
         <h2 style={h2}>The 5 Recommendation Surfaces</h2>
   
         <p style={p}>
-          Each surface on YouTube has its own recommendation logic. A video can perform well on one surface and poorly on another.
+          Each surface on YouTube has its own recommendation logic. A video can perform well on one surface and poorly on another — which is why it pays to understand <Link href="/blog/youtube-traffic-sources-explained-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>what each YouTube traffic source rewards</Link> before you read your own numbers.
         </p>
   
         <div style={surfaceCard}>
