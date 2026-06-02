@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Post23Content() {
     const h2 = {
       fontSize: 26,
@@ -114,7 +116,7 @@ export default function Post23Content() {
     return (
       <>
         <p style={p}>
-          Sponsorships are the single highest-leverage revenue stream on YouTube. A creator with 30,000 subscribers in the right niche can earn more from <span style={strong}>one</span> sponsored video than they make from ad revenue in three months. Yet most small creators never pursue brand deals — they assume sponsorships are reserved for channels with 500K+ subs.
+          Sponsorships are the single highest-leverage revenue stream on YouTube — and they sit near the top of <Link href="/blog/youtube-revenue-streams-ranked-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>all nine YouTube revenue streams ranked</Link>. A creator with 30,000 subscribers in the right niche can earn more from <span style={strong}>one</span> sponsored video than they make from ad revenue in three months. Yet most small creators never pursue brand deals — they assume sponsorships are reserved for channels with 500K+ subs.
         </p>
   
         <p style={p}>
