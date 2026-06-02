@@ -1281,7 +1281,7 @@ export const posts = [
     content: <Post49Content />,
   },
   {
-    slug: 'how-to-make-money-on-youtube-2026',
+    slug: 'youtube-revenue-streams-ranked-2026',
     title: 'How to Make Money on YouTube in 2026: 9 Revenue Streams Ranked',
     seoTitle: 'How to Make Money on YouTube in 2026 (Ranked)',
     seoDescription: 'Every YouTube revenue stream for 2026, ranked by real income and ease. Why ads are the floor, not the ceiling, and which streams to switch on first.',
