@@ -170,7 +170,7 @@ export default function Post14Content() {
         <h2 style={h2}>The 7 Revenue Streams on YouTube</h2>
   
         <p style={p}>
-          Ad revenue gets the most attention, but it's just one of seven ways to earn money on YouTube. The most successful creators in 2026 diversify across multiple streams.
+          Ad revenue gets the most attention, but it's just one of seven ways to earn money on YouTube. The most successful creators in 2026 diversify across multiple streams — for a head-to-head look at which ones actually pay most, see <Link href="/blog/youtube-revenue-streams-ranked-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>every YouTube revenue stream ranked</Link>.
         </p>
   
         <div style={revenueCard}>
