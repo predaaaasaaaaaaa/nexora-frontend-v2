@@ -169,7 +169,7 @@ export default function Post29Content() {
 
         <h3 style={{ ...h3, marginBottom: 0 }}>Pattern 3 — The slow drop</h3>
         <p style={{ ...p, marginBottom: 0 }}>
-          Retention stays above 88% through 30 seconds, with a slow decline to 70-75% by minute 2. This is the winning pattern. Videos that hold this curve get the algorithmic green light — pushed harder, recommended wider, and eventually pulled into Browse and Suggested in big numbers.
+          Retention stays above 88% through 30 seconds, with a slow decline to 70-75% by minute 2. This is the winning pattern. Videos that hold this curve get the algorithmic green light — pushed harder, recommended wider, and eventually pulled into Browse and Suggested in big numbers. A strong hook is one of the behavioral triggers behind <Link href="/blog/why-youtube-videos-go-viral-2026" style={inlineLink}>why videos actually go viral</Link>, not algorithmic luck.
         </p>
       </div>
 
