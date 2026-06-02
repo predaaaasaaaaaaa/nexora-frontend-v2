@@ -232,7 +232,7 @@ export default function Post48Content() {
           </tr>
           <tr>
             <td style={td}>External high</td>
-            <td style={td}>Off-platform promotion is working</td>
+            <td style={td}>Off-platform promotion is <Link href="/blog/why-youtube-videos-go-viral-2026" style={inlineLink}>importing new audiences</Link></td>
             <td style={td}>Good for launches; does not compound on YouTube the way Search does</td>
           </tr>
         </tbody>
