@@ -49,6 +49,7 @@ import Post48Content from './content/post48'
 import Post49Content from './content/post49'
 import Post50Content from './content/post50'
 import Post51Content from './content/post51'
+import Post52Content from './content/post52'
 
 export const posts = [
   {
@@ -1331,5 +1332,31 @@ export const posts = [
       }
     ],
     content: <Post51Content />,
+  },
+  {
+    slug: 'youtube-shorts-algorithm-2026',
+    title: 'The YouTube Shorts Algorithm in 2026: How It Actually Works',
+    seoTitle: 'YouTube Shorts Algorithm 2026: How It Works',
+    seoDescription: 'Shorts are now fully decoupled from long-form. How the 2026 Shorts algorithm works: swipe-through rate, the 30-60 min test window, and what drives reach.',
+    description: 'Shorts now run on a completely separate algorithm from long-form. How the 2026 system works: swipe-through rate over CTR, the 30-60 minute test window, Anti-Repetitive AI, the 70% retention bar, and Shorts search.',
+    date: '2026-06-03',
+    author: 'NEXORA Team',
+    tags: ['youtube shorts', 'youtube algorithm', 'shorts growth'],
+    answer: 'In 2026 the YouTube Shorts algorithm is fully decoupled from long-form. It tests each Short on a small feed audience and tracks swipe-through rate, not impressions or CTR. If a Short does not clear a threshold in the first 30 to 60 minutes, distribution stops. Retention near 70% and a unique angle drive reach.',
+    faqs: [
+      {
+        q: 'Do YouTube Shorts hurt your long-form channel in 2026?',
+        a: "No. YouTube fully decoupled the two recommendation systems in late 2025, so posting Shorts no longer helps or hurts your long-form recommendations, and a Short that flops will not drag your main channel down. They are two independent growth engines that happen to share a channel. The catch is that the link runs both ways: Shorts also will not automatically funnel viewers to your long-form anymore, so if you want that bridge you have to build it manually with pinned comments and the linking tools."
+      },
+      {
+        q: 'Why do my YouTube Shorts get views then suddenly stop?',
+        a: "That spike-then-flatline pattern is normal and not a penalty. When you post a Short, the algorithm runs rapid distribution tests: it pushes the Short to a wide audience, measures the watch-through rate, then either keeps promoting or pulls back. A Short can blow up for 24 to 48 hours and then go quiet once the testing finishes. Wild variance between Shorts is also expected, since each one is tested independently. One hitting 500,000 views and the next getting 2,000 says nothing bad about your channel."
+      },
+      {
+        q: 'What is the most important metric for YouTube Shorts?',
+        a: "Swipe-through rate, which you can see in analytics as the Viewed versus Swiped away metric. Unlike long-form, there is no thumbnail and no click on Shorts, so impressions and CTR do not apply. The viewer is simply served your Short in the feed, and the only thing that matters is whether they keep watching or swipe away in the first couple of seconds. Because of that, retention from the very first frame is the entire game, and the internal bar for good retention now sits around 70 percent."
+      }
+    ],
+    content: <Post52Content />,
   },
 ]
