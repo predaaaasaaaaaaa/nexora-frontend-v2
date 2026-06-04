@@ -53,7 +53,7 @@ export default function Post51Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#3EA651' }}>TRIGGER 2 — HIGH-AROUSAL EMOTION</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          People share content that moves them strongly &mdash; awe, surprise, anger, delight, validation. Low-arousal feelings like mild interest do not get shared. The share is the single most powerful viral signal because it imports a brand-new audience the algorithm never had to find. If a video makes no one feel anything sharp, it will not travel.
+          People share content that moves them strongly &mdash; awe, surprise, anger, delight, validation. Low-arousal feelings like mild interest do not get shared. The share is the single most powerful viral signal because it imports a brand-new audience the algorithm never had to find. Shares and repeat views are also among the strongest inputs now that <Link href="/blog/youtube-satisfaction-vs-watch-time-2026" style={inlineLink}>YouTube ranks satisfaction over watch time</Link>, so satisfying content and viral content pull in the same direction. If a video makes no one feel anything sharp, it will not travel.
         </p>
       </div>
 
