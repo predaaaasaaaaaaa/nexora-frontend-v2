@@ -325,7 +325,7 @@ export default function Post17Content() {
             Videos under 5 minutes can achieve very high retention percentages but generate less total watch time per video. Videos over 20 minutes can generate substantial watch time but require exceptional content quality to maintain retention through the full runtime.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
-            The worst thing you can do is pad your video to hit a length target. Adding 3 minutes of filler to hit 10 minutes will cut your retention rate by more than the extra watch time gained. Always optimize for retention percentage over raw video length.
+            The worst thing you can do is pad your video to hit a length target. Adding 3 minutes of filler to hit 10 minutes will cut your retention rate by more than the extra watch time gained. Always optimize for retention percentage over raw video length — and remember that <Link href="/blog/youtube-satisfaction-vs-watch-time-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>YouTube now ranks viewer satisfaction over raw watch time</Link>, so padding hurts you twice.
           </p>
         </div>
   
