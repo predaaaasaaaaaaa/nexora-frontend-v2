@@ -1,4 +1,7 @@
+import Link from 'next/link'
+
 export default function Post11Content() {
+    const inlineLink = { color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }
     const h2 = {
       fontSize: 26,
       fontWeight: 700,
@@ -171,7 +174,7 @@ export default function Post11Content() {
         <div style={sectionCard}>
           <h3 style={{ ...h3, marginTop: 0 }}>Shorts: The swipe feed</h3>
           <p style={p}>
-            Shorts are primarily distributed through the Shorts feed — a vertical, TikTok-style swipe experience. The algorithm decides which Shorts to show based on the viewed-vs-swiped-away ratio (the number one signal), loop completion (viewers watching the entire Short multiple times), engagement (likes, comments, shares), and topic relevance to the viewer's interests.
+            Shorts are primarily distributed through the Shorts feed — a vertical, TikTok-style swipe experience. The algorithm decides which Shorts to show based on the viewed-vs-swiped-away ratio (the number one signal), loop completion (viewers watching the entire Short multiple times), engagement (likes, comments, shares), and topic relevance to the viewer's interests. For the full mechanics, see <Link href="/blog/youtube-shorts-algorithm-2026" style={inlineLink}>how the 2026 Shorts algorithm works</Link>, including the 30-to-60-minute test window that decides reach.
           </p>
           <p style={p}>
             In 2026, YouTube added Shorts-specific search filters, which means Shorts now also compete in search results. Thumbnails, titles, and descriptions matter for Shorts more than ever — they're no longer just swipe-feed content.
