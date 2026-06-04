@@ -251,7 +251,7 @@ export default function Post7Content() {
         <div style={sectionCard}>
           <h3 style={{ ...h3, marginTop: 0 }}>Satisfaction over watch time</h3>
           <p style={p}>
-            YouTube publicly confirmed that viewer satisfaction surveys now carry more weight than raw watch time. Shorter videos with high satisfaction outperform longer videos with low satisfaction. This was the biggest philosophical shift in recent years.
+            YouTube publicly confirmed that viewer satisfaction surveys now carry more weight than raw watch time. Shorter videos with high satisfaction outperform longer videos with low satisfaction. This was the biggest philosophical shift in recent years — the full breakdown of how <Link href="/blog/youtube-satisfaction-vs-watch-time-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>YouTube now ranks satisfaction over watch time</Link> covers exactly how it is measured and why padding backfires.
           </p>
   
           <h3 style={h3}>Semantic understanding</h3>
