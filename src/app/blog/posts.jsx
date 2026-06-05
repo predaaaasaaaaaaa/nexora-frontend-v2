@@ -51,6 +51,7 @@ import Post50Content from './content/post50'
 import Post51Content from './content/post51'
 import Post52Content from './content/post52'
 import Post53Content from './content/post53'
+import Post54Content from './content/post54'
 
 export const posts = [
   {
@@ -1385,5 +1386,31 @@ export const posts = [
       }
     ],
     content: <Post53Content />,
+  },
+  {
+    slug: 'youtube-ai-search-optimization-2026',
+    title: 'How to Optimize for YouTube AI Search in 2026 (Ask YouTube + AEO)',
+    seoTitle: 'YouTube AI Search Optimization 2026 (AEO)',
+    seoDescription: 'YouTube search went from keywords to conversations. How to optimize for AI search and Ask YouTube with AEO: answer-first, entities, transcripts, and structure.',
+    description: 'YouTube search shifted from keywords to conversations in 2026. How Answer Engine Optimization works for video: lead with the answer, write in entities, match conversational queries, and structure content the AI can quote.',
+    date: '2026-06-04',
+    author: 'NEXORA Team',
+    tags: ['youtube seo', 'ai search', 'answer engine optimization'],
+    answer: 'To rank in YouTube AI search in 2026, optimize for extraction, not keywords. Lead with a direct answer (BLUF) in your first lines and description, write in semantic entities rather than repeated phrases, match long conversational queries, and give the AI a clean transcript and chapters so it can quote your video as the answer.',
+    faqs: [
+      {
+        q: 'What is YouTube AI search (Ask YouTube)?',
+        a: "It's the conversational search experience YouTube rolled out at Google I/O in May 2026, shifting search from keywords to natural-language questions. Instead of typing a short fragment like 'best budget camera,' viewers ask a full question such as 'what camera should I buy if I shoot indoors on a 600 dollar budget,' and the engine synthesizes a direct answer drawn from specific videos it cites. The practical effect is that the goal changed from ranking in a list of links to being the source the AI chooses to quote."
+      },
+      {
+        q: 'Do keywords and tags still matter for YouTube in 2026?',
+        a: "They matter less than they used to, and stuffing them now hurts. AI search understands meaning rather than matching exact strings, so repeating one phrase eight times reads as thin, manipulative content instead of relevance. What matters now is semantic depth: naming the real related concepts an expert would use, phrasing things the way people actually ask questions, and giving the AI a clean transcript to read. Your title still needs to earn the human click, but keyword density is no longer the lever it once was."
+      },
+      {
+        q: 'How do I get my videos cited by AI engines like ChatGPT or Google AI Overviews?',
+        a: "Make your answer easy to extract. Open the video and the description with a crisp, direct answer to the exact question you target, since AI engines favor content already structured as a clean summary. Upload an accurate transcript and add chapters, because the AI reads the transcript and chapter structure makes individual segments citable for individual questions. This is high-leverage right now: YouTube is the most-cited domain in Google's AI Overviews, and a 2026 Ahrefs study found YouTube mentions are the single strongest predictor of AI-engine visibility, ahead of backlinks."
+      }
+    ],
+    content: <Post54Content />,
   },
 ]
