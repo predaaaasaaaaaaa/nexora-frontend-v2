@@ -230,7 +230,7 @@ export default function Post22Content() {
           <span style={stepNumber}>STEP 4 — TARGET LONG-TAIL FIRST</span>
           <div style={stepTitle}>Specific beats broad for new channels</div>
           <p style={{ ...p, marginBottom: 0 }}>
-            "How to grow on YouTube" is competitive. "How to grow a faceless YouTube channel in 2026" is much less competitive. Long-tail keywords have lower volume but higher intent and dramatically lower competition. A video ranking #1 for a 5,000-search/month long-tail keyword will outperform a video at #15 for a 50,000-search/month broad keyword. Start with long-tail and expand to broader keywords as your channel authority grows.
+            "How to grow on YouTube" is competitive. "How to grow a faceless YouTube channel in 2026" is much less competitive. Long-tail keywords have lower volume but higher intent and dramatically lower competition. A video ranking #1 for a 5,000-search/month long-tail keyword will outperform a video at #15 for a 50,000-search/month broad keyword. Start with long-tail and expand to broader keywords as your channel authority grows. Long-tail phrasing also maps cleanly onto the conversational questions AI search now parses, which is its own optimization layer worth learning &mdash; see <Link href="/blog/youtube-ai-search-optimization-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how to optimize for YouTube AI search</Link>.
           </p>
         </div>
   
