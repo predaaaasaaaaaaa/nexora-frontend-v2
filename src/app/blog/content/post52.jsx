@@ -53,7 +53,7 @@ export default function Post52Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#f87171' }}>2 — ANTI-REPETITIVE CONTENT AI IS LIVE</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          YouTube now runs a filter that detects when your content is too similar to what you have already posted, or too similar to what is already trending. Recycling the same format, hook, or visual style over and over is actively suppressed. There is also an information-gain expectation: a Short needs a genuinely unique angle to earn wide distribution. Volume without novelty is now a negative.
+          YouTube now runs a filter that detects when your content is too similar to what you have already posted, or too similar to what is already trending. Recycling the same format, hook, or visual style over and over is actively suppressed. There is also an information-gain expectation: a Short needs a genuinely unique angle to earn wide distribution. Volume without novelty is now a negative &mdash; which is exactly why mass-produced AI content runs into trouble here, as we break down in <Link href="/blog/does-ai-content-hurt-youtube-channel-2026" style={inlineLink}>whether AI content hurts your channel</Link>.
         </p>
       </div>
 
