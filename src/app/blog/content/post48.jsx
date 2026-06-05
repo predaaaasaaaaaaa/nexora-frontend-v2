@@ -176,7 +176,7 @@ export default function Post48Content() {
       <h3 style={h3}>YouTube Search &mdash; the pull source</h3>
 
       <p style={p}>
-        Search is the opposite of Browse and Suggested. Nobody is being served anything; the viewer typed a query and chose you. That makes Search the highest-intent and most controllable source on the platform, because it is driven by what you put in your title, your first lines of description, and your spoken words &mdash; the things you actually control. YouTube processes over three billion searches a month, which makes Search a standing, compounding demand stream rather than a one-day spike.
+        Search is the opposite of Browse and Suggested. Nobody is being served anything; the viewer typed a query and chose you. That makes Search the highest-intent and most controllable source on the platform, because it is driven by what you put in your title, your first lines of description, and your spoken words &mdash; the things you actually control. YouTube processes over three billion searches a month, which makes Search a standing, compounding demand stream rather than a one-day spike. That stream is also changing shape: AI-driven search now answers conversational questions directly, which reshapes what ranks and how you should phrase your metadata &mdash; see <Link href="/blog/youtube-ai-search-optimization-2026" style={inlineLink}>how to optimize for YouTube AI search</Link>.
       </p>
 
       <p style={p}>
