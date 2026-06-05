@@ -154,7 +154,7 @@ export default function Post34Content() {
       <div style={shiftCard}>
         <span style={{ ...shiftNumber, color: '#f87171' }}>SHIFT 2 — POLICY ENFORCEMENT AGAINST AI SLOP</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          January 2026: 16 channels with a combined 35 million subscribers and 4.7 billion lifetime views terminated. A $30K/month Bible story channel demonetized. A $7,500/month real estate exam prep channel demonetized. The 2024 faceless YouTube playbook became a structural liability. AI tools are not banned, but AI replacing the creator now is.
+          January 2026: 16 channels with a combined 35 million subscribers and 4.7 billion lifetime views terminated. A $30K/month Bible story channel demonetized. A $7,500/month real estate exam prep channel demonetized. The 2024 faceless YouTube playbook became a structural liability. AI tools are not banned, but AI replacing the creator now is &mdash; for the honest take on where the line falls, see <Link href="/blog/does-ai-content-hurt-youtube-channel-2026" style={inlineLink}>whether AI content hurts your channel</Link>.
         </p>
       </div>
 
