@@ -144,7 +144,7 @@ export default function Post16Content() {
   
         <div style={ruleCard}>
           <p style={{ ...p, marginBottom: 0 }}>
-            <span style={strong}>Front-load your keyword in the first 5 words.</span> YouTube weights early-title keywords more heavily for search ranking. "How to Edit Videos Faster" is better than "The Secret to Faster Video Editing" for SEO.
+            <span style={strong}>Front-load your keyword in the first 5 words.</span> YouTube weights early-title keywords more heavily for search ranking. "How to Edit Videos Faster" is better than "The Secret to Faster Video Editing" for SEO. And with AI-powered search now reading titles as direct answers to conversational queries, that front-loaded phrasing matters more than ever — see <Link href="/blog/youtube-ai-search-optimization-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how to optimize for YouTube AI search</Link>.
           </p>
         </div>
   
