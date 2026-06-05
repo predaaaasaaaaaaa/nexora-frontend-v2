@@ -71,7 +71,7 @@ export default function Post53Content() {
       <div style={stepCard}>
         <span style={stepNumber}>1 — DELIVER ON THE PROMISE, FAST</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          The fastest way to kill satisfaction is to overpromise in the packaging and underdeliver in the video. Padding, slow intros, and stretched runtimes to chase watch time now backfire, because they lower the felt value per minute. Give people what they came for, clearly and without filler.
+          The fastest way to kill satisfaction is to overpromise in the packaging and underdeliver in the video. Padding, slow intros, and stretched runtimes to chase watch time now backfire, because they lower the felt value per minute. Give people what they came for, clearly and without filler. This is also why low-effort, mass-generated content struggles to rank now &mdash; it rarely clears the satisfaction bar, which is the heart of <Link href="/blog/does-ai-content-hurt-youtube-channel-2026" style={inlineLink}>whether AI content hurts your channel</Link>.
         </p>
       </div>
 
