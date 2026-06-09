@@ -54,6 +54,7 @@ import Post53Content from './content/post53'
 import Post54Content from './content/post54'
 import Post55Content from './content/post55'
 import Post56Content from './content/post56'
+import Post57Content from './content/post57'
 
 export const posts = [
   {
@@ -1466,5 +1467,31 @@ export const posts = [
       }
     ],
     content: <Post56Content />,
+  },
+  {
+    slug: 'youtube-shorts-monetization-2026',
+    title: 'How YouTube Shorts Monetization Works in 2026 (The 45% Revenue Pool)',
+    seoTitle: 'YouTube Shorts Monetization 2026: The 45% Pool',
+    seoDescription: 'Why Shorts pay so little: the Creator Pool explained. How ad revenue is pooled, split by view share, reduced by music, and cut to 45% in 2026.',
+    description: 'Shorts do not pay like long-form, and the Creator Pool is why. How Shorts monetization actually works in 2026: pooled ad revenue, split by view share, reduced by music licensing, then cut to 45%, and how to monetize the reach instead.',
+    date: '2026-06-08',
+    author: 'NEXORA Team',
+    tags: ['youtube shorts', 'youtube monetization', 'shorts revenue'],
+    answer: 'YouTube Shorts are paid from a shared Creator Pool, not from ads on your individual Short. All Shorts-feed ad revenue is pooled, split by your share of total views, reduced by music licensing costs, and then you receive 45% of your allocation. That pooled, diluted model is why Shorts RPM is far lower than long-form.',
+    faqs: [
+      {
+        q: 'Why do my YouTube Shorts make so little money despite high views?',
+        a: "Because Shorts are paid from a shared Creator Pool, not from ads on your specific video. All advertising revenue from the Shorts feed across the platform goes into one pot, gets split by your share of total Shorts views, has music licensing costs deducted first, and then you receive 45% of what is allocated to you. That revenue is diluted across billions of daily views, so even millions of your own views translate into a relatively small slice. It is structurally lower-paying than long-form, where ads run on your own video and you take the bigger cut."
+      },
+      {
+        q: 'How much does YouTube pay per million Shorts views in 2026?',
+        a: "There is no fixed rate, because the Creator Pool model means your payout depends on your share of total views, your viewers' regions and niche, and how much music licensing reduced the pool. In practice Shorts RPM is much lower than long-form, often a small fraction of it. That is by design: the revenue is pooled, diluted, reduced by music costs, and then cut to 45%. The honest takeaway is to stop benchmarking a per-million figure and instead treat Shorts ad income as minor, with the real value being reach."
+      },
+      {
+        q: 'What is the best way to make money from YouTube Shorts?',
+        a: "Monetize the reach, not the Short itself. Shorts are the cheapest way to put your content in front of millions of new viewers, so their job is to fill the top of your funnel. Route that attention to where the money actually is: drive viewers to long-form videos where ad RPM is far higher, convert them into fans through memberships and Super Thanks, and tag products with YouTube Shopping, which in 2026 supports in-app checkout so viewers buy without leaving the app. The Short earns pennies in the pool; the audience it brings you is the asset."
+      }
+    ],
+    content: <Post57Content />,
   },
 ]
