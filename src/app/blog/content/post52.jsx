@@ -74,7 +74,7 @@ export default function Post52Content() {
       <h2 style={h2}>Why your Shorts spike then crash (this is normal)</h2>
 
       <p style={p}>
-        Creators everywhere see a Short explode for 24 to 48 hours and then flatline. That is not a glitch or a penalty. It is the algorithm running rapid distribution tests: it pushed your Short to a wide audience, measured the watch-through rate, and then decided whether to keep promoting or pull back. One Short pulling 500,000 views and the next pulling 2,000 is also normal &mdash; each Short is tested independently, so variance is built into the system, not a sign something is wrong with your channel.
+        Creators everywhere see a Short explode for 24 to 48 hours and then flatline. That is not a glitch or a penalty. It is the algorithm running rapid distribution tests: it pushed your Short to a wide audience, measured the watch-through rate, and then decided whether to keep promoting or pull back. One Short pulling 500,000 views and the next pulling 2,000 is also normal &mdash; each Short is tested independently, so variance is built into the system, not a sign something is wrong with your channel. What those swings actually pay out is a separate system entirely: <Link href="/blog/youtube-shorts-monetization-2026" style={inlineLink}>how Shorts monetization works</Link> runs on a shared Creator Pool rather than a per-view rate, so even a 500,000-view Short earns a slice of a pool, not a flat CPM.
       </p>
 
       <h2 style={h2}>Shorts vs long-form, side by side</h2>
