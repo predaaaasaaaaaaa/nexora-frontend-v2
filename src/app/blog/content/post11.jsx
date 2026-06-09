@@ -154,7 +154,7 @@ export default function Post11Content() {
         <h2 style={h2}>The Revenue Gap Is Massive</h2>
   
         <p style={p}>
-          This is the number that changes most creators' strategy once they see it. Shorts RPM is roughly $0.01-0.10 per 1,000 views. Long-form RPM in a decent niche is $3-20+ per 1,000 views. That's a <span style={strong}>100-1,000x difference</span> in revenue per view.
+          This is the number that changes most creators' strategy once they see it. Shorts RPM is roughly $0.01-0.10 per 1,000 views — a direct result of <Link href="/blog/youtube-shorts-monetization-2026" style={inlineLink}>how Shorts monetization actually works</Link>. Long-form RPM in a decent niche is $3-20+ per 1,000 views. That's a <span style={strong}>100-1,000x difference</span> in revenue per view.
         </p>
   
         <div style={sectionCard}>
