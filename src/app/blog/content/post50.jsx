@@ -34,7 +34,7 @@ export default function Post50Content() {
       <h2 style={h2}>The 2026 reality: ads are the floor, not the ceiling</h2>
 
       <p style={p}>
-        The Partner Program still pays, and you still need 1,000 subscribers plus 4,000 watch hours (or 10 million valid Shorts views in 90 days) to switch it on. But ad CPM swings wildly by niche &mdash; a finance channel can earn 15 to 40 dollars per thousand monetized views while a gaming or entertainment channel might see 2 to 5. Relying on that single number is what keeps creators broke in low-CPM niches no matter how many views they pull.
+        The Partner Program still pays, and you still need <Link href="/blog/youtube-monetization-requirements-2026" style={inlineLink}>1,000 subscribers plus 4,000 watch hours</Link> (or 10 million valid Shorts views in 90 days) to switch it on. But ad CPM swings wildly by niche &mdash; a finance channel can earn 15 to 40 dollars per thousand monetized views while a gaming or entertainment channel might see 2 to 5. Relying on that single number is what keeps creators broke in low-CPM niches no matter how many views they pull.
       </p>
 
       <p style={p}>
