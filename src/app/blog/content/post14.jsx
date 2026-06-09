@@ -134,7 +134,7 @@ export default function Post14Content() {
         <h2 style={h2}>YouTube Partner Program Requirements (2026)</h2>
   
         <p style={p}>
-          To earn money directly from YouTube, you need to join the <span style={strong}>YouTube Partner Program (YPP)</span>. In 2026, there are two tiers:
+          To earn money directly from YouTube, you need to join the <span style={strong}>YouTube Partner Program (YPP)</span>. In 2026, <Link href="/blog/youtube-monetization-requirements-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the monetization requirements</Link> split into two tiers:
         </p>
   
         <div style={tierCard}>
