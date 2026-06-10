@@ -44,7 +44,7 @@ export default function Post56Content() {
       </div>
 
       <p style={p}>
-        Clear that bar and you unlock the fan-funding suite: Channel Memberships, Super Chat and Super Stickers on live streams and premieres, Super Thanks tips on individual videos and Shorts, and limited YouTube Shopping to tag your own merchandise. No ad revenue yet &mdash; this tier is entirely about your audience paying you directly, which, as covered in <Link href="/blog/youtube-revenue-streams-ranked-2026" style={inlineLink}>the revenue streams ranked guide</Link>, is often a higher-margin path than ads anyway.
+        Clear that bar and you unlock the fan-funding suite: Channel Memberships, Super Chat and Super Stickers on <Link href="/blog/youtube-live-streaming-2026" style={inlineLink}>live streams</Link> and premieres, Super Thanks tips on individual videos and Shorts, and limited YouTube Shopping to tag your own merchandise. No ad revenue yet &mdash; this tier is entirely about your audience paying you directly, which, as covered in <Link href="/blog/youtube-revenue-streams-ranked-2026" style={inlineLink}>the revenue streams ranked guide</Link>, is often a higher-margin path than ads anyway.
       </p>
 
       <h2 style={h2}>Tier 2: the full Partner Program (the ad-revenue tier)</h2>
