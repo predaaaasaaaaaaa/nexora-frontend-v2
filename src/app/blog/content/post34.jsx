@@ -147,7 +147,7 @@ export default function Post34Content() {
       <div style={shiftCard}>
         <span style={shiftNumber}>SHIFT 1 — AI WENT NATIVE IN YOUTUBE STUDIO</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          Veo 3 Fast (free for Shorts creators), Edit with AI, Ask Studio, auto-dubbing across 27 languages, native A/B title testing, audio-to-video for podcasters, Lyria 2 music generation, Expressive Speech dubbing. YouTube absorbed roughly $2-3 billion of creator-tools functionality into Studio itself in 2025-2026. Most of these features are free. (Full breakdown in <Link href="/blog/youtube-killing-creator-tools-industry-2026" style={inlineLink}>the creator tools industry consolidation analysis</Link>.)
+          Veo 3 Fast (free for Shorts creators), Edit with AI, Ask Studio, auto-dubbing across 27 languages, native A/B title testing, audio-to-video for podcasters, Lyria 2 music generation, Expressive Speech dubbing &mdash; here's <Link href="/blog/youtube-ai-creation-tools-2026" style={inlineLink}>what each of YouTube's AI creation tools actually does</Link>. YouTube absorbed roughly $2-3 billion of creator-tools functionality into Studio itself in 2025-2026. Most of these features are free. (Full breakdown in <Link href="/blog/youtube-killing-creator-tools-industry-2026" style={inlineLink}>the creator tools industry consolidation analysis</Link>.)
         </p>
       </div>
 
