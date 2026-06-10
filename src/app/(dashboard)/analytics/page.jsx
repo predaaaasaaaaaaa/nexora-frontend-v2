@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getAnalytics } from '@/lib/api'
+import { trackClientEvent } from '@/lib/track'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
 import { log } from '@/lib/log'
@@ -84,6 +85,13 @@ export default function AnalyticsPage() {
   useEffect(() => {
     if (selectedPlatform === 'youtube') loadAnalytics()
   }, [selectedPlatform])
+
+  // Product event: analytics view opened. Mount-only (not per platform
+  // tab switch). Fire-and-forget — never blocks or breaks the page.
+  useEffect(() => {
+    trackClientEvent('analytics_viewed', { platform: selectedPlatform })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function loadAnalytics() {
     try {
