@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Sun, Moon, LogOut, Menu, X } from 'lucide-react'
 import { getCurrentUser, signOut, supabase, isUserSignOutInProgress, clearUserLocalStorage } from '@/lib/supabase'
+import { trackClientEvent } from '@/lib/track'
 import { useTheme } from '@/components/shared/ThemeProvider'
 import NexoraLogo from '@/components/shared/NexoraLogo'
 import ChannelAvatar from '@/components/shared/ChannelAvatar'
@@ -67,6 +68,21 @@ export default function DashboardLayout({ children }) {
   const c = dark ? themes.dark : themes.light
 
   useEffect(() => { checkAuth() }, [])
+
+  // Product event: a browser session started. Fires once per tab session
+  // (sessionStorage flag), after auth resolves — not on every navigation,
+  // since this layout doesn't remount between dashboard pages. Set the
+  // flag before emitting so a same-session reload can't double-fire.
+  useEffect(() => {
+    if (!user) return
+    try {
+      if (sessionStorage.getItem('nx:session_started')) return
+      sessionStorage.setItem('nx:session_started', '1')
+    } catch {
+      return // sessionStorage blocked (private mode) — skip, never throw
+    }
+    trackClientEvent('session_started', {})
+  }, [user])
 
   // Cross-tab sign-out / natural session expiry: kick the user back to
   // /login the moment Supabase emits SIGNED_OUT, instead of waiting for
