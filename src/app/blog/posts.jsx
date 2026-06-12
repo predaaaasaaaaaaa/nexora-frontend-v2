@@ -58,6 +58,7 @@ import Post57Content from './content/post57'
 import Post58Content from './content/post58'
 import Post59Content from './content/post59'
 import Post60Content from './content/post60'
+import Post61Content from './content/post61'
 
 export const posts = [
   {
@@ -1574,5 +1575,31 @@ export const posts = [
       }
     ],
     content: <Post60Content />,
+  },
+  {
+    slug: 'youtube-new-casual-regular-viewers-2026',
+    title: "New, Casual & Regular Viewers: YouTube's Loyalty Metric Explained (2026)",
+    seoTitle: 'YouTube New, Casual & Regular Viewers (2026)',
+    seoDescription: 'YouTube replaced returning viewers with three segments: new, casual, and regular. What each means, what healthy numbers look like, and the strategy per segment.',
+    description: "YouTube retired the binary new-vs-returning metric. What the three Audience-tab segments actually mean, the definition quirks that trip creators up, what healthy looks like, and the lever each segment responds to.",
+    date: '2026-06-12',
+    author: 'NEXORA Team',
+    tags: ['youtube analytics', 'audience loyalty', 'returning viewers'],
+    answer: 'YouTube replaced the binary new-vs-returning metric with three Audience-tab segments: new viewers (first time in the period), casual viewers (watched in 1 to 5 months of the past year), and regular viewers (returned in 6 or more months of the past 12). A returning share around 20 to 40 percent signals real loyalty.',
+    faqs: [
+      {
+        q: 'What is a good percentage of returning viewers on YouTube?',
+        a: "As orientation, a returning share around 20 to 40 percent of your audience signals real loyalty development, and for a young channel even a return rate above 10 percent is a strong leading signal that the channel is compounding. But the mix matters more than any single number: almost all new viewers means you are renting attention from the algorithm each month, while almost all regulars means loyalty without growth. The healthiest pattern is regulars slowly rising while new viewers keep flowing. Track the trend, not the absolute."
+      },
+      {
+        q: 'Why do I have so few regular viewers?',
+        a: "Mostly because the bar is deliberately high: a regular viewer must have returned in six or more separate months of the past twelve, which almost no early audience clears. YouTube itself cautions that most channels see a smaller regular percentage than expected, especially newer channels, channels with a one-off trending spike, and Shorts-heavy channels. Two quirks also inflate the new bucket: viewers in private browsing or with deleted watch history count as new, as does anyone who has not watched you in over a year. A small regular number is normal; a flat one over many months is the actual warning."
+      },
+      {
+        q: 'How do I turn casual viewers into regular viewers?',
+        a: "Give them a habit to form, not just a video to like. Series content and a consistent, predictable schedule are the two biggest levers, because a casual viewer needs to know when and why to come back. Chain viewers from one video to the next with end screens, and engage them directly through comment replies and community posts so the channel feels like a place, not a one-off. Converting casuals is the highest-leverage move in this report: these people already chose you once, which makes them far cheaper to win than a brand-new viewer."
+      }
+    ],
+    content: <Post61Content />,
   },
 ]
