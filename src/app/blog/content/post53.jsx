@@ -34,7 +34,7 @@ export default function Post53Content() {
       <h2 style={h2}>What &quot;satisfaction&quot; actually means</h2>
 
       <p style={p}>
-        Satisfaction is not a vibe; YouTube infers it from real behavior. The strongest signals are direct viewer surveys (the &quot;how would you rate this video&quot; and &quot;was this helpful&quot; prompts), repeat views, shares, and what a viewer does after your video &mdash; do they keep watching YouTube happily, or bounce off the platform. Watch time still matters, but it is now one input into satisfaction rather than the target itself.
+        Satisfaction is not a vibe; YouTube infers it from real behavior. The strongest signals are direct viewer surveys (the &quot;how would you rate this video&quot; and &quot;was this helpful&quot; prompts), repeat views &mdash; the returning behavior YouTube now breaks out into <Link href="/blog/youtube-new-casual-regular-viewers-2026" style={inlineLink}>new, casual, and regular viewer segments</Link> &mdash; shares, and what a viewer does after your video &mdash; do they keep watching YouTube happily, or bounce off the platform. Watch time still matters, but it is now one input into satisfaction rather than the target itself.
       </p>
 
       <div style={sectionCard}>
