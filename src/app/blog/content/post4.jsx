@@ -129,7 +129,7 @@ export default function Post4Content() {
         <div style={metricCard}>
           <div style={metricName}>5. Returning vs New Viewers</div>
           <div style={metricDesc}>
-            The ratio of viewers who have watched your content before vs first-time viewers. This tells you whether you're building a loyal audience or just getting one-time clicks. Find it in YouTube Studio → Analytics → Audience tab. A growing channel typically has 20-40% returning viewers. Below 15% means you're not converting viewers into fans. Above 60% might mean you're not reaching enough new people.
+            The ratio of viewers who have watched your content before vs first-time viewers. This tells you whether you're building a loyal audience or just getting one-time clicks. YouTube has since replaced this binary with <Link href="/blog/youtube-new-casual-regular-viewers-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>three loyalty segments — new, casual, and regular viewers</Link>. Find it in YouTube Studio → Analytics → Audience tab. A growing channel typically has 20-40% returning viewers. Below 15% means you're not converting viewers into fans. Above 60% might mean you're not reaching enough new people.
           </div>
         </div>
   
