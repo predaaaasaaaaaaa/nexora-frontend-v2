@@ -92,7 +92,7 @@ export default function Post56Content() {
       <div style={mistakeCard}>
         <span style={mistakeLabel}>THE MISTAKE: WAITING FOR TIER 2 TO START</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          Treating 1,000 subscribers as the only milestone that matters. If you have 500 subscribers and an engaged community, every month you wait to turn on memberships and Super Thanks is revenue you simply did not collect. Fan funding at Tier 1 often out-earns the early ad revenue at Tier 2 anyway, because a loyal supporter is worth far more than a thousand passive ad impressions.
+          Treating 1,000 subscribers as the only milestone that matters. If you have 500 subscribers and an engaged community, every month you wait to turn on memberships and Super Thanks is revenue you simply did not collect. Fan funding at Tier 1 often out-earns the early ad revenue at Tier 2 anyway, because a loyal supporter &mdash; the kind of <Link href="/blog/youtube-new-casual-regular-viewers-2026" style={inlineLink}>regular viewer who keeps coming back</Link> &mdash; is worth far more than a thousand passive ad impressions.
         </p>
       </div>
 
