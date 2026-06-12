@@ -203,7 +203,7 @@ export default function Post49Content() {
       <h2 style={h2}>CTR and AVD: the paired signal that tells the truth</h2>
 
       <p style={p}>
-        CTR alone is half a sentence. Read it next to average view duration (AVD) &mdash; how long people actually watched &mdash; and the real diagnosis appears. This single pairing resolves most &quot;why is this video underperforming&quot; questions.
+        CTR alone is half a sentence. Read it next to average view duration (AVD) &mdash; how long people actually watched &mdash; and the real diagnosis appears. This single pairing resolves most &quot;why is this video underperforming&quot; questions, and reading the two together is exactly what <Link href="/blog/youtube-ask-studio-ai-analytics-2026" style={inlineLink}>Ask Studio, the AI assistant inside Studio</Link>, does conversationally when you ask it to analyze an upload.
       </p>
 
       <table style={dataTable}>
