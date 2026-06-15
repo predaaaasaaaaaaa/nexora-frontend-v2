@@ -53,7 +53,7 @@ export default function Post50Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#3EA651' }}>2 — BRAND DEALS / SPONSORSHIPS</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          The fastest large income for most mid-sized channels. Sponsors pay for a targeted, trusting audience, not raw reach, which is why a 20,000-subscriber niche channel can charge more than a 200,000-subscriber general one. Rates commonly run 15 to 50 dollars per thousand views on an integration, often dwarfing ad revenue for the same video.
+          The fastest large income for most mid-sized channels, and YouTube now helps broker it through <Link href="/blog/youtube-brand-partnership-hub-2026" style={inlineLink}>the Brand Partnership Hub and how to get sponsors</Link>. Sponsors pay for a targeted, trusting audience, not raw reach, which is why a 20,000-subscriber niche channel can charge more than a 200,000-subscriber general one. Rates commonly run 15 to 50 dollars per thousand views on an integration, often dwarfing ad revenue for the same video.
         </p>
       </div>
 
