@@ -210,7 +210,7 @@ export default function Post14Content() {
           <div style={revenueName}>4. Sponsorships & Brand Deals</div>
           <div style={{ ...revenueTag, color: '#4D9EFF' }}>NO YPP REQUIRED — INDEPENDENT</div>
           <p style={p}>
-            Brands pay you directly to feature their product or service in your video. This is typically the highest-paying revenue stream once your channel has enough audience to attract sponsors. Sponsorship rates are usually based on your average views per video and your niche.
+            Brands pay you directly to feature their product or service in your video. This is typically the highest-paying revenue stream once your channel has enough audience to attract sponsors, and YouTube now connects the two directly through <Link href="/blog/youtube-brand-partnership-hub-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>the Brand Partnership Hub and how to get sponsors</Link>. Sponsorship rates are usually based on your average views per video and your niche.
           </p>
           <p style={{ ...p, marginBottom: 0 }}>
             <span style={strong}>Typical rates:</span> $20-50 per 1,000 views is a common starting point. A video averaging 50,000 views might command $1,000-2,500 per sponsorship. In high-value niches (finance, B2B, SaaS), rates can be significantly higher. Sponsorship income often exceeds ad revenue by 3-10x for the same video.
