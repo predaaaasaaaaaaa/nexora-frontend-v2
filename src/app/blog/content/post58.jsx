@@ -90,7 +90,7 @@ export default function Post58Content() {
       </p>
 
       <p style={p}>
-        First, disclose AI-altered or synthetic content where required &mdash; transparency is a 2026 policy expectation, not optional. Second, never let AI flatten your originality. The platform now ranks <Link href="/blog/youtube-satisfaction-vs-watch-time-2026" style={inlineLink}>viewer satisfaction over raw watch time</Link>, and generic AI output does not satisfy. The full picture of what does and does not get penalized is in <Link href="/blog/does-ai-content-hurt-youtube-channel-2026" style={inlineLink}>whether AI content hurts your channel</Link>.
+        First, disclose AI-altered or synthetic content where required &mdash; transparency is a 2026 policy expectation, not optional, and skipping it is one of the reasons <Link href="/blog/why-ai-channels-getting-demonetized-2026" style={inlineLink}>AI channels are getting demonetized in 2026</Link>. Second, never let AI flatten your originality. The platform now ranks <Link href="/blog/youtube-satisfaction-vs-watch-time-2026" style={inlineLink}>viewer satisfaction over raw watch time</Link>, and generic AI output does not satisfy. The full picture of what does and does not get penalized is in <Link href="/blog/does-ai-content-hurt-youtube-channel-2026" style={inlineLink}>whether AI content hurts your channel</Link>.
       </p>
 
       <div style={mistakeCard}>
