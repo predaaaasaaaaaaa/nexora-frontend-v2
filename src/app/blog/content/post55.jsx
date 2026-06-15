@@ -42,7 +42,7 @@ export default function Post55Content() {
       <h2 style={h2}>What actually gets you demoted in 2026</h2>
 
       <p style={p}>
-        Three live systems punish low value, and AI-spam happens to trip all three. None of them target AI specifically.
+        Three live systems punish low value, and AI-spam happens to trip all three, which together explain <Link href="/blog/why-ai-channels-getting-demonetized-2026" style={inlineLink}>why AI channels are getting demonetized in 2026</Link>. None of them target AI specifically.
       </p>
 
       <div style={stepCard}>
