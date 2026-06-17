@@ -182,7 +182,7 @@ export default function Post11Content() {
   
           <h3 style={h3}>Long-form: Multiple surfaces</h3>
           <p style={{ ...p, marginBottom: 0 }}>
-            Long-form videos are distributed across Browse (homepage), Search, Suggested, and Subscriptions. Each surface uses different ranking signals, giving long-form content multiple paths to discovery. A long-form video can get initial traction from search, then get picked up by suggested, then appear on homepages — this layered distribution is why long-form videos can generate views for months or years after upload.
+            Long-form videos are distributed across Browse (homepage), Search, Suggested, and Subscriptions. Each surface uses different ranking signals, giving long-form content multiple paths to discovery. A long-form video can get initial traction from search, then get picked up by suggested, then appear on homepages — this layered distribution is why long-form videos can generate views for months or years after upload, the opposite of how Shorts spike and fade, which is a big part of <Link href="/blog/best-time-to-post-youtube-2026" style={inlineLink}>why the best time to post is largely a myth</Link>.
           </p>
         </div>
   
