@@ -100,7 +100,7 @@ export default function Post52Content() {
       <h2 style={h2}>How to actually win on Shorts in 2026</h2>
 
       <p style={p}>
-        The strategy follows directly from the mechanics. Hook in the first one to two seconds, because the swipe decision is instant. Engineer for a rewatch or a full watch-through to clear the 70% bar &mdash; loops, payoffs, and tight edits with no dead air. Give every Short a unique angle so the Anti-Repetitive AI does not throttle it. Write a keyword-rich title to capture the new Shorts search traffic. And post when your audience is active, because the first hour is decisive. The same <Link href="/blog/why-youtube-videos-go-viral-2026" style={inlineLink}>behavioral triggers that drive virality</Link> apply with extra force here, since there is no click to slow the viewer down.
+        The strategy follows directly from the mechanics. Hook in the first one to two seconds, because the swipe decision is instant. Engineer for a rewatch or a full watch-through to clear the 70% bar &mdash; loops, payoffs, and tight edits with no dead air. Give every Short a unique angle so the Anti-Repetitive AI does not throttle it. Write a keyword-rich title to capture the new Shorts search traffic. And <Link href="/blog/best-time-to-post-youtube-2026" style={inlineLink}>post when your own audience is active</Link>, because the first hour is decisive. The same <Link href="/blog/why-youtube-videos-go-viral-2026" style={inlineLink}>behavioral triggers that drive virality</Link> apply with extra force here, since there is no click to slow the viewer down.
       </p>
 
       <div style={mistakeCard}>
