@@ -81,7 +81,7 @@ export default function Post61Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#f59e0b' }}>CONVERT CASUAL — series and schedule</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          Casuals liked something once; they need a reason to form a habit. Series content, a consistent schedule they can predict, and end-screens chaining them to the next video are what turn one-month visitors into six-month regulars. This conversion is the highest-leverage move in the whole report &mdash; far cheaper than winning a brand-new viewer.
+          Casuals liked something once; they need a reason to form a habit. Series content, <Link href="/blog/how-often-post-youtube-2026" style={inlineLink}>a posting cadence they can predict</Link>, and end-screens chaining them to the next video are what turn one-month visitors into six-month regulars. This conversion is the highest-leverage move in the whole report &mdash; far cheaper than winning a brand-new viewer.
         </p>
       </div>
 
