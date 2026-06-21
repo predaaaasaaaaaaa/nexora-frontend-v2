@@ -171,7 +171,7 @@ export default function Post28Content() {
       </p>
 
       <p style={p}>
-        This is the same principle covered in our deeper analysis of <Link href="/blog/ai-for-youtube-creators-complete-guide-2026" style={inlineLink}>AI agents for YouTube creators</Link> — AI as assistant, not author. Every stage below is structured around that test.
+        This is the same principle covered in our deeper analysis of <Link href="/blog/ai-agents-for-youtube-creators-2026" style={inlineLink}>AI agents for YouTube creators</Link> — AI as assistant, not author. Every stage below is structured around that test.
       </p>
 
       <h2 style={h2}>The 7-Stage Safe AI Workflow</h2>
