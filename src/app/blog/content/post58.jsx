@@ -60,7 +60,7 @@ export default function Post58Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#8b5cf6' }}>IDEAS AND ASSISTANTS — RESEARCH AND PACKAGING</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          The Studio-side AI assistants help with brainstorming titles, outlines, and content ideas drawn from what is working in your niche. Useful as a starting point to beat the blank page, but the output is generic by default &mdash; it gets you to a draft, not to a point of view. Their analytics-side sibling is <Link href="/blog/youtube-ask-studio-ai-analytics-2026" style={inlineLink}>Ask Studio, the AI analyst inside Studio</Link>, which reads your data conversationally instead of helping you create. The judgment stays yours.
+          The Studio-side AI assistants help with brainstorming titles, outlines, and content ideas drawn from what is working in your niche. Useful as a starting point to beat the blank page, but the output is generic by default &mdash; it gets you to a draft, not to a point of view, and it stops well short of <Link href="/blog/ai-agents-for-youtube-creators-2026" style={inlineLink}>the six jobs strategic AI agents actually handle</Link> for a channel. Their analytics-side sibling is <Link href="/blog/youtube-ask-studio-ai-analytics-2026" style={inlineLink}>Ask Studio, the AI analyst inside Studio</Link>, which reads your data conversationally instead of helping you create. The judgment stays yours.
         </p>
       </div>
 
