@@ -63,6 +63,7 @@ import Post62Content from './content/post62'
 import Post63Content from './content/post63'
 import Post64Content from './content/post64'
 import Post65Content from './content/post65'
+import Post66Content from './content/post66'
 
 export const posts = [
   {
@@ -1709,5 +1710,31 @@ export const posts = [
       }
     ],
     content: <Post65Content />,
+  },
+  {
+    slug: 'ai-agents-for-youtube-creators-2026',
+    title: 'AI Agents for YouTube Creators: The 6 Jobs They Actually Do in 2026',
+    seoTitle: 'AI Agents for YouTube Creators: 6 Jobs (2026)',
+    seoDescription: 'A solo channel is really six jobs. The six tasks AI agents handle for YouTube creators in 2026, the creation vs operations split, and the line not to cross.',
+    description: 'A weekly channel is really six jobs, and most stall from running out of hours. The six jobs AI agents actually do for YouTube creators in 2026, which agents to trust, how to start safely, and the line that gets channels demonetized.',
+    date: '2026-06-17',
+    author: 'NEXORA Team',
+    tags: ['ai agents', 'ai for creators', 'youtube automation'],
+    answer: 'AI agents for YouTube creators handle six operational jobs in 2026: research and scripting, editing and repurposing, thumbnails, community and comment management, analytics and strategy, and sponsor outreach. The key split is operations agents, which are low-risk leverage, versus creation agents that generate content and carry real demonetization risk.',
+    faqs: [
+      {
+        q: 'What can AI agents do for a YouTube channel in 2026?',
+        a: "AI agents handle the operational layer of a channel, which is really six jobs hiding behind one. They research topics and draft scripts in your voice, edit and repurpose long-form into Shorts by cutting silence and clipping the best moments, generate and A/B test thumbnails, manage comments by surfacing the ones that matter and hearting the rest, analyze your data to diagnose problems and find patterns, and run sponsor outreach and reporting. The point is to automate the roughly 30 hours of operational work behind a 4-hour shoot, so you stay on camera instead of drowning in admin."
+      },
+      {
+        q: 'Are AI agents different from AI tools like ChatGPT?',
+        a: "Yes, and the difference is real. A tool waits for you to prompt it, gives a generic output, and leaves you to figure out what to do with it. An agent connects to your channel, understands your specific data, and can plan multiple steps and execute a workflow with minimal supervision. Think calculator versus assistant. For analytics especially, this is transformational: a general AI gives generic growth tips, while an agent with access to your analytics looks at your actual numbers and tells you what specifically happened and what to do about it."
+      },
+      {
+        q: 'Will using an AI agent get my channel demonetized?',
+        a: "Not if you use it for operations. Agents that handle analytics, community management, sponsor outreach, and repurposing are low-risk leverage and do not touch the content's authenticity. The danger is creation agents used to fully generate videos, AI voice over stock footage, or mass-produce uploads with no human input, which is exactly what is getting AI channels demonetized in 2026. The rule is to automate the business around your content, not the content itself. An agent that frees you to make better videos is an asset; one that replaces you produces the generic output the algorithm now suppresses."
+      }
+    ],
+    content: <Post66Content />,
   },
 ]
