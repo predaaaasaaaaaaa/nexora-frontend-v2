@@ -153,7 +153,7 @@ export default function Post29Content() {
       <h2 style={h2}>The 30-Second Math</h2>
 
       <p style={p}>
-        Every video has a retention curve. The shape of that curve in the first 30 seconds determines everything downstream. There are three patterns the algorithm reads:
+        Every video has a retention curve — the same one you learn to diagnose in <Link href="/blog/youtube-audience-retention-graph-2026" style={inlineLink}>how to read your audience retention graph</Link>. The shape of that curve in the first 30 seconds determines everything downstream. There are three patterns the algorithm reads:
       </p>
 
       <div style={sectionCard}>
