@@ -197,7 +197,7 @@ export default function Post49Content() {
       </table>
 
       <p style={p}>
-        The B2B Browse baseline specifically tends to land around 3.5 to 4.5 percent, with 7 percent or higher as a real performance goal. But notice the recurring condition on every band: the number only counts if viewers stay. In 2026, a high CTR with low early retention is treated as a failure signal, not a win.
+        The B2B Browse baseline specifically tends to land around 3.5 to 4.5 percent, with 7 percent or higher as a real performance goal. But notice the recurring condition on every band: the number only counts if viewers stay. In 2026, a high CTR with low early retention &mdash; the early cliff you can spot in <Link href="/blog/youtube-audience-retention-graph-2026" style={inlineLink}>your audience retention graph</Link> &mdash; is treated as a failure signal, not a win.
       </p>
 
       <h2 style={h2}>CTR and AVD: the paired signal that tells the truth</h2>
