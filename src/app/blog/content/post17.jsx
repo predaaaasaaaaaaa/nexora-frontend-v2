@@ -155,7 +155,7 @@ export default function Post17Content() {
         <h2 style={h2}>How to Read Your Retention Graph</h2>
   
         <p style={p}>
-          YouTube Studio → Analytics → any video → Engagement tab → Audience Retention. This graph is one of the most valuable tools on the platform. Here's how to interpret it:
+          YouTube Studio → Analytics → any video → Engagement tab → Audience Retention. This graph is one of the most valuable tools on the platform, and our full walkthrough of <Link href="/blog/youtube-audience-retention-graph-2026" style={{ color: '#FF4444', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid rgba(255,68,68,0.3)' }}>how to read your audience retention graph</Link> breaks down each curve shape in detail. Here's how to interpret it:
         </p>
   
         <div style={sectionCard}>
