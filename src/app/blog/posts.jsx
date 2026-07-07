@@ -65,6 +65,7 @@ import Post64Content from './content/post64'
 import Post65Content from './content/post65'
 import Post66Content from './content/post66'
 import Post67Content from './content/post67'
+import Post68Content from './content/post68'
 
 export const posts = [
   {
@@ -1763,5 +1764,31 @@ export const posts = [
       }
     ],
     content: <Post67Content />,
+  },
+  {
+    slug: 'how-much-youtube-pays-per-1000-views-2026',
+    title: 'How Much Does YouTube Pay Per 1,000 Views in 2026?',
+    seoTitle: 'How Much YouTube Pays Per 1,000 Views (2026)',
+    seoDescription: 'No fixed rate. Real 2026 RPM by niche and country, Shorts vs long-form, per-million earnings, and the formula to forecast your YouTube income.',
+    description: 'There is no fixed rate per view. Real 2026 RPM data by niche and country, the Shorts vs long-form gap, per-million earnings, seasonality, and the formula to turn it into a revenue target.',
+    date: '2026-06-18',
+    author: 'NEXORA Team',
+    tags: ['youtube monetization', 'rpm', 'youtube earnings'],
+    answer: 'YouTube does not pay a fixed rate. Most long-form creators earn $1 to $5 RPM, but it ranges from $9 to $20 in finance to under $3 in entertainment, and swings 5 to 10x by audience country. Shorts pay just $0.03 to $0.08 per 1,000 views. RPM, your take after YouTube\u2019s 45% cut, is the number that matters.',
+    faqs: [
+      {
+        q: 'How much does YouTube pay for 1 million views in 2026?',
+        a: "On average, roughly $3,000 to $5,000 for long-form, but the real range runs from about $1,000 for music and entertainment channels to $12,000 or more for finance and business content. There is no fixed payout, because YouTube pays for monetized ad impressions, not raw views. What determines the figure is your RPM, which depends on your niche, your audience's location, and your format. A finance channel with a US audience can earn many times what a gaming channel earns from the same million views, which is why the average is almost meaningless without your specific niche and geography."
+      },
+      {
+        q: 'Why is RPM different from CPM on YouTube?',
+        a: "CPM is what advertisers pay per 1,000 ad impressions, so it reflects advertiser spend, not your income. RPM is what you actually receive per 1,000 video views after YouTube takes its 45% cut and after accounting for the many views where no ad ran at all. That is why RPM is always lower than CPM, typically landing around 25 to 50 percent of it. A $20 CPM can translate to a $5 RPM, and that is completely normal. Always plan your income around RPM, since it is the number that reaches your bank account, not CPM."
+      },
+      {
+        q: 'How much do YouTubers make per 1,000 views by niche?',
+        a: "In 2026, typical long-form RPM runs roughly $9 to $20 for finance and insurance, $5 to $12 for tech and business, $4 to $10 for education, $2 to $4 for gaming, and $1.5 to $3 for music, vlogs, and general entertainment. The gap exists because advertisers pay for buying intent: a finance viewer might open a brokerage account, while a comedy viewer is just entertained. Audience geography then multiplies or shrinks those numbers, since a US view can be worth 5 to 10 times a view from a low-CPM country regardless of niche."
+      }
+    ],
+    content: <Post68Content />,
   },
 ]
