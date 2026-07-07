@@ -96,7 +96,7 @@ export default function Post57Content() {
       <div style={mistakeCard}>
         <span style={mistakeLabel}>THE MISTAKE: CHASING SHORTS VIEWS FOR AD MONEY</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          Optimizing your whole channel around Shorts ad revenue is optimizing for the lowest-paying stream on the platform. Millions of Shorts views can produce a disappointing payout because of the pool math. Use Shorts to win attention, then route that attention to something that actually pays.
+          Optimizing your whole channel around Shorts ad revenue is optimizing for the lowest-paying stream on the platform. Millions of Shorts views can produce a disappointing payout because of the pool math &mdash; and if your long-form checks come in thin too, low Shorts pay is only one of the <Link href="/blog/why-is-my-youtube-rpm-low-2026" style={inlineLink}>reasons your RPM is low</Link>. Use Shorts to win attention, then route that attention to something that actually pays.
         </p>
       </div>
 
