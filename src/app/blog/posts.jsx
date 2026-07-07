@@ -66,6 +66,7 @@ import Post65Content from './content/post65'
 import Post66Content from './content/post66'
 import Post67Content from './content/post67'
 import Post68Content from './content/post68'
+import Post69Content from './content/post69'
 
 export const posts = [
   {
@@ -1790,5 +1791,31 @@ export const posts = [
       }
     ],
     content: <Post68Content />,
+  },
+  {
+    slug: 'why-is-my-youtube-rpm-low-2026',
+    title: 'Why Is Your YouTube RPM So Low? 7 Reasons (2026)',
+    seoTitle: 'Why Is My YouTube RPM So Low? 7 Reasons (2026)',
+    seoDescription: 'Views up but earnings flat? The 7 reasons your YouTube RPM is low in 2026, how to diagnose which one is yours, and the fix for each.',
+    description: 'A low or falling RPM is almost never bad luck. The seven specific causes, from audience geography to video length to the Q1 budget reset, how to diagnose which is yours, and the fix for each.',
+    date: '2026-06-18',
+    author: 'NEXORA Team',
+    tags: ['rpm', 'youtube monetization', 'youtube earnings'],
+    answer: 'A low YouTube RPM usually traces to seven causes: a low-CPM audience geography, posting Shorts instead of long-form, videos under 8 minutes with no mid-roll ads, the Q1 budget reset, a low-CPM niche, weak audience retention, or limited ad settings. Diagnose by comparing your RPM to your niche average, then fix the variable, not the volume.',
+    faqs: [
+      {
+        q: 'Why did my YouTube RPM suddenly drop?',
+        a: "If it dropped 30 to 50 percent in January, the cause is almost certainly the Q1 ad-budget reset: advertiser spend surges in Q4 for the holidays and resets hard in the new year, then recovers through the year. It is a calendar event, not a channel problem. Outside of seasonality, a sudden drop can come from a shift in your audience toward lower-CPM countries, a stretch of Shorts dragging down your blended RPM, or a run of videos under 8 minutes that cannot carry mid-roll ads. Compare the drop against the calendar and your recent format mix to identify which."
+      },
+      {
+        q: 'How can I increase my YouTube RPM?',
+        a: "Pull the levers you control. Make videos over 8 minutes so they can carry mid-roll ads, which is often the single biggest jump. Enable the full set of ad formats rather than limiting them. Improve audience retention, since more of the video watched means more ad impressions and better placements. Lean toward long-form over Shorts for monetized content, and toward commercially valuable sub-topics within your niche. Audience geography matters enormously but cannot be toggled, so if your RPM is capped by where your viewers live, the real answer is diversifying beyond ads into sponsorships, memberships, and products."
+      },
+      {
+        q: 'Is a low RPM fixed by getting more views?',
+        a: "No. Low RPM is a per-view monetization problem, and more views just produce more low-paying views at the same rate. A creator with a $2 RPM who doubles output still has a $2 RPM and simply does twice the work for the same rate. The fix is to change the variable suppressing the rate, whether that is video length, format, niche, retention, ad settings, or audience geography. Diagnose by comparing your RPM to the average for your niche: if you earn far less than the typical range, the problem is monetization, not your view count, and adding volume will not solve it."
+      }
+    ],
+    content: <Post69Content />,
   },
 ]
