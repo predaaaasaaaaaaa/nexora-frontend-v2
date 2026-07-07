@@ -81,7 +81,7 @@ export default function Post50Content() {
       <div style={stepCard}>
         <span style={stepNumber}>6 — AD REVENUE (THE PARTNER PROGRAM)</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          Reliable, fully passive, and the easiest to qualify for &mdash; but capped by your niche CPM and entirely outside your control. Treat it as the baseline that funds everything else, not the goal.
+          Reliable, fully passive, and the easiest to qualify for &mdash; but capped by your niche CPM and entirely outside your control, which is exactly why <Link href="/blog/how-much-youtube-pays-per-1000-views-2026" style={inlineLink}>how much YouTube actually pays per 1,000 views</Link> swings so widely from one channel to the next. Treat it as the baseline that funds everything else, not the goal.
         </p>
       </div>
 
