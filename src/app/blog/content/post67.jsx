@@ -45,7 +45,7 @@ export default function Post67Content() {
       <div style={stepCard}>
         <span style={{ ...stepNumber, color: '#3EA651' }}>2 — THE GENTLE SLOPE (healthy decline)</span>
         <p style={{ ...p, marginBottom: 0 }}>
-          A gradual, steady decline across the video is normal and healthy &mdash; you will never keep 100%, and slowly losing viewers as the video runs is expected. The flatter this slope, the better. A long video that holds a gentle slope is far stronger than a short one that falls off a cliff.
+          A gradual, steady decline across the video is normal and healthy &mdash; you will never keep 100%, and slowly losing viewers as the video runs is expected. The flatter this slope, the better. A long video that holds a gentle slope is far stronger than a short one that falls off a cliff &mdash; and because more of the video actually gets watched, more mid-roll ads have room to serve, which is why weak retention is one of the <Link href="/blog/why-is-my-youtube-rpm-low-2026" style={inlineLink}>reasons your RPM is low</Link>.
         </p>
       </div>
 
