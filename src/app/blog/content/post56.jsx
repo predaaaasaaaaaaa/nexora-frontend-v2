@@ -86,7 +86,7 @@ export default function Post56Content() {
       <h2 style={h2}>What this actually changes for you</h2>
 
       <p style={p}>
-        The strategic shift is that monetization now rewards community building and consistency over a single lucky viral break. You can start earning from a small, devoted audience at 500 subscribers, which means the smart move is to build a direct relationship with your fans early instead of treating ad revenue as the only goal. It also means the activity requirement matters: three uploads every 90 days is a floor you must not drop below, or you risk losing eligibility.
+        The strategic shift is that monetization now rewards community building and consistency over a single lucky viral break. You can start earning from a small, devoted audience at 500 subscribers, which means the smart move is to build a direct relationship with your fans early instead of treating ad revenue as the only goal, especially once you see <Link href="/blog/how-much-youtube-pays-per-1000-views-2026" style={inlineLink}>how much YouTube actually pays per 1,000 views</Link>. It also means the activity requirement matters: three uploads every 90 days is a floor you must not drop below, or you risk losing eligibility.
       </p>
 
       <div style={mistakeCard}>
